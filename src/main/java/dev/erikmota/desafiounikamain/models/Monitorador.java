@@ -2,10 +2,8 @@ package dev.erikmota.desafiounikamain.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -15,10 +13,8 @@ public class Monitorador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
-    @Enumerated(EnumType.STRING)
     @Column(name = "tipo")
-    private TipoPessoa tipoPessoa;
+    private String tipoPessoa;
     private String cpf;
     private String cnpj;
     private String nome;
@@ -32,9 +28,8 @@ public class Monitorador {
     @Column(name = "inscricao_social")
     private Long inscricaoSocial;
     @NotBlank
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "data_nascimento")
-    private Date dataNascimento;
+    private String dataNascimento;
     @NotBlank
     private String ativo;
     @OneToMany(mappedBy = "monitorador")
@@ -44,7 +39,7 @@ public class Monitorador {
 
     }
 
-    public Monitorador(TipoPessoa tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, Long inscricaoSocial, Date dataNascimento, String ativo, List<Endereco> enderecos) {
+    public Monitorador(String tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, Long inscricaoSocial, String dataNascimento, String ativo) {
         this.tipoPessoa = tipoPessoa;
         this.cpf = cpf;
         this.cnpj = cnpj;
@@ -55,7 +50,6 @@ public class Monitorador {
         this.inscricaoSocial = inscricaoSocial;
         this.dataNascimento = dataNascimento;
         this.ativo = ativo;
-        this.enderecos = enderecos;
     }
 
     public void editar(Monitorador m) {
@@ -72,11 +66,11 @@ public class Monitorador {
         this.enderecos = m.enderecos;
     }
 
-    public TipoPessoa getTipoPessoa() {
+    public String getTipoPessoa() {
         return tipoPessoa;
     }
 
-    public void setTipoPessoa(TipoPessoa tipoPessoa) {
+    public void setTipoPessoa(String tipoPessoa) {
         this.tipoPessoa = tipoPessoa;
     }
 
@@ -136,11 +130,11 @@ public class Monitorador {
         this.inscricaoSocial = inscricaoSocial;
     }
 
-    public Date getDataNascimento() {
+    public String getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
+    public void setDataNascimento(String dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 

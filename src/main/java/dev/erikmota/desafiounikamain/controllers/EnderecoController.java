@@ -20,7 +20,7 @@ public class EnderecoController {
     @Autowired
     private EnderecoService service;
 
-    @PostMapping("/cadastrar")
+    @PostMapping
     @Transactional
     public ResponseEntity<String> cadastrar(@RequestBody @Valid Endereco e){
         try {
