@@ -8,36 +8,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
-@Table(name="monitorador")
 public class Monitorador {
     //Atributos
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tipo")
     private TipoPessoa tipoPessoa;
     private String cpf;
     private String cnpj;
     private String nome;
-    @Column(name = "razao_social")
     private String razaoSocial;
-    @NotBlank
     private String email;
-    @NotBlank
     private String rg;
-    @NotBlank
-    @Column(name = "inscricao_social")
     private Long inscricaoSocial;
-    @NotBlank
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "data_nascimento")
     private Date dataNascimento;
-    @NotBlank
     private String ativo;
-    @OneToMany(mappedBy = "monitorador")
     private List<Endereco> enderecos = new ArrayList<>();
 
     public Monitorador(){
