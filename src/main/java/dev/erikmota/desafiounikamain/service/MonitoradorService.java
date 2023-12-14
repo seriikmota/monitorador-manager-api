@@ -20,8 +20,9 @@ public class MonitoradorService {
             throw new ValidacaoException("CPF/CNPJ já existe!");
     }
 
-    public void editar(Monitorador m){
-        Monitorador novoMonitorador = repository.getReferenceById(m.getId());
+    public void editar(Long id, Monitorador m){
+        System.out.println();
+        Monitorador novoMonitorador = repository.getReferenceById(id);
         novoMonitorador.editar(m);
     }
 
@@ -29,7 +30,8 @@ public class MonitoradorService {
         return repository.findAll();
     }
 
-    public void excluir(Monitorador m){
+    public void excluir(Long id){
+        Monitorador m = repository.getReferenceById(id);
         if (repository.existsByCpfOrCnpj(m.getCpf(), m.getCnpj()))
             repository.delete(m);
         else

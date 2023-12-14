@@ -18,7 +18,7 @@ public class MonitoradorController {
     @Autowired
     private MonitoradorService service;
 
-    @PostMapping("/cadastrar")
+    @PostMapping
     @Transactional
     public ResponseEntity<String> cadastrar(@RequestBody @Valid Monitorador m){
         try {
@@ -29,22 +29,22 @@ public class MonitoradorController {
         }
     }
 
-    @PostMapping("/editar")
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> editar(@RequestBody @Valid Monitorador m){
+    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody @Valid Monitorador m){
         try {
-            service.editar(m);
+            service.editar(id, m);
             return ResponseEntity.ok().build();
         } catch (ValidacaoException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PostMapping("/excluir")
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> excluir(@RequestBody @Valid Monitorador m){
+    public ResponseEntity<String> excluir(@PathVariable Long id){
         try {
-            service.excluir(m);
+            service.excluir(id);
             return ResponseEntity.ok().build();
         } catch (ValidacaoException e){
             return ResponseEntity.badRequest().body(e.getMessage());

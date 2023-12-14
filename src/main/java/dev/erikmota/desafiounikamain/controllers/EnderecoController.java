@@ -5,6 +5,7 @@ import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.service.EnderecoService;
 import dev.erikmota.desafiounikamain.service.MonitoradorService;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,24 +32,24 @@ public class EnderecoController {
         }
     }
 
-    @PostMapping("/editar")
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> editar(@RequestBody @Valid Endereco e){
+    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody @Valid Endereco e){
         try {
-            service.editar(e);
+            service.editar(id, e);
             return ResponseEntity.ok().build();
-        } catch (ValidacaoException ex){
+        } catch (ValidacaoException | EntityNotFoundException ex){
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
-    @PostMapping("/excluir")
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> excluir(@RequestBody @Valid Endereco e){
+    public ResponseEntity<String> excluir(@PathVariable Long id){
         try {
-            service.excluir(e);
+            service.excluir(id);
             return ResponseEntity.ok().build();
-        } catch (ValidacaoException ex){
+        } catch (ValidacaoException | EntityNotFoundException ex){
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }

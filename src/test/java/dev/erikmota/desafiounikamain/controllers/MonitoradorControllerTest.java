@@ -35,9 +35,9 @@ class MonitoradorControllerTest {
                 {
                     "tipo": "Física",
                     "cpf": "71061170136",
-                    "cnpj": "null",
+                    "cnpj": null,
                     "nome": "Erik de Sousa",
-                    "razao_social": "null",
+                    "razao_social": null,
                     "email": "seriikmota.dev@gmail.com",
                     "rg": "7118387",
                     "inscricao_social": "123456",

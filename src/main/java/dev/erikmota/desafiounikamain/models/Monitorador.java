@@ -2,6 +2,7 @@ package dev.erikmota.desafiounikamain.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,10 @@ public class Monitorador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "tipo")
-    private String tipoPessoa;
+    @Enumerated(EnumType.STRING)
+    private TipoPessoa tipoPessoa;
     private String cpf;
     private String cnpj;
     private String nome;
@@ -24,7 +27,7 @@ public class Monitorador {
     private String email;
     @NotBlank
     private String rg;
-    @NotBlank
+    @NotNull
     @Column(name = "inscricao_social")
     private Long inscricaoSocial;
     @NotBlank
@@ -39,7 +42,7 @@ public class Monitorador {
 
     }
 
-    public Monitorador(String tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, Long inscricaoSocial, String dataNascimento, String ativo) {
+    public Monitorador(TipoPessoa tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, Long inscricaoSocial, String dataNascimento, String ativo) {
         this.tipoPessoa = tipoPessoa;
         this.cpf = cpf;
         this.cnpj = cnpj;
@@ -66,11 +69,11 @@ public class Monitorador {
         this.enderecos = m.enderecos;
     }
 
-    public String getTipoPessoa() {
+    public TipoPessoa getTipoPessoa() {
         return tipoPessoa;
     }
 
-    public void setTipoPessoa(String tipoPessoa) {
+    public void setTipoPessoa(TipoPessoa tipoPessoa) {
         this.tipoPessoa = tipoPessoa;
     }
 
