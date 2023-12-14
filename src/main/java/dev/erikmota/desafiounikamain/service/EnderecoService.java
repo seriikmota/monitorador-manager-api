@@ -27,7 +27,7 @@ public class EnderecoService {
     }
 
     public List<Endereco> listar(){
-        return repository.findAll();
+        return repository.findAllWithMonitorador();
     }
 
     public void excluir(Long id){

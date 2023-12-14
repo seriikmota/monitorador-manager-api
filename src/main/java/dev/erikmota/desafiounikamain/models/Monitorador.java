@@ -1,5 +1,6 @@
 package dev.erikmota.desafiounikamain.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,6 +37,7 @@ public class Monitorador {
     @NotBlank
     private String ativo;
     @OneToMany(mappedBy = "monitorador")
+    @JsonBackReference
     private List<Endereco> enderecos = new ArrayList<>();
 
     public Monitorador(){
@@ -44,8 +46,8 @@ public class Monitorador {
 
     public Monitorador(TipoPessoa tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, Long inscricaoSocial, String dataNascimento, String ativo) {
         this.tipoPessoa = tipoPessoa;
-        this.cpf = cpf;
-        this.cnpj = cnpj;
+        this.cpf = cpf.replaceAll("[^0-9]", "");
+        this.cnpj = cnpj.replaceAll("[^0-9]", "");
         this.nome = nome;
         this.razaoSocial = razaoSocial;
         this.email = email;
@@ -57,8 +59,8 @@ public class Monitorador {
 
     public void editar(Monitorador m) {
         this.tipoPessoa = m.tipoPessoa;
-        this.cpf = m.cpf;
-        this.cnpj = m.cnpj;
+        this.cpf = m.cpf.replaceAll("[^0-9]", "");
+        this.cnpj = m.cnpj.replaceAll("[^0-9]", "");
         this.nome = m.nome;
         this.razaoSocial = m.razaoSocial;
         this.email = m.email;
@@ -82,7 +84,7 @@ public class Monitorador {
     }
 
     public void setCpf(String cpf) {
-        this.cpf = cpf;
+        this.cpf = cpf.replaceAll("[^0-9]", "");
     }
 
     public String getCnpj() {
@@ -90,7 +92,7 @@ public class Monitorador {
     }
 
     public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
+        this.cnpj = cnpj.replaceAll("[^0-9]", "");
     }
 
     public String getNome() {
@@ -159,5 +161,23 @@ public class Monitorador {
 
     public Long getId() {
         return id;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "Monitorador{" +
+                "id=" + id +
+                ", cnpj='" + cnpj + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                ", Rg='" + rg + '\'' +
+                ", inscricao_Estadual='" + inscricaoSocial + '\'' +
+                ", Data_nascimento=" + dataNascimento +
+                ", tipo='" + tipoPessoa + '\'' +
+                ", Ativo=" + ativo +
+                '}';
     }
 }

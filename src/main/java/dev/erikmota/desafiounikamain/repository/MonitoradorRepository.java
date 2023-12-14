@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MonitoradorRepository extends JpaRepository<Monitorador, Long> {
     boolean existsByCpfOrCnpj(String cpf, String cnpj);
+    boolean existsByRazaoSocial(String razaoSocial);
 }
