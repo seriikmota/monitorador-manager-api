@@ -4,6 +4,7 @@ import dev.erikmota.desafiounikamain.models.Endereco;
 import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.repository.EnderecoRepository;
 import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
+import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoEndereco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +20,21 @@ public class EnderecoService {
     @Autowired
     private MonitoradorRepository monitoradorRepository;
 
+    @Autowired
+    private List<IValidacaoEndereco> validacoes;
+
     public void cadastrar(Endereco e){
-        if (!repository.existsByCep(e.getCep())) {
-            repository.save(e);
-        }
-        else
-            throw new ValidacaoException("Este cep já está cadastrado");
+
+        validacoes.forEach(v -> v.validar(e));
+
+        repository.save(e);
     }
 
-    public void editar(Long id, Endereco e){
-        Endereco novoEndereco = repository.getReferenceById(id);
+    public void editar(Long idM, Long idE, Endereco e){
+
+        Monitorador m = monitoradorRepository.getReferenceById(idM);
+        Endereco novoEndereco = repository.getReferenceById(idE);
+        e.setMonitorador(m);
         novoEndereco.editar(e);
     }
 

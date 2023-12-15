@@ -2,6 +2,7 @@ package dev.erikmota.desafiounikamain.service;
 
 import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
+import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoMonitorador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,12 @@ public class MonitoradorService {
     @Autowired
     private MonitoradorRepository repository;
 
+    @Autowired
+    private List<IValidacaoMonitorador> validacoes;
+
     public void cadastrar(Monitorador m){
-        if (!repository.existsByCpf(m.getCpf()))
-            repository.save(m);
-        else
-            throw new ValidacaoException("CPF/CNPJ já existe!");
+        validacoes.forEach(v -> v.validar(m));
+        repository.save(m);
     }
 
     public void editar(Long id, Monitorador m){

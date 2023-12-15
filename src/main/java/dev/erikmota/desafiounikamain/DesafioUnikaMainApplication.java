@@ -10,6 +10,7 @@ public class DesafioUnikaMainApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DesafioUnikaMainApplication.class, args);
+
     }
 
 }

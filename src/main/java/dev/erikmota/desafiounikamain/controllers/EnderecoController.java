@@ -32,11 +32,11 @@ public class EnderecoController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{idMonitorador}/{idEndereco}")
     @Transactional
-    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody @Valid Endereco e){
+    public ResponseEntity<String> editar(@PathVariable Long idMonitorador, @PathVariable Long idEndereco,  @RequestBody @Valid Endereco e){
         try {
-            service.editar(id, e);
+            service.editar(idMonitorador, idEndereco, e);
             return ResponseEntity.ok().build();
         } catch (ValidacaoException | EntityNotFoundException ex){
             return ResponseEntity.badRequest().body(ex.getMessage());

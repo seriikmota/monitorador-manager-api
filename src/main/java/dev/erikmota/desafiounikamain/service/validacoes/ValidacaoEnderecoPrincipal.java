@@ -6,6 +6,7 @@ import dev.erikmota.desafiounikamain.service.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -16,7 +17,11 @@ public class ValidacaoEnderecoPrincipal implements IValidacaoEndereco{
 
     @Override
     public void validar(Endereco e) {
-        /*boolean existePrincipal = e.getMonitorador().getEnderecos().stream().anyMatch(obj -> Objects.equals(obj.getPrincipal(), "Sim"));
+
+        List<Endereco> enderecos = e.getMonitorador().getEnderecos();
+        System.out.println(enderecos);
+/*
+        System.out.println(existePrincipal);
         if (existePrincipal)
             throw new ValidacaoException("Este monitorador já possui um endereço principal");*/
     }
