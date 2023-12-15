@@ -60,5 +60,11 @@ public class EnderecoController {
         return ResponseEntity.ok(enderecos);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<List<Endereco>> listarPorMonitorador(@PathVariable Long id){
+        List<Endereco> enderecos = service.listarPorMonitorador(id);
+        return ResponseEntity.ok(enderecos);
+    }
+
 
 }

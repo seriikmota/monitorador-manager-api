@@ -1,6 +1,7 @@
 package dev.erikmota.desafiounikamain.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,9 +30,10 @@ public class Endereco {
     private String principal;
     @ManyToOne(optional = false)
     @JoinColumn(name = "monitorador_id")
+    @JsonBackReference
     private Monitorador monitorador;
 
-    public Endereco(){
+    public Endereco() {
 
     }
 
@@ -57,6 +59,10 @@ public class Endereco {
         this.estado = e.estado;
         this.principal = e.principal;
         this.monitorador = e.monitorador;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getEndereco() {
@@ -131,7 +137,7 @@ public class Endereco {
         this.monitorador = monitorador;
     }
 
-    public Long getId() {
-        return id;
+    public Long getMonitorador_id(){
+        return monitorador.getId();
     }
 }

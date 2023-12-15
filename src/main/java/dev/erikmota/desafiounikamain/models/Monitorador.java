@@ -1,6 +1,7 @@
 package dev.erikmota.desafiounikamain.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +38,6 @@ public class Monitorador {
     @NotBlank
     private String ativo;
     @OneToMany(mappedBy = "monitorador")
-    @JsonBackReference
     private List<Endereco> enderecos = new ArrayList<>();
 
     public Monitorador(){
@@ -163,21 +163,4 @@ public class Monitorador {
         return id;
     }
 
-
-
-    @Override
-    public String toString() {
-        return "Monitorador{" +
-                "id=" + id +
-                ", cnpj='" + cnpj + '\'' +
-                ", cpf='" + cpf + '\'' +
-                ", nome='" + nome + '\'' +
-                ", email='" + email + '\'' +
-                ", Rg='" + rg + '\'' +
-                ", inscricao_Estadual='" + inscricaoSocial + '\'' +
-                ", Data_nascimento=" + dataNascimento +
-                ", tipo='" + tipoPessoa + '\'' +
-                ", Ativo=" + ativo +
-                '}';
-    }
 }

@@ -1,5 +1,6 @@
 package dev.erikmota.desafiounikamain.controllers;
 
+import dev.erikmota.desafiounikamain.models.Endereco;
 import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.service.MonitoradorService;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
@@ -57,6 +58,5 @@ public class MonitoradorController {
         List<Monitorador> monitoradores = service.listar();
         return ResponseEntity.ok(monitoradores);
     }
-
 
 }

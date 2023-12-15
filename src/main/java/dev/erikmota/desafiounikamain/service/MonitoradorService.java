@@ -14,14 +14,14 @@ public class MonitoradorService {
     private MonitoradorRepository repository;
 
     public void cadastrar(Monitorador m){
-        if (!repository.existsByCpfOrCnpj(m.getCpf(), m.getCnpj()))
+        if (!repository.existsByCpf(m.getCpf()))
             repository.save(m);
         else
             throw new ValidacaoException("CPF/CNPJ já existe!");
     }
 
     public void editar(Long id, Monitorador m){
-        System.out.println();
+
         Monitorador novoMonitorador = repository.getReferenceById(id);
         novoMonitorador.editar(m);
     }
@@ -32,9 +32,11 @@ public class MonitoradorService {
 
     public void excluir(Long id){
         Monitorador m = repository.getReferenceById(id);
-        if (repository.existsByCpfOrCnpj(m.getCpf(), m.getCnpj()))
+        if (repository.existsByCpf(m.getCpf()))
             repository.delete(m);
         else
             throw new ValidacaoException("Esse monitorador não está cadastrado!");
     }
+
+
 }
