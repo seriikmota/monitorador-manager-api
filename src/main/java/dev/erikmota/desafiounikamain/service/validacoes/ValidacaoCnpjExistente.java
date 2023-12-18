@@ -12,10 +12,15 @@ public class ValidacaoCnpjExistente implements IValidacaoMonitorador {
 
     @Autowired
     private MonitoradorRepository repository;
+
     @Override
     public void validar(Monitorador m) {
-        if (m.getTipoPessoa() == TipoPessoa.JURIDICA)
-            if (repository.existsByCnpj(m.getCnpj()))
+        if (m.getTipoPessoa() == TipoPessoa.JURIDICA) {
+            if (m.getCpf() == null || m.getCpf().isBlank())
+                throw new ValidacaoException("Pessoas físicas devem inserir cpf!");
+
+            else if (repository.existsByCnpj(m.getCnpj().replaceAll("[^0-9]", "")))
                 throw new ValidacaoException("Esse Cnpj já está cadastrado!");
+        }
     }
 }

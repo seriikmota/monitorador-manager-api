@@ -24,8 +24,10 @@ public class EnderecoService {
     private List<IValidacaoEndereco> validacoes;
 
     public void cadastrar(Endereco e){
-
         validacoes.forEach(v -> v.validar(e));
+
+        Monitorador m = monitoradorRepository.getReferenceById(e.getMonitorador_id());
+        m.getEnderecos().add(e);
 
         repository.save(e);
     }

@@ -16,7 +16,10 @@ public class ValidacaoCpfExistente implements IValidacaoMonitorador {
     @Override
     public void validar(Monitorador m) {
         if (m.getTipoPessoa() == TipoPessoa.FISICA) {
-            if (repository.existsByCpf(m.getCpf())) {
+            if (m.getCpf() == null || m.getCpf().isBlank())
+                throw new ValidacaoException("Pessoas físicas devem inserir cpf!");
+
+            else if (repository.existsByCpf(m.getCpf().replaceAll("[^0-9]", ""))) {
                 throw new ValidacaoException("Esse Cpf já está cadastrado!");
             }
         }

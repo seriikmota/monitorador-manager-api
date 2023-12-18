@@ -9,20 +9,19 @@ import org.springframework.stereotype.Component;
 public class ValidacaoCnpjCpf implements IValidacaoMonitorador {
     @Override
     public void validar(Monitorador m) {
-        if (m.getTipoPessoa() == TipoPessoa.FISICA) {
-            try {
-                if (m.getNome().isBlank())
-                    throw new ValidacaoException("Pessoas físicas devem inserir o nome");
-            } catch (NullPointerException ex) {
+
+        if (m.getCpf() == null && m.getCnpj() == null) {
+            throw new ValidacaoException("É necessário inserir cpf e/ou cnpj!");
+        }
+
+        else if (m.getTipoPessoa() == TipoPessoa.FISICA) {
+            if (m.getNome() == null || m.getNome().isBlank())
                 throw new ValidacaoException("Pessoas físicas devem inserir o nome");
-            }
-        } else if (m.getTipoPessoa() == TipoPessoa.JURIDICA) {
-            try {
-                if (m.getRazaoSocial().isBlank())
-                    throw new ValidacaoException("Pessoas jurídicas devem inserir a razao social");
-            } catch (NullPointerException ex) {
+        }
+
+        else if (m.getTipoPessoa() == TipoPessoa.JURIDICA) {
+            if (m.getRazaoSocial() == null || m.getRazaoSocial().isBlank())
                 throw new ValidacaoException("Pessoas jurídicas devem inserir a razao social");
-            }
         }
     }
 }

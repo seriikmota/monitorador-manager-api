@@ -17,10 +17,14 @@ public class ValidacaoEnderecoPrincipal implements IValidacaoEndereco{
 
     @Override
     public void validar(Endereco e) {
+        System.out.println("Principal");
+        List<Endereco> enderecos = e.getMonitorador().getEnderecos();
+        enderecos.forEach(System.out::println);
 
+/*
         List<Endereco> enderecos = e.getMonitorador().getEnderecos();
         System.out.println(enderecos);
-/*
+
         System.out.println(existePrincipal);
         if (existePrincipal)
             throw new ValidacaoException("Este monitorador já possui um endereço principal");*/

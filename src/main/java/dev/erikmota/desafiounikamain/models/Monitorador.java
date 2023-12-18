@@ -2,9 +2,12 @@ package dev.erikmota.desafiounikamain.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.erikmota.desafiounikamain.service.ValidacaoException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.br.CNPJ;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +23,9 @@ public class Monitorador {
     @Column(name = "tipo")
     @Enumerated(EnumType.STRING)
     private TipoPessoa tipoPessoa;
+    @CPF
     private String cpf;
+    @CNPJ
     private String cnpj;
     private String nome;
     @Column(name = "razao_social")
@@ -46,8 +51,8 @@ public class Monitorador {
 
     public Monitorador(TipoPessoa tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, Long inscricaoSocial, String dataNascimento, String ativo) {
         this.tipoPessoa = tipoPessoa;
-        this.cpf = cpf.replaceAll("[^0-9]", "");
-        this.cnpj = cnpj.replaceAll("[^0-9]", "");
+        this.cpf = cpf;
+        this.cnpj = cnpj;
         this.nome = nome;
         this.razaoSocial = razaoSocial;
         this.email = email;
@@ -59,8 +64,8 @@ public class Monitorador {
 
     public void editar(Monitorador m) {
         this.tipoPessoa = m.tipoPessoa;
-        this.cpf = m.cpf.replaceAll("[^0-9]", "");
-        this.cnpj = m.cnpj.replaceAll("[^0-9]", "");
+        this.cpf = m.cpf;
+        this.cnpj = m.cnpj;
         this.nome = m.nome;
         this.razaoSocial = m.razaoSocial;
         this.email = m.email;
@@ -80,19 +85,26 @@ public class Monitorador {
     }
 
     public String getCpf() {
-        return cpf;
+        if (cpf == null)
+            return null;
+        return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9);
     }
 
     public void setCpf(String cpf) {
-        this.cpf = cpf.replaceAll("[^0-9]", "");
+        if (cpf != null)
+            this.cpf = cpf.replaceAll("[^0-9]", "");
     }
 
     public String getCnpj() {
-        return cnpj;
+        if (cnpj == null)
+            return null;
+        return cnpj.substring(0, 2) + "." + cnpj.substring(2, 5) + "." +
+                cnpj.substring(5, 8) + "/" + cnpj.substring(8, 12) + "-" + cnpj.substring(12);
     }
 
     public void setCnpj(String cnpj) {
-        this.cnpj = cnpj.replaceAll("[^0-9]", "");
+        if (cnpj != null)
+            this.cnpj = cnpj.replaceAll("[^0-9]", "");
     }
 
     public String getNome() {
@@ -100,7 +112,11 @@ public class Monitorador {
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        if (nome == null || nome.isEmpty())
+            this.nome = null;
+        else
+            this.nome = nome;
+
     }
 
     public String getRazaoSocial() {
@@ -108,7 +124,8 @@ public class Monitorador {
     }
 
     public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
+        if (razaoSocial == null || razaoSocial.isEmpty()) this.razaoSocial = null;
+        else this.razaoSocial = razaoSocial;
     }
 
     public String getEmail() {
