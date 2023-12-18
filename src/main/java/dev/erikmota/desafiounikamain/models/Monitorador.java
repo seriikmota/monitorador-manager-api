@@ -1,8 +1,5 @@
 package dev.erikmota.desafiounikamain.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.erikmota.desafiounikamain.service.ValidacaoException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

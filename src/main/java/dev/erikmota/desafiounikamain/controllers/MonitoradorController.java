@@ -1,6 +1,5 @@
 package dev.erikmota.desafiounikamain.controllers;
 
-import dev.erikmota.desafiounikamain.models.Endereco;
 import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.service.MonitoradorService;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @RestController

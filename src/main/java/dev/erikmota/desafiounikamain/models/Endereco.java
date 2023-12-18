@@ -1,10 +1,9 @@
 package dev.erikmota.desafiounikamain.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="endereco")
@@ -14,19 +13,12 @@ public class Endereco {
     private Long id;
     @NotBlank
     private String endereco;
-    @NotNull
-    private Long numero;
-    @NotBlank
+    private String numero;
     private String cep;
-    @NotBlank
     private String bairro;
-    @NotBlank
     private String telefone;
-    @NotBlank
     private String cidade;
-    @NotBlank
     private String estado;
-    @NotBlank
     private String principal;
     @ManyToOne(optional = false)
     @JoinColumn(name = "monitorador_id")
@@ -37,7 +29,7 @@ public class Endereco {
 
     }
 
-    public Endereco(String endereco, Long numero, String cep, String bairro, String telefone, String cidade, String estado, String principal, Monitorador monitorador) {
+    public Endereco(String endereco, String numero, String cep, String bairro, String telefone, String cidade, String estado, String principal, Monitorador monitorador) {
         this.endereco = endereco;
         this.numero = numero;
         this.cep = cep;
@@ -73,11 +65,11 @@ public class Endereco {
         this.endereco = endereco;
     }
 
-    public Long getNumero() {
+    public String getNumero() {
         return numero;
     }
 
-    public void setNumero(Long numero) {
+    public void setNumero(String numero) {
         this.numero = numero;
     }
 
