@@ -16,8 +16,8 @@ public class ValidacaoCnpjExistente implements IValidacaoMonitorador {
     @Override
     public void validar(Monitorador m) {
         if (m.getTipoPessoa() == TipoPessoa.JURIDICA) {
-            if (m.getCpf() == null || m.getCpf().isBlank())
-                throw new ValidacaoException("Pessoas físicas devem inserir cpf!");
+            if (m.getCnpj() == null || m.getCnpj().isBlank())
+                throw new ValidacaoException("Pessoas juridicas devem inserir cnpj!");
 
             else if (repository.existsByCnpj(m.getCnpj().replaceAll("[^0-9]", "")))
                 throw new ValidacaoException("Esse Cnpj já está cadastrado!");
