@@ -53,8 +53,8 @@ public class EnderecoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Endereco>> listar(){
-        List<Endereco> enderecos = service.listar();
+    public ResponseEntity<List<?>> listar(){
+        List<?> enderecos = service.listar();
         return ResponseEntity.ok(enderecos);
     }
 

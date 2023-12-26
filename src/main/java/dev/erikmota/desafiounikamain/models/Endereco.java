@@ -1,13 +1,15 @@
 package dev.erikmota.desafiounikamain.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name="endereco")
-public class Endereco {
+public class Endereco{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,8 +23,8 @@ public class Endereco {
     private String estado;
     private String principal;
     @ManyToOne(optional = false)
+    @JsonIgnore
     @JoinColumn(name = "monitorador_id")
-    @JsonBackReference
     private Monitorador monitorador;
 
     public Endereco() {
@@ -121,15 +123,12 @@ public class Endereco {
         this.principal = principal;
     }
 
-    public Monitorador getMonitorador() {
-        return monitorador;
+    public Long getMonitorador() {
+        return monitorador.getId();
     }
 
     public void setMonitorador(Monitorador monitorador) {
         this.monitorador = monitorador;
     }
 
-    public Long getMonitorador_id(){
-        return monitorador.getId();
-    }
 }
