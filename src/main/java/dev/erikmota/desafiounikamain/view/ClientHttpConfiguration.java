@@ -1,4 +1,4 @@
-package dev.erikmota;
+package dev.erikmota.desafiounikamain.view;
 
 import java.io.IOException;
 import java.net.URI;

@@ -1,4 +1,4 @@
-package dev.erikmota;
+package dev.erikmota.desafiounikamain.view;
 
 import dev.erikmota.models.Monitorador;
 import org.apache.wicket.markup.html.basic.Label;

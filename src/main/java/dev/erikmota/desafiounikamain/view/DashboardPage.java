@@ -1,4 +1,4 @@
-package dev.erikmota;
+package dev.erikmota.desafiounikamain.view;
 
 import org.apache.wicket.markup.html.link.Link;
 public class DashboardPage extends BasePage {
