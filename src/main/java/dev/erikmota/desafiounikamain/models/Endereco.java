@@ -23,8 +23,8 @@ public class Endereco{
     private String estado;
     private String principal;
     @ManyToOne(optional = false)
-    @JsonIgnore
     @JoinColumn(name = "monitorador_id")
+    @JsonBackReference
     private Monitorador monitorador;
 
     public Endereco() {
@@ -123,8 +123,8 @@ public class Endereco{
         this.principal = principal;
     }
 
-    public Long getMonitorador() {
-        return monitorador.getId();
+    public Monitorador getMonitorador() {
+        return monitorador;
     }
 
     public void setMonitorador(Monitorador monitorador) {

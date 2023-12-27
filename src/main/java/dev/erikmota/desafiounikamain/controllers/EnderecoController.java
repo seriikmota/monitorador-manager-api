@@ -23,6 +23,7 @@ public class EnderecoController {
     @Transactional
     public ResponseEntity<String> cadastrar(@RequestBody @Valid Endereco e){
         try {
+            System.out.println("Valor monitorador:");
             service.cadastrar(e);
             return ResponseEntity.ok().build();
         } catch (ValidacaoException ex){
