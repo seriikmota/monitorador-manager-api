@@ -1,0 +1,46 @@
+.searchform{
+
+    position: relative;
+}
+
+.searchform .fa-search{
+
+    position: absolute;
+    top:4px;
+    left: 10px;
+    color: #9ca3af;
+}
+
+.searchform-input{
+    height: 25px;
+    text-indent: 23px;
+    font-size: 12px;
+    margin-top: 0px;
+}
+
+.buttonsSize{
+    height: 15px;
+    width: 20px;
+    text-size-adjust: auto;
+}
+
+.filterButton{
+    margin-left: 12px;
+    font-size: 10px;
+    width: 50px;
+}
+
+.badgeFilter{
+    margin-left: 2px;
+    font-size: 7px;
+    width: 40px;
+    text-indent: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.badgeSize{
+    padding-top: 2px;
+    margin-left: -11px;
+    font-size: 8px;
+}

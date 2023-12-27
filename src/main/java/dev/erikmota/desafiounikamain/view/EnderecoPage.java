@@ -1,19 +1,18 @@
 package dev.erikmota.desafiounikamain.view;
 
-import dev.erikmota.models.Endereco;
+import dev.erikmota.desafiounikamain.view.modelsView.Endereco;
+import dev.erikmota.desafiounikamain.view.modelsView.Monitorador;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 
-import java.util.List;
-
 public class EnderecoPage extends BasePage {
     public EnderecoPage() {
-        List<Endereco> enderecoList = atualizarListar("http://localhost:8081/endereco", Endereco.class);
-
+        monitoradorList = atualizarLista("http://localhost:8081/monitorador", Monitorador.class);
+        enderecoList = atualizarLista("http://localhost:8081/endereco", Endereco.class); MapEndereco();
         try{
-            add(new ListView<Endereco>("enderecoList", enderecoList) {
+            add(new ListView<>("enderecoList", enderecoList) {
                 @Override
                 protected void populateItem(ListItem<Endereco> item) {
                     final Endereco endereco = item.getModelObject();
@@ -25,7 +24,7 @@ public class EnderecoPage extends BasePage {
                     item.add(new Label("eTelefone", endereco.getTelefone()));
                     item.add(new Label("eCidade", endereco.getCidade()));
                     item.add(new Label("eEstado", endereco.getEstado()));
-                    //item.add(new Label("eMonitorador", endereco.getMonitorador()));
+                    item.add(new Label("eMonitorador", endereco.getNomeOrRazao()));
                     item.add(new Label("ePrincipal", endereco.getPrincipal()));
                 }
             });

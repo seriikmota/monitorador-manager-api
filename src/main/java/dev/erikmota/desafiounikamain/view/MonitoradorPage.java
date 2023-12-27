@@ -1,19 +1,17 @@
 package dev.erikmota.desafiounikamain.view;
 
-import dev.erikmota.models.Monitorador;
+import dev.erikmota.desafiounikamain.view.modelsView.Endereco;
+import dev.erikmota.desafiounikamain.view.modelsView.Monitorador;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 
-import java.util.List;
-
-
 public class MonitoradorPage extends BasePage {
 
     public MonitoradorPage() {
-
-        List<Monitorador> monitoradorList = atualizarListar("http://localhost:8081/monitorador", Monitorador.class);
+        monitoradorList = atualizarLista("http://localhost:8081/monitorador", Monitorador.class);
+        enderecoList = atualizarLista("http://localhost:8081/endereco", Endereco.class); MapEndereco();
         try {
             add(new ListView<>("monitoradorList", monitoradorList) {
                 @Override
