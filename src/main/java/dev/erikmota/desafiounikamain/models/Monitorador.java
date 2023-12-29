@@ -37,11 +37,11 @@ public class Monitorador {
     @NotBlank
     private String rg;
     @NotNull
-    @Column(name = "inscricao_social")
-    private Long inscricaoSocial;
+    @Column(name = "inscricao_estadual")
+    private Long inscricaoEstadual;
     @NotBlank
-    @Column(name = "data_nascimento")
-    private String dataNascimento;
+    @Column(name = "data")
+    private String data;
     @NotBlank
     private String ativo;
     @OneToMany(mappedBy = "monitorador")
@@ -51,7 +51,7 @@ public class Monitorador {
 
     }
 
-    public Monitorador(TipoPessoa tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, Long inscricaoSocial, String dataNascimento, String ativo) {
+    public Monitorador(TipoPessoa tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, Long inscricaoEstadual, String dataNascimento, String ativo) {
         this.tipoPessoa = tipoPessoa;
         this.cpf = cpf;
         this.cnpj = cnpj;
@@ -59,8 +59,8 @@ public class Monitorador {
         this.razaoSocial = razaoSocial;
         this.email = email;
         this.rg = rg;
-        this.inscricaoSocial = inscricaoSocial;
-        this.dataNascimento = dataNascimento;
+        this.inscricaoEstadual = inscricaoEstadual;
+        this.data = data;
         this.ativo = ativo;
     }
 
@@ -72,8 +72,8 @@ public class Monitorador {
         this.razaoSocial = m.razaoSocial;
         this.email = m.email;
         this.rg = m.rg;
-        this.inscricaoSocial = m.inscricaoSocial;
-        this.dataNascimento = m.dataNascimento;
+        this.inscricaoEstadual = m.inscricaoEstadual;
+        this.data = m.data;
         this.ativo = m.ativo;
         this.enderecos = m.enderecos;
     }
@@ -146,20 +146,20 @@ public class Monitorador {
         this.rg = rg;
     }
 
-    public Long getInscricaoSocial() {
-        return inscricaoSocial;
+    public Long getInscricaoEstadual() {
+        return inscricaoEstadual;
     }
 
-    public void setInscricaoSocial(Long inscricaoSocial) {
-        this.inscricaoSocial = inscricaoSocial;
+    public void setInscricaoEstadual(Long inscricaoEstadual) {
+        this.inscricaoEstadual = inscricaoEstadual;
     }
 
-    public String getDataNascimento() {
-        return dataNascimento;
+    public String getData() {
+        return data;
     }
 
-    public void setDataNascimento(String dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getAtivo() {
