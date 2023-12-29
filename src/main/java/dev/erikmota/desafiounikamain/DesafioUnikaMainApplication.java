@@ -1,8 +1,5 @@
 package dev.erikmota.desafiounikamain;
 
-import dev.erikmota.desafiounikamain.view.DashboardPage;
-import org.apache.wicket.Page;
-import org.apache.wicket.protocol.http.WebApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
