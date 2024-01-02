@@ -1,14 +1,12 @@
 package dev.erikmota.desafiounikamain.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.cglib.core.Local;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,16 +32,14 @@ public class Monitorador {
     private String razaoSocial;
     @NotBlank
     private String email;
-    @NotBlank
     private String rg;
-    @NotNull
     @Column(name = "inscricao_estadual")
-    private Long inscricaoEstadual;
+    private String inscricaoEstadual;
     @NotBlank
     @Column(name = "data")
     private String data;
-    @NotBlank
-    private String ativo;
+    @NotNull
+    private Boolean ativo;
     @OneToMany(mappedBy = "monitorador")
     private List<Endereco> enderecos = new ArrayList<>();
 
@@ -51,7 +47,7 @@ public class Monitorador {
 
     }
 
-    public Monitorador(TipoPessoa tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, Long inscricaoEstadual, String dataNascimento, String ativo) {
+    public Monitorador(TipoPessoa tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, String inscricaoEstadual, String dataNascimento, Boolean ativo) {
         this.tipoPessoa = tipoPessoa;
         this.cpf = cpf;
         this.cnpj = cnpj;
@@ -146,11 +142,11 @@ public class Monitorador {
         this.rg = rg;
     }
 
-    public Long getInscricaoEstadual() {
+    public String getInscricaoEstadual() {
         return inscricaoEstadual;
     }
 
-    public void setInscricaoEstadual(Long inscricaoEstadual) {
+    public void setInscricaoEstadual(String inscricaoEstadual) {
         this.inscricaoEstadual = inscricaoEstadual;
     }
 
@@ -162,11 +158,11 @@ public class Monitorador {
         this.data = data;
     }
 
-    public String getAtivo() {
+    public Boolean getAtivo() {
         return ativo;
     }
 
-    public void setAtivo(String ativo) {
+    public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
     }
 
