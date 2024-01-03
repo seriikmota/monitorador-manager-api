@@ -33,11 +33,10 @@ public class MonitoradorService {
     }
 
     public void excluir(Long id){
-        Monitorador m = repository.getReferenceById(id);
-        if (repository.existsByCpf(m.getCpf()))
-            repository.delete(m);
+        if (repository.existsById(id))
+            repository.delete(repository.getReferenceById(id));
         else
-            throw new ValidacaoException("Esse monitorador não está cadastrado!");
+            throw new ValidacaoException("Esse monitorador não está cadastrado");
     }
 
 
