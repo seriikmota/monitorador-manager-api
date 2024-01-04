@@ -1,10 +1,13 @@
 package dev.erikmota.desafiounikamain.controllers;
 
+import com.mysql.cj.util.StringUtils;
 import dev.erikmota.desafiounikamain.models.Monitorador;
+import dev.erikmota.desafiounikamain.models.TipoPessoa;
 import dev.erikmota.desafiounikamain.service.MonitoradorService;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -57,4 +60,44 @@ public class MonitoradorController {
         return ResponseEntity.ok(monitoradores);
     }
 
+    @GetMapping("/nome/{nome}")
+    public ResponseEntity<List<Monitorador>> filtrarNome(@PathVariable String nome){
+        List<Monitorador> monitoradores = service.filtrarNome(nome);
+        return ResponseEntity.ok(monitoradores);
+    }
+
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<List<Monitorador>> filtrarCpf(@PathVariable String cpf){
+        List<Monitorador> monitoradores = service.filtrarCpf(cpf);
+        return ResponseEntity.ok(monitoradores);
+    }
+
+    @GetMapping("/cnpj/{cnpj}")
+    public ResponseEntity<List<Monitorador>> filtrarCnpj(@PathVariable String cnpj){
+        List<Monitorador> monitoradores = service.filtrarCnpj(cnpj);
+        return ResponseEntity.ok(monitoradores);
+    }
+
+    @GetMapping("/ativo/{ativo}")
+    public ResponseEntity<List<Monitorador>> filtrarAtivo(@PathVariable Boolean ativo){
+        List<Monitorador> monitoradores = service.filtrarAtivo(ativo);
+        return ResponseEntity.ok(monitoradores);
+    }
+
+    @GetMapping("/tipoPessoa/{tipoPessoa}")
+    public ResponseEntity<List<Monitorador>> filtrarTipoPessoa(@PathVariable TipoPessoa tipoPessoa){
+        List<Monitorador> monitoradores = service.filtrarTipoPessoa(tipoPessoa);
+        return ResponseEntity.ok(monitoradores);
+    }
+
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<Monitorador>> filtrar(@RequestParam(name = "nome", required = false) String nome,
+                                                     @RequestParam(name = "cpf", required = false) String cpf,
+                                                     @RequestParam(name = "cnpj", required = false) String cnpj,
+                                                     @RequestParam(name = "ativo", required = false) Boolean ativo,
+                                                     @RequestParam(name = "tipoPessoa", required = false) TipoPessoa tipoPessoa
+                                                     ){
+        List<Monitorador> monitoradores = service.filtrar(nome, cpf, cnpj, ativo, tipoPessoa);
+        return ResponseEntity.ok(monitoradores);
+    }
 }

@@ -10,4 +10,5 @@ public interface EnderecoRepository extends JpaRepository<Endereco, Long> {
 
     boolean existsByCep(String cep);
     List<Endereco> findByMonitoradorId(Long id);
+
 }
