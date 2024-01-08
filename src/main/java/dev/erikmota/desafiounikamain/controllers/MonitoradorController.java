@@ -11,6 +11,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -97,5 +98,26 @@ public class MonitoradorController {
                                                      ){
         List<Monitorador> monitoradores = service.filtrar(text, ativo, tipoPessoa);
         return ResponseEntity.ok(monitoradores);
+    }
+
+    @GetMapping("/modelo")
+    public ResponseEntity<String> modelo(){
+        try {
+            service.modeloImportar();
+            return ResponseEntity.ok().build();
+        } catch (ValidacaoException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/importar")
+    @Transactional
+    public ResponseEntity<String> importar(@RequestParam("file") MultipartFile file) {
+        try {
+            service.importar(file);
+            return ResponseEntity.ok().build();
+        } catch (ValidacaoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

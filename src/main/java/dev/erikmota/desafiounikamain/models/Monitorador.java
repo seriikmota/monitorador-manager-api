@@ -1,14 +1,11 @@
 package dev.erikmota.desafiounikamain.models;
 
-import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.cglib.core.Local;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
