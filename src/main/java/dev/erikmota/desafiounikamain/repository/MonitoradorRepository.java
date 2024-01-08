@@ -22,40 +22,25 @@ public interface MonitoradorRepository extends JpaRepository<Monitorador, Long>,
     List<Monitorador> findByAtivo(boolean ativo);
     List<Monitorador> findByTipoPessoa(TipoPessoa tipoPessoa);
 
-    /*@Query("SELECT m FROM Monitorador m WHERE (:nome IS NULL OR m.nome LIKE CONCAT('%', :nome, '%')) AND (:ativo IS NULL OR m.ativo = :ativo)")
-    List<Monitorador> filtrar(String nome, Boolean ativo);*/
-
-
-    //List<Monitorador> filtrar(String nome, String cpf, String cnpj, Boolean ativo, TipoPessoa tipoPessoa);
-
-    default List<Monitorador> filtrar(String nome, String cpf, String cnpj, Boolean ativo, TipoPessoa tipoPessoa) {
+    default List<Monitorador> filtrar(String text, Boolean ativo, TipoPessoa tipoPessoa) {
         return findAll((Specification<Monitorador>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (!StringUtils.isEmptyOrWhitespaceOnly(nome)) {
-                predicates.add(criteriaBuilder.like(root.get("nome"), "%" + nome + "%"));
-                System.out.println("Tem nome: " + nome);
+            if (!StringUtils.isEmptyOrWhitespaceOnly(text)){
+                Predicate textPredicate = criteriaBuilder.or(
+                criteriaBuilder.like(root.get("nome"), "%" + text + "%"),
+                criteriaBuilder.like(root.get("razaoSocial"), "%" + text + "%"),
+                criteriaBuilder.like(root.get("cpf"), "%" + text + "%"),
+                criteriaBuilder.like(root.get("cnpj"), "%" + text + "%"));
+
+                predicates.add(textPredicate);
             }
 
-            if (!StringUtils.isEmptyOrWhitespaceOnly(cpf)) {
-                predicates.add(criteriaBuilder.like(root.get("cpf"), "%" + cpf + "%"));
-                System.out.println("Tem cpf: " + cpf);
-            }
-
-            if (!StringUtils.isEmptyOrWhitespaceOnly(cnpj)) {
-                predicates.add(criteriaBuilder.like(root.get("cnpj"), "%" + cnpj + "%"));
-                System.out.println("Tem cnpj: " + cnpj);
-            }
-
-            if (ativo != null) {
+            if (ativo != null)
                 predicates.add(criteriaBuilder.equal(root.get("ativo"), ativo));
-                System.out.println("Tem ativo: " + ativo);
-            }
 
-            if (tipoPessoa != null) {
+            if (tipoPessoa != null)
                 predicates.add(criteriaBuilder.equal(root.get("tipoPessoa"), tipoPessoa));
-                System.out.println("Tem tipo: " + tipoPessoa);
-            }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });

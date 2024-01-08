@@ -91,13 +91,11 @@ public class MonitoradorController {
     }
 
     @GetMapping("/filtrar")
-    public ResponseEntity<List<Monitorador>> filtrar(@RequestParam(name = "nome", required = false) String nome,
-                                                     @RequestParam(name = "cpf", required = false) String cpf,
-                                                     @RequestParam(name = "cnpj", required = false) String cnpj,
+    public ResponseEntity<List<Monitorador>> filtrar(@RequestParam(name = "text", required = false) String text,
                                                      @RequestParam(name = "ativo", required = false) Boolean ativo,
                                                      @RequestParam(name = "tipoPessoa", required = false) TipoPessoa tipoPessoa
                                                      ){
-        List<Monitorador> monitoradores = service.filtrar(nome, cpf, cnpj, ativo, tipoPessoa);
+        List<Monitorador> monitoradores = service.filtrar(text, ativo, tipoPessoa);
         return ResponseEntity.ok(monitoradores);
     }
 }

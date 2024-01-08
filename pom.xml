@@ -52,40 +52,12 @@
             <version>8.2.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.googlecode.genericdao/search -->
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
         <dependency>
-            <groupId>com.googlecode.genericdao</groupId>
-            <artifactId>dao</artifactId>
-            <version>1.2.0</version>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.5</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.googlecode.genericdao/search -->
-        <dependency>
-            <groupId>com.googlecode.genericdao</groupId>
-            <artifactId>search</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.googlecode.genericdao/search-jpa-hibernate -->
-        <dependency>
-            <groupId>com.googlecode.genericdao</groupId>
-            <artifactId>search-jpa-hibernate</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.googlecode.genericdao/search-jpa-hibernate -->
-        <dependency>
-            <groupId>com.googlecode.genericdao</groupId>
-            <artifactId>search-jpa-hibernate</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.googlecode.genericdao/search-hibernate -->
-        <dependency>
-            <groupId>com.googlecode.genericdao</groupId>
-            <artifactId>search-hibernate</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-
-
-
 
     </dependencies>
 
