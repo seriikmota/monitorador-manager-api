@@ -112,9 +112,9 @@ public class MonitoradorController {
 
     @PostMapping("/importar")
     @Transactional
-    public ResponseEntity<String> importar(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> importar() {
         try {
-            service.importar(file);
+            service.importar();
             return ResponseEntity.ok().build();
         } catch (ValidacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

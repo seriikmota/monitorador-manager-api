@@ -1,12 +1,17 @@
 package dev.erikmota.desafiounikamain.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -27,14 +32,14 @@ public class Monitorador {
     private String nome;
     @Column(name = "razao_social")
     private String razaoSocial;
-    @NotBlank
-    private String email;
     private String rg;
     @Column(name = "inscricao_estadual")
     private String inscricaoEstadual;
     @NotBlank
+    private String email;
     @Column(name = "data")
-    private String data;
+    @JsonFormat(pattern="dd/MM/yyyy")
+    private LocalDate data;
     @NotNull
     private Boolean ativo;
     @OneToMany(mappedBy = "monitorador")
@@ -147,11 +152,11 @@ public class Monitorador {
         this.inscricaoEstadual = inscricaoEstadual;
     }
 
-    public String getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(LocalDate data) {
         this.data = data;
     }
 
@@ -175,4 +180,20 @@ public class Monitorador {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return "Monitorador{" +
+                "tipoPessoa=" + tipoPessoa +
+                ", cpf='" + cpf + '\'' +
+                ", cnpj='" + cnpj + '\'' +
+                ", nome='" + nome + '\'' +
+                ", razaoSocial='" + razaoSocial + '\'' +
+                ", rg='" + rg + '\'' +
+                ", inscricaoEstadual='" + inscricaoEstadual + '\'' +
+                ", email='" + email + '\'' +
+                ", data='" + data + '\'' +
+                ", ativo=" + ativo +
+                ", enderecos=" + enderecos +
+                '}';
+    }
 }
