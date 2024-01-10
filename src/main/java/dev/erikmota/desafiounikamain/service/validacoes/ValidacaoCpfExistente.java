@@ -15,7 +15,7 @@ public class ValidacaoCpfExistente implements IValidacaoMonitorador {
 
     @Override
     public void validar(Monitorador m) {
-        if (m.getTipoPessoa() == TipoPessoa.FISICA) {
+        if (m.getTipo() == TipoPessoa.FISICA) {
             if (m.getCpf() == null || m.getCpf().isBlank())
                 throw new ValidacaoException("Pessoas físicas devem inserir cpf!");
 

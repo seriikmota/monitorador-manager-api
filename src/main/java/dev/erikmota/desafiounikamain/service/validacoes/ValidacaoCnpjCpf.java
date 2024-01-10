@@ -14,13 +14,13 @@ public class ValidacaoCnpjCpf implements IValidacaoMonitorador {
             throw new ValidacaoException("É necessário inserir cpf e/ou cnpj!");
         }
 
-        else if (m.getTipoPessoa() == TipoPessoa.FISICA) {
+        else if (m.getTipo() == TipoPessoa.FISICA) {
             if (m.getNome() == null || m.getNome().isBlank())
                 throw new ValidacaoException("Pessoas físicas devem inserir o nome");
         }
 
-        else if (m.getTipoPessoa() == TipoPessoa.JURIDICA) {
-            if (m.getRazaoSocial() == null || m.getRazaoSocial().isBlank())
+        else if (m.getTipo() == TipoPessoa.JURIDICA) {
+            if (m.getRazao() == null || m.getRazao().isBlank())
                 throw new ValidacaoException("Pessoas jurídicas devem inserir a razao social");
         }
     }

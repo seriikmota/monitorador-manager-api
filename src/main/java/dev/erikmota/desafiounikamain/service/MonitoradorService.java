@@ -16,13 +16,12 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MonitoradorService {
+    private final PoiService poiService = new PoiService();
+    private final JasperService jasperService = new JasperService();
     @Autowired
     private MonitoradorRepository repository;
     @Autowired
@@ -66,8 +65,8 @@ public class MonitoradorService {
         return repository.findByAtivo(ativo);
     }
 
-    public List<Monitorador> filtrarTipoPessoa(TipoPessoa tipoPessoa) {
-        return repository.findByTipoPessoa(tipoPessoa);
+    public List<Monitorador> filtrarTipoPessoa(TipoPessoa tipo) {
+        return repository.findByTipo(tipo);
     }
 
     public List<Monitorador> filtrar(String text, Boolean ativo, TipoPessoa tipoPessoa) {
@@ -115,43 +114,7 @@ public class MonitoradorService {
         }
     }
     public void importar() {
-        List<Monitorador> monitoradores = new ArrayList<>();
-        try (Workbook workbook = WorkbookFactory.create(new File("monitorador.xlsx"));) {
-            LocalDate date = LocalDate.of(2020, 11, 25);
-            Sheet sheet = workbook.getSheetAt(0);
-            Iterator<Row> rowIterator = sheet.rowIterator();
-
-            if (!rowIterator.hasNext()) {
-                throw new ValidacaoException("O documento está vazio");
-            }
-            else {
-                while (rowIterator.hasNext()) {
-                    Monitorador m = new Monitorador();
-                    Row row = rowIterator.next();
-                    if (row.getRowNum() == 0) row = rowIterator.next();
-                    Iterator<Cell> cellIterator = row.cellIterator();
-                    while (cellIterator.hasNext()) {
-                        Cell cell = cellIterator.next();
-                        int index = cell.getColumnIndex();
-                        switch (index) {
-                            case 0: m.setTipoPessoa(TipoPessoa.valueOf(cell.getStringCellValue())); break;
-                            case 1: m.setCnpj(verifyNull(cell.getStringCellValue())); break;
-                            case 2: m.setRazaoSocial(verifyNull(cell.getStringCellValue())); break;
-                            case 3: m.setInscricaoEstadual(verifyNull(cell.getStringCellValue())); break;
-                            case 4: m.setCpf(verifyNull(cell.getStringCellValue())); break;
-                            case 5: m.setNome(verifyNull(cell.getStringCellValue())); break;
-                            case 6: m.setRg(verifyNull(cell.getStringCellValue())); break;
-                            case 7: m.setData(convertDate(cell.getDateCellValue()));
-                            case 8: m.setEmail(verifyNull(cell.toString())); break;
-                            case 9: m.setAtivo(cell.getStringCellValue().equals("Sim")); break;
-                        }
-                    }
-                    monitoradores.add(m);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Erro ao fazer a leitura do documento");
-        }
+        List<Monitorador> monitoradores = poiService.importar();
         if (!monitoradores.isEmpty()){
             monitoradores.forEach(System.out::println);
             monitoradores.forEach(m -> validacoes.forEach(v -> v.validar(m)));
@@ -160,18 +123,18 @@ public class MonitoradorService {
 
     }
 
-    private String verifyNull(String stringCellValue) {
-        if (stringCellValue.isEmpty())
-            return null;
-        else
-            return stringCellValue;
+    public void exportar(){
+        poiService.exportar();
     }
 
-    private static LocalDate convertDate(Date data) {
-        if (data == null)
-            throw new ValidacaoException("O campo data é obrigatório!");
-        Instant instant = data.toInstant();
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-        return localDateTime.toLocalDate();
+    public void gerarRelatorioAll(){
+        jasperService.gerarPdf(repository.findAll());
     }
+
+    public void gerarRelatorio(Long id){
+        List<Monitorador> m = new ArrayList<>();
+        m.add(repository.getReferenceById(id));
+        jasperService.gerarPdf(m);
+    }
+
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -116,8 +117,14 @@ public class MonitoradorController {
         try {
             service.importar();
             return ResponseEntity.ok().build();
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ValidacaoException ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
+    }
+
+    @GetMapping("/relatorio")
+    public ResponseEntity<String> relatorio(){
+        service.gerarRelatorioAll();
+        return ResponseEntity.ok().build();
     }
 }

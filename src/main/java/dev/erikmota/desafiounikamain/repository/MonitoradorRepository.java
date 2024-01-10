@@ -15,21 +15,21 @@ public interface MonitoradorRepository extends JpaRepository<Monitorador, Long>,
     boolean existsByCpf(String cpf);
     boolean existsByCnpj(String cnpj);
     boolean existsByNome(String nome);
-    boolean existsByRazaoSocial(String razaoSocial);
+    boolean existsByRazao(String razao);
     List<Monitorador> findByCpfContains(String cpf);
     List<Monitorador> findByCnpjContains(String cnpj);
     List<Monitorador> findByNomeContains(String nome);
     List<Monitorador> findByAtivo(boolean ativo);
-    List<Monitorador> findByTipoPessoa(TipoPessoa tipoPessoa);
+    List<Monitorador> findByTipo(TipoPessoa tipo);
 
-    default List<Monitorador> filtrar(String text, Boolean ativo, TipoPessoa tipoPessoa) {
+    default List<Monitorador> filtrar(String text, Boolean ativo, TipoPessoa tipo) {
         return findAll((Specification<Monitorador>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             if (!StringUtils.isEmptyOrWhitespaceOnly(text)){
                 Predicate textPredicate = criteriaBuilder.or(
                 criteriaBuilder.like(root.get("nome"), "%" + text + "%"),
-                criteriaBuilder.like(root.get("razaoSocial"), "%" + text + "%"),
+                criteriaBuilder.like(root.get("razao"), "%" + text + "%"),
                 criteriaBuilder.like(root.get("cpf"), "%" + text + "%"),
                 criteriaBuilder.like(root.get("cnpj"), "%" + text + "%"));
 
@@ -39,8 +39,8 @@ public interface MonitoradorRepository extends JpaRepository<Monitorador, Long>,
             if (ativo != null)
                 predicates.add(criteriaBuilder.equal(root.get("ativo"), ativo));
 
-            if (tipoPessoa != null)
-                predicates.add(criteriaBuilder.equal(root.get("tipoPessoa"), tipoPessoa));
+            if (tipo != null)
+                predicates.add(criteriaBuilder.equal(root.get("tipo"), tipo));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });

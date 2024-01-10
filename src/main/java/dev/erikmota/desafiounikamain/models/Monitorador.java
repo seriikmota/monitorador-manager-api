@@ -4,14 +4,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.cglib.core.Local;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,25 +23,23 @@ public class Monitorador {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tipo")
+    @NotNull(message = "O campo tipo é obrigatório")
     @Enumerated(EnumType.STRING)
-    private TipoPessoa tipoPessoa;
+    private TipoPessoa tipo;
     @CPF
     private String cpf;
     @CNPJ
     private String cnpj;
     private String nome;
-    @Column(name = "razao_social")
-    private String razaoSocial;
+    private String razao;
     private String rg;
-    @Column(name = "inscricao_estadual")
-    private String inscricaoEstadual;
-    @NotBlank
+    private String inscricao;
+    @NotBlank(message = "O campo email é obrigatório")
     private String email;
-    @Column(name = "data")
-    @JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate data;
-    @NotNull
+    @NotNull(message = "O campo ativo é obrigatório")
     private Boolean ativo;
     @OneToMany(mappedBy = "monitorador")
     private List<Endereco> enderecos = new ArrayList<>();
@@ -49,39 +48,39 @@ public class Monitorador {
 
     }
 
-    public Monitorador(TipoPessoa tipoPessoa, String cpf, String cnpj, String nome, String razaoSocial, String email, String rg, String inscricaoEstadual, String dataNascimento, Boolean ativo) {
-        this.tipoPessoa = tipoPessoa;
+    public Monitorador(TipoPessoa tipo, String cnpj, String razao, String inscricao, String cpf, String nome, String rg, LocalDate data, String email, Boolean ativo) {
+        this.tipo = tipo;
         this.cpf = cpf;
         this.cnpj = cnpj;
         this.nome = nome;
-        this.razaoSocial = razaoSocial;
+        this.razao = razao;
         this.email = email;
         this.rg = rg;
-        this.inscricaoEstadual = inscricaoEstadual;
+        this.inscricao = inscricao;
         this.data = data;
         this.ativo = ativo;
     }
 
     public void editar(Monitorador m) {
-        this.tipoPessoa = m.tipoPessoa;
+        this.tipo = m.tipo;
         this.cpf = m.cpf;
         this.cnpj = m.cnpj;
         this.nome = m.nome;
-        this.razaoSocial = m.razaoSocial;
+        this.razao = m.razao;
         this.email = m.email;
         this.rg = m.rg;
-        this.inscricaoEstadual = m.inscricaoEstadual;
+        this.inscricao = m.inscricao;
         this.data = m.data;
         this.ativo = m.ativo;
         this.enderecos = m.enderecos;
     }
 
-    public TipoPessoa getTipoPessoa() {
-        return tipoPessoa;
+    public TipoPessoa getTipo() {
+        return tipo;
     }
 
-    public void setTipoPessoa(TipoPessoa tipoPessoa) {
-        this.tipoPessoa = tipoPessoa;
+    public void setTipo(TipoPessoa tipo) {
+        this.tipo = tipo;
     }
 
     public String getCpf() {
@@ -119,13 +118,13 @@ public class Monitorador {
 
     }
 
-    public String getRazaoSocial() {
-        return razaoSocial;
+    public String getRazao() {
+        return razao;
     }
 
-    public void setRazaoSocial(String razaoSocial) {
-        if (razaoSocial == null || razaoSocial.isEmpty()) this.razaoSocial = null;
-        else this.razaoSocial = razaoSocial;
+    public void setRazao(String razao) {
+        if (razao == null || razao.isEmpty()) this.razao = null;
+        else this.razao = razao;
     }
 
     public String getEmail() {
@@ -144,12 +143,12 @@ public class Monitorador {
         this.rg = rg;
     }
 
-    public String getInscricaoEstadual() {
-        return inscricaoEstadual;
+    public String getInscricao() {
+        return inscricao;
     }
 
-    public void setInscricaoEstadual(String inscricaoEstadual) {
-        this.inscricaoEstadual = inscricaoEstadual;
+    public void setInscricao(String inscricao) {
+        this.inscricao = inscricao;
     }
 
     public LocalDate getData() {
@@ -183,13 +182,13 @@ public class Monitorador {
     @Override
     public String toString() {
         return "Monitorador{" +
-                "tipoPessoa=" + tipoPessoa +
+                "tipo=" + tipo +
                 ", cpf='" + cpf + '\'' +
                 ", cnpj='" + cnpj + '\'' +
                 ", nome='" + nome + '\'' +
-                ", razaoSocial='" + razaoSocial + '\'' +
+                ", razao='" + razao + '\'' +
                 ", rg='" + rg + '\'' +
-                ", inscricaoEstadual='" + inscricaoEstadual + '\'' +
+                ", inscricao='" + inscricao + '\'' +
                 ", email='" + email + '\'' +
                 ", data='" + data + '\'' +
                 ", ativo=" + ativo +

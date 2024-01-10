@@ -15,7 +15,7 @@ public class ValidacaoCnpjExistente implements IValidacaoMonitorador {
 
     @Override
     public void validar(Monitorador m) {
-        if (m.getTipoPessoa() == TipoPessoa.JURIDICA) {
+        if (m.getTipo() == TipoPessoa.JURIDICA) {
             if (m.getCnpj() == null || m.getCnpj().isBlank())
                 throw new ValidacaoException("Pessoas juridicas devem inserir cnpj!");
 
