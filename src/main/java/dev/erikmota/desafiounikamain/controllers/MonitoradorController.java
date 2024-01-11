@@ -1,20 +1,26 @@
 package dev.erikmota.desafiounikamain.controllers;
 
-import com.mysql.cj.util.StringUtils;
 import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.models.TipoPessoa;
 import dev.erikmota.desafiounikamain.service.MonitoradorService;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
+import org.springframework.core.io.PathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/monitorador")
@@ -25,69 +31,69 @@ public class MonitoradorController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<String> cadastrar(@RequestBody @Valid Monitorador m){
+    public ResponseEntity<String> cadastrar(@RequestBody @Valid Monitorador m) {
         try {
             service.cadastrar(m);
             return ResponseEntity.ok().build();
-        } catch (ValidacaoException e){
+        } catch (ValidacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody @Valid Monitorador m){
+    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody @Valid Monitorador m) {
         try {
             service.editar(id, m);
             return ResponseEntity.ok().build();
-        } catch (ValidacaoException e){
+        } catch (ValidacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> excluir(@PathVariable Long id){
+    public ResponseEntity<String> excluir(@PathVariable Long id) {
         try {
             service.excluir(id);
             return ResponseEntity.ok().build();
-        } catch (ValidacaoException e){
+        } catch (ValidacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<Monitorador>> listar(){
+    public ResponseEntity<List<Monitorador>> listar() {
         List<Monitorador> monitoradores = service.listar();
         return ResponseEntity.ok(monitoradores);
     }
 
     @GetMapping("/nome/{nome}")
-    public ResponseEntity<List<Monitorador>> filtrarNome(@PathVariable String nome){
+    public ResponseEntity<List<Monitorador>> filtrarNome(@PathVariable String nome) {
         List<Monitorador> monitoradores = service.filtrarNome(nome);
         return ResponseEntity.ok(monitoradores);
     }
 
     @GetMapping("/cpf/{cpf}")
-    public ResponseEntity<List<Monitorador>> filtrarCpf(@PathVariable String cpf){
+    public ResponseEntity<List<Monitorador>> filtrarCpf(@PathVariable String cpf) {
         List<Monitorador> monitoradores = service.filtrarCpf(cpf);
         return ResponseEntity.ok(monitoradores);
     }
 
     @GetMapping("/cnpj/{cnpj}")
-    public ResponseEntity<List<Monitorador>> filtrarCnpj(@PathVariable String cnpj){
+    public ResponseEntity<List<Monitorador>> filtrarCnpj(@PathVariable String cnpj) {
         List<Monitorador> monitoradores = service.filtrarCnpj(cnpj);
         return ResponseEntity.ok(monitoradores);
     }
 
     @GetMapping("/ativo/{ativo}")
-    public ResponseEntity<List<Monitorador>> filtrarAtivo(@PathVariable Boolean ativo){
+    public ResponseEntity<List<Monitorador>> filtrarAtivo(@PathVariable Boolean ativo) {
         List<Monitorador> monitoradores = service.filtrarAtivo(ativo);
         return ResponseEntity.ok(monitoradores);
     }
 
     @GetMapping("/tipoPessoa/{tipoPessoa}")
-    public ResponseEntity<List<Monitorador>> filtrarTipoPessoa(@PathVariable TipoPessoa tipoPessoa){
+    public ResponseEntity<List<Monitorador>> filtrarTipoPessoa(@PathVariable TipoPessoa tipoPessoa) {
         List<Monitorador> monitoradores = service.filtrarTipoPessoa(tipoPessoa);
         return ResponseEntity.ok(monitoradores);
     }
@@ -96,19 +102,19 @@ public class MonitoradorController {
     public ResponseEntity<List<Monitorador>> filtrar(@RequestParam(name = "text", required = false) String text,
                                                      @RequestParam(name = "ativo", required = false) Boolean ativo,
                                                      @RequestParam(name = "tipoPessoa", required = false) TipoPessoa tipoPessoa
-                                                     ){
+    ) {
         List<Monitorador> monitoradores = service.filtrar(text, ativo, tipoPessoa);
         return ResponseEntity.ok(monitoradores);
     }
 
     @GetMapping("/modelo")
-    public ResponseEntity<String> modelo(){
-        try {
-            service.modeloImportar();
-            return ResponseEntity.ok().build();
-        } catch (ValidacaoException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<PathResource> modelo() {
+        Path path = service.gerarModelo();
+        PathResource resource = new PathResource(path);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + path.getFileName() + "\"")
+                .body(resource);
     }
 
     @PostMapping("/importar")
@@ -117,21 +123,28 @@ public class MonitoradorController {
         try {
             service.importar(file);
             return ResponseEntity.ok().build();
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/relatorio")
-    public ResponseEntity<String> relatorio(@RequestParam(name = "id", required = false) Long id){
+    public ResponseEntity<PathResource> relatorio(@RequestParam(name = "id", required = false) Long id) {
         try {
+            Path path;
             if (id != null)
-                service.gerarRelatorio(id);
+                path = service.gerarRelatorio(id);
             else
-                service.gerarRelatorioAll();
-            return ResponseEntity.ok().build();
-        } catch (ValidacaoException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+                path = service.gerarRelatorioAll();
+            PathResource resource = new PathResource(path);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + path.getFileName() + "\"")
+                    .body(resource);
+
+        } catch (ValidacaoException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }
