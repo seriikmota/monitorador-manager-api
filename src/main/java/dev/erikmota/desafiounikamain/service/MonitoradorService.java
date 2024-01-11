@@ -8,14 +8,10 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -113,10 +109,9 @@ public class MonitoradorService {
             throw new RuntimeException(e);
         }
     }
-    public void importar() {
-        List<Monitorador> monitoradores = poiService.importar();
+    public void importar(MultipartFile file) {
+        List<Monitorador> monitoradores = poiService.importar(file);
         if (!monitoradores.isEmpty()){
-            monitoradores.forEach(System.out::println);
             monitoradores.forEach(m -> validacoes.forEach(v -> v.validar(m)));
             repository.saveAll(monitoradores);
         }

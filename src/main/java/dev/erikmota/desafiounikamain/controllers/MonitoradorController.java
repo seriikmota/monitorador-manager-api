@@ -113,18 +113,25 @@ public class MonitoradorController {
 
     @PostMapping("/importar")
     @Transactional
-    public ResponseEntity<String> importar() {
+    public ResponseEntity<String> importar(@RequestParam("file") MultipartFile file) {
         try {
-            service.importar();
+            service.importar(file);
             return ResponseEntity.ok().build();
-        } catch (ValidacaoException ex){
-            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/relatorio")
-    public ResponseEntity<String> relatorio(){
-        service.gerarRelatorioAll();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> relatorio(@RequestParam(name = "id", required = false) Long id){
+        try {
+            if (id != null)
+                service.gerarRelatorio(id);
+            else
+                service.gerarRelatorioAll();
+            return ResponseEntity.ok().build();
+        } catch (ValidacaoException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

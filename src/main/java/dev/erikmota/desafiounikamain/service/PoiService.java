@@ -2,7 +2,10 @@ package dev.erikmota.desafiounikamain.service;
 
 import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.models.TipoPessoa;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,10 +19,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class PoiService {
-    public List<Monitorador> importar() {
+    public List<Monitorador> importar(MultipartFile file) {
         List<Monitorador> monitoradores = new ArrayList<>();
-        try (Workbook workbook = WorkbookFactory.create(new File("Monitoradores.xlsx"));) {
-            Sheet sheet = workbook.getSheetAt(0);
+        try (XSSFWorkbook wb = new XSSFWorkbook(file.getInputStream())) {
+            Sheet sheet = wb.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.rowIterator();
             if (!rowIterator.hasNext()) {
                 throw new ValidacaoException("O documento está vazio");
