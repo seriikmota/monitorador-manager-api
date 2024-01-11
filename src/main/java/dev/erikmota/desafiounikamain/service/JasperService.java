@@ -1,6 +1,7 @@
 package dev.erikmota.desafiounikamain.service;
 
 import dev.erikmota.desafiounikamain.models.Monitorador;
+import dev.erikmota.desafiounikamain.models.TipoPessoa;
 import jakarta.validation.constraints.Null;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -11,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +32,11 @@ public class JasperService {
         params.put("data", m.getData());
         params.put("email", m.getEmail());
         params.put("ativo", m.getAtivo());
-
-        String file = "/src/main/resources/reports/Relatorio.jasper";
+        String file;
+        if (lista.size() != 1)
+            file = "/src/main/resources/reports/RelatorioGeral.jasper";
+        else
+            file = "/src/main/resources/reports/RelatorioIndividual.jasper";
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(lista);
 
         try {
@@ -42,9 +47,13 @@ public class JasperService {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperFilePath, params, dataSource);
             byte[] report = JasperExportManager.exportReportToPdf(jasperPrint);
 
-            String data = String.valueOf(LocalDateTime.now()).replace(':', '-');
-
-            writeBytestoFileNio("src/main/resources/relatorios/Relatorio" + data + ".pdf", report);
+            LocalDateTime date = LocalDateTime.now();
+            DateTimeFormatter fData = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            DateTimeFormatter fHora = DateTimeFormatter.ofPattern("HH-mm-ss");
+            if (lista.size() != 1)
+                writeBytestoFileNio("src/main/resources/relatorios/RelatorioG" + date.format(fData) + "T" + date.format(fHora) + ".pdf", report);
+            else
+                writeBytestoFileNio("src/main/resources/relatorios/RelatorioI" + date.format(fData) + "T" + date.format(fHora) + ".pdf", report);
 
         } catch (Exception e) {
             System.out.println("Erro ao gerar relatorio");
@@ -56,7 +65,7 @@ public class JasperService {
             Path path = Paths.get(fileOutput);
             Files.write(path, bytes);
         } catch (IOException e) {
-            System.out.println("Erro ao escrever arquivo do relatorio");
+            e.printStackTrace();
         }
     }
 

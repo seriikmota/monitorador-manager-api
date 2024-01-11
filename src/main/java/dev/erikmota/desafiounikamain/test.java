@@ -1,22 +1,25 @@
 package dev.erikmota.desafiounikamain;
 
+import dev.erikmota.desafiounikamain.models.Monitorador;
+import dev.erikmota.desafiounikamain.models.TipoPessoa;
+
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class test {
 
-    static LocalDate data = LocalDate.of(1920,1,2);
-
-
     public static void main(String[] args) {
-        System.out.println(getData());
+        List<Monitorador> monitoradors = new ArrayList<>();
+        monitoradors.add(new Monitorador(TipoPessoa.FISICA, null, null, null,
+                "710.611.701-36", "Erik de Sousa Mota", "746", LocalDate.of(2020,2,2), "erik@gmail.com", true));
+        pegarTipo(monitoradors);
     }
 
-    private static LocalDate getData() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String date = data.format(formatter);
-        LocalDate dataFoda = LocalDate.parse(date, formatter);
-        System.out.println(dataFoda);
-        return dataFoda;
+    private static void pegarTipo(List<?> lista) {
+        if (lista.get(0).getClass() != Monitorador.class){
+            System.out.println("asdasd");
+        }
+        System.out.println(lista.get(0).getClass());
     }
 }
