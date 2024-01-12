@@ -2,12 +2,13 @@ package dev.erikmota.desafiounikamain.service;
 
 import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.models.TipoPessoa;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoMonitorador;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -20,8 +21,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+@Service
 public class PoiService {
-    public List<Monitorador> importar(MultipartFile file) {
+    @Autowired
+    private List<IValidacaoMonitorador> validacoes;
+    public List<Monitorador> importar(MultipartFile file, List<IValidacaoMonitorador> validacoes) {
+        this.validacoes = validacoes;
+        int linha = 0, coluna = 0;
         List<Monitorador> monitoradores = new ArrayList<>();
         try (XSSFWorkbook wb = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = wb.getSheetAt(0);
@@ -31,16 +37,18 @@ public class PoiService {
             }
             else {
                 while (rowIterator.hasNext()) {
+                    linha++;
                     Monitorador m = new Monitorador();
                     Row row = rowIterator.next();
                     if (row.getRowNum() == 0) row = rowIterator.next();
                     Iterator<Cell> cellIterator = row.cellIterator();
                     while (cellIterator.hasNext()) {
+                        coluna++;
                         Cell cell = cellIterator.next();
                         int index = cell.getColumnIndex();
                         switch (index) {
                             case 0: m.setTipo(TipoPessoa.valueOf(cell.getStringCellValue())); break;
-                            case 1: m.setCnpj(verifyNull(cell.getStringCellValue())); break;
+                            case 1: m.setCnpj(verifyNull(cell.toString())); break;
                             case 2: m.setRazao(verifyNull(cell.getStringCellValue())); break;
                             case 3: m.setInscricao(verifyNull(cell.getStringCellValue())); break;
                             case 4: m.setCpf(verifyNull(cell.getStringCellValue())); break;
@@ -51,11 +59,17 @@ public class PoiService {
                             case 9: m.setAtivo(cell.getStringCellValue().equals("Sim")); break;
                         }
                     }
+                    validacoes.forEach(v -> v.validar(m));
                     monitoradores.add(m);
+                    coluna = 0;
                 }
+                linha = 0;
             }
-        } catch (IOException e) {
-            System.out.println("Erro ao fazer a leitura do documento");
+        } catch (ValidacaoException e) {
+            System.out.println("Erro: " + e.getMessage() + " Na linha: " + linha + " coluna: " + coluna);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Erro na linha: " + linha + " coluna: " + coluna);
         }
         return monitoradores;
     }

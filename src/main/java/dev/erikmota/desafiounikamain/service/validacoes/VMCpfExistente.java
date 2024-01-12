@@ -5,22 +5,25 @@ import dev.erikmota.desafiounikamain.models.TipoPessoa;
 import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValidacaoCnpjExistente implements IValidacaoMonitorador {
+@Order(5)
+public class VMCpfExistente implements IValidacaoMonitorador {
 
     @Autowired
     private MonitoradorRepository repository;
 
     @Override
     public void validar(Monitorador m) {
-        if (m.getTipo() == TipoPessoa.JURIDICA) {
-            if (m.getCnpj() == null || m.getCnpj().isBlank())
-                throw new ValidacaoException("Pessoas juridicas devem inserir cnpj!");
+        if (m.getTipo() == TipoPessoa.FISICA) {
+            if (m.getCpf() == null || m.getCpf().isBlank())
+                throw new ValidacaoException("Pessoas físicas devem inserir cpf!");
 
-            else if (repository.existsByCnpj(m.getCnpj().replaceAll("[^0-9]", "")))
-                throw new ValidacaoException("Esse Cnpj já está cadastrado!");
+            else if (repository.existsByCpf(m.getCpf().replaceAll("[^0-9]", ""))) {
+                throw new ValidacaoException("Esse cpf já está cadastrado!");
+            }
         }
     }
 }

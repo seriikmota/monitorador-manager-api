@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class ValidacaoCepExistenteTest {
+class VECepExistenteTest {
     @InjectMocks
-    private ValidacaoCepExistente validador;
+    private VECepExistente validador;
     @Mock
     private EnderecoRepository repository;
     @Mock

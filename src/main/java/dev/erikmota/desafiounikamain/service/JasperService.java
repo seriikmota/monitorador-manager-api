@@ -3,8 +3,8 @@ package dev.erikmota.desafiounikamain.service;
 import dev.erikmota.desafiounikamain.models.Monitorador;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class JasperService {
     private Path ultimoPath;
     public Path gerarPdf(List<?> lista) {

@@ -4,14 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +19,8 @@ public class Monitorador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull(message = "O campo tipo é obrigatório")
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "O tipo da pessoa é obrigatório!")
     private TipoPessoa tipo;
     @CPF
     private String cpf;
@@ -34,12 +30,13 @@ public class Monitorador {
     private String razao;
     private String rg;
     private String inscricao;
-    @NotBlank(message = "O campo email é obrigatório")
+    @NotBlank(message = "O email é obrigatório!")
     private String email;
     @JsonFormat(pattern = "dd/MM/yyyy")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @NotNull(message = "A data é obrigatória!")
     private LocalDate data;
-    @NotNull(message = "O campo ativo é obrigatório")
+    @NotNull(message = "O campo ativo é obrigatório!")
     private Boolean ativo;
     @OneToMany(mappedBy = "monitorador")
     private List<Endereco> enderecos = new ArrayList<>();
@@ -50,8 +47,8 @@ public class Monitorador {
 
     public Monitorador(TipoPessoa tipo, String cnpj, String razao, String inscricao, String cpf, String nome, String rg, LocalDate data, String email, Boolean ativo) {
         this.tipo = tipo;
-        this.cpf = cpf;
-        this.cnpj = cnpj;
+        setCpf(cpf);
+        setCnpj(cnpj);
         this.nome = nome;
         this.razao = razao;
         this.email = email;
@@ -86,6 +83,8 @@ public class Monitorador {
     public String getCpf() {
         if (cpf == null)
             return null;
+        else if (cpf.length() != 11)
+            return null;
         return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9);
     }
 
@@ -97,6 +96,9 @@ public class Monitorador {
     public String getCnpj() {
         if (cnpj == null)
             return null;
+        else if (cpf.length() != 14)
+            return null;
+
         return cnpj.substring(0, 2) + "." + cnpj.substring(2, 5) + "." +
                 cnpj.substring(5, 8) + "/" + cnpj.substring(8, 12) + "-" + cnpj.substring(12);
     }
@@ -178,6 +180,7 @@ public class Monitorador {
     public Long getId() {
         return id;
     }
+
 
     @Override
     public String toString() {

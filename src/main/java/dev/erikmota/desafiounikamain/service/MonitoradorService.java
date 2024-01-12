@@ -17,7 +17,7 @@ import java.util.*;
 
 @Service
 public class MonitoradorService {
-    private final PoiService poiService = new PoiService();
+    private PoiService poiService = new PoiService();
     private final JasperService jasperService = new JasperService();
     @Autowired
     private MonitoradorRepository repository;
@@ -74,10 +74,11 @@ public class MonitoradorService {
         return poiService.gerarModelo();
     }
     public void importar(MultipartFile file) {
-        List<Monitorador> monitoradores = poiService.importar(file);
+        List<Monitorador> monitoradores = poiService.importar(file, validacoes);
         if (!monitoradores.isEmpty()){
-            monitoradores.forEach(m -> validacoes.forEach(v -> v.validar(m)));
-            repository.saveAll(monitoradores);
+            /*monitoradores.forEach(m -> validacoes.forEach(v -> v.validar(m)));
+            repository.saveAll(monitoradores);*/
+            monitoradores.forEach(System.out::println);
         }
 
     }

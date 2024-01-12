@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,23 +32,38 @@ public class MonitoradorController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<String> cadastrar(@RequestBody @Valid Monitorador m) {
+    public ResponseEntity<String> cadastrar(@RequestBody @Valid Monitorador m, BindingResult bindingResult) {
         try {
-            service.cadastrar(m);
-            return ResponseEntity.ok().build();
+            if (!bindingResult.hasErrors()) {
+                service.cadastrar(m);
+                return ResponseEntity.ok().body("Success: Cadastro realizado com sucesso!");
+            }
+            else {
+                StringBuilder errorMessage = new StringBuilder("Erro:");
+                bindingResult.getFieldErrors().forEach(error ->
+                        errorMessage.append(" ").append(error.getDefaultMessage())
+                );
+                return ResponseEntity.badRequest().body(errorMessage.toString());
+            }
         } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody @Valid Monitorador m) {
+    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody @Valid Monitorador m, BindingResult bindingResult) {
         try {
-            service.editar(id, m);
-            return ResponseEntity.ok().build();
+            if (!bindingResult.hasErrors()) {
+                service.editar(id, m);
+                return ResponseEntity.ok().body("Success: Cadastro modificado com sucesso!");
+            }
+            else {
+                String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+                return ResponseEntity.badRequest().body(errorMessage);
+            }
         } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         }
     }
 
@@ -56,9 +72,9 @@ public class MonitoradorController {
     public ResponseEntity<String> excluir(@PathVariable Long id) {
         try {
             service.excluir(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("Success: Cadastro excluido com sucesso!");
         } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         }
     }
 
@@ -101,8 +117,7 @@ public class MonitoradorController {
     @GetMapping("/filtrar")
     public ResponseEntity<List<Monitorador>> filtrar(@RequestParam(name = "text", required = false) String text,
                                                      @RequestParam(name = "ativo", required = false) Boolean ativo,
-                                                     @RequestParam(name = "tipoPessoa", required = false) TipoPessoa tipoPessoa
-    ) {
+                                                     @RequestParam(name = "tipoPessoa", required = false) TipoPessoa tipoPessoa){
         List<Monitorador> monitoradores = service.filtrar(text, ativo, tipoPessoa);
         return ResponseEntity.ok(monitoradores);
     }
@@ -122,9 +137,10 @@ public class MonitoradorController {
     public ResponseEntity<String> importar(@RequestParam("file") MultipartFile file) {
         try {
             service.importar(file);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("Success: Importação realizada com sucesso!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         }
     }
 

@@ -5,10 +5,8 @@ import dev.erikmota.desafiounikamain.repository.EnderecoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
-public class ValidacaoEnderecoPrincipal implements IValidacaoEndereco{
+public class VEPrincipal implements IValidacaoEndereco{
 
     @Autowired
     private EnderecoRepository repository;

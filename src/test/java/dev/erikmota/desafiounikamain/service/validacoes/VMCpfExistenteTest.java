@@ -9,25 +9,25 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ValidacaoCnpjExistenteTest {
+class VMCpfExistenteTest {
 
     @InjectMocks
-    private ValidacaoCnpjExistente validador;
+    private VMCpfExistente validador;
     @Mock
     private MonitoradorRepository repository;
     @Mock
     private Monitorador monitorador;
 
     @Test
-    public void testValidarComCnpjNulo() {
+    public void testValidarComCpfNulo() {
     }
 
     @Test
-    public void testValidarComCnpjExistente() {
+    public void testValidarComCpfExistente() {
     }
 
     @Test
-    public void testValidarComCnpjValido() {
+    public void testValidarComCpfValido() {
     }
 
 }
