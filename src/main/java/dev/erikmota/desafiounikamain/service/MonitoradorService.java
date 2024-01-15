@@ -36,7 +36,11 @@ public class MonitoradorService {
     }
 
     public List<Monitorador> listar(){
-        return repository.findAll();
+        try {
+            return repository.findAll();
+        } catch (Exception e) {
+            throw new ValidacaoException("Erro ao listar os monitoradores");
+        }
     }
 
     public void excluir(Long id){

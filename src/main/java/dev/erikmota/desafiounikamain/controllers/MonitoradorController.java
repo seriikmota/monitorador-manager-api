@@ -79,9 +79,13 @@ public class MonitoradorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Monitorador>> listar() {
-        List<Monitorador> monitoradores = service.listar();
-        return ResponseEntity.ok(monitoradores);
+    public ResponseEntity<?> listar() {
+        try {
+            List<Monitorador> monitoradores = service.listar();
+            return ResponseEntity.ok(monitoradores);
+        } catch (ValidacaoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/nome/{nome}")

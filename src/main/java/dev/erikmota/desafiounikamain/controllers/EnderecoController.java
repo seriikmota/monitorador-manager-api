@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -54,15 +55,29 @@ public class EnderecoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<?>> listar(){
-        List<?> enderecos = service.listar();
-        return ResponseEntity.ok(enderecos);
+    public ResponseEntity<?> listar(){
+        try {
+            List<?> enderecos = service.listar();
+            return ResponseEntity.ok(enderecos);
+        } catch (ValidacaoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<Endereco>> listarPorMonitorador(@PathVariable Long id){
-        List<Endereco> enderecos = service.listarPorMonitorador(id);
+    public ResponseEntity<List<?>> listarPorMonitorador(@PathVariable Long id){
+        List<?> enderecos = service.listarPorMonitorador(id);
         return ResponseEntity.ok(enderecos);
+    }
+
+    @GetMapping("/cep/{cep}")
+    public ResponseEntity<String> buscarCep(@PathVariable String cep){
+        try {
+            String json = service.buscarCep(cep);
+            return ResponseEntity.ok(json);
+        } catch (ValidacaoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 
