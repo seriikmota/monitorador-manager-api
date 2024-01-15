@@ -17,7 +17,7 @@ import java.util.*;
 
 @Service
 public class MonitoradorService {
-    private PoiService poiService = new PoiService();
+    private final PoiService poiService = new PoiService();
     private final JasperService jasperService = new JasperService();
     @Autowired
     private MonitoradorRepository repository;
@@ -26,6 +26,11 @@ public class MonitoradorService {
 
     public void cadastrar(Monitorador m){
         validacoes.forEach(v -> v.validar(m));
+        if (m.getTipo() == TipoPessoa.FISICA){
+            m.setCnpj(null); m.setRazao(null); m.setInscricao(null);
+        } else {
+            m.setCpf(null); m.setNome(null); m.setRg(null);
+        }
         repository.save(m);
     }
 
@@ -80,15 +85,15 @@ public class MonitoradorService {
     public void importar(MultipartFile file) {
         List<Monitorador> monitoradores = poiService.importar(file, validacoes);
         if (!monitoradores.isEmpty()){
-            /*monitoradores.forEach(m -> validacoes.forEach(v -> v.validar(m)));
-            repository.saveAll(monitoradores);*/
-            monitoradores.forEach(System.out::println);
+            monitoradores.forEach(this::cadastrar);
         }
 
     }
 
     public Path gerarRelatorioAll(){
-        return jasperService.gerarPdf(repository.findAll());
+        List<Monitorador> monitoradores = repository.findAll();
+        Collections.sort(monitoradores);
+        return jasperService.gerarPdf(monitoradores);
     }
 
     public Path gerarRelatorio(Long id){

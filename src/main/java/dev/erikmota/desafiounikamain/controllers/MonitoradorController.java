@@ -121,7 +121,7 @@ public class MonitoradorController {
     @GetMapping("/filtrar")
     public ResponseEntity<List<Monitorador>> filtrar(@RequestParam(name = "text", required = false) String text,
                                                      @RequestParam(name = "ativo", required = false) Boolean ativo,
-                                                     @RequestParam(name = "tipoPessoa", required = false) TipoPessoa tipoPessoa){
+                                                     @RequestParam(name = "tipo", required = false) TipoPessoa tipoPessoa){
         List<Monitorador> monitoradores = service.filtrar(text, ativo, tipoPessoa);
         return ResponseEntity.ok(monitoradores);
     }
@@ -143,7 +143,6 @@ public class MonitoradorController {
             service.importar(file);
             return ResponseEntity.ok().body("Success: Importação realizada com sucesso!");
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
         }
     }

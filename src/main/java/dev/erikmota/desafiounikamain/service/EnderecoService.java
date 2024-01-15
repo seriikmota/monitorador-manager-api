@@ -22,7 +22,6 @@ public class EnderecoService {
 
     public void cadastrar(Endereco e){
         validacoes.forEach(v -> v.validar(e));
-
         repository.save(e);
     }
 

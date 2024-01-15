@@ -10,11 +10,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
 @Table(name="monitorador")
-public class Monitorador {
+public class Monitorador implements Comparable<Monitorador> {
     //Atributos
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,7 +82,7 @@ public class Monitorador {
     }
 
     public String getCpf() {
-        if (cpf != null && cpf.length() == 11)
+        if (cpf != null)
             return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9);
         else
             return null;
@@ -90,10 +91,12 @@ public class Monitorador {
     public void setCpf(String cpf) {
         if (cpf != null)
             this.cpf = cpf.replaceAll("[^0-9]", "");
+        else
+            this.cpf = null;
     }
 
     public String getCnpj() {
-        if (cnpj != null && cnpj.length() == 14)
+        if (cnpj != null)
             return cnpj.substring(0, 2) + "." + cnpj.substring(2, 5) + "." +
                     cnpj.substring(5, 8) + "/" + cnpj.substring(8, 12) + "-" + cnpj.substring(12);
         else
@@ -103,6 +106,8 @@ public class Monitorador {
     public void setCnpj(String cnpj) {
         if (cnpj != null)
             this.cnpj = cnpj.replaceAll("[^0-9]", "");
+        else
+            this.cnpj = null;
     }
 
     public String getNome() {
@@ -193,5 +198,18 @@ public class Monitorador {
                 ", ativo=" + ativo +
                 ", enderecos=" + enderecos +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Monitorador m) {
+        int comparacaoTipo = this.tipo.compareTo(m.tipo);
+        if (comparacaoTipo != 0) {
+            return comparacaoTipo;
+        }
+        if (this.tipo == TipoPessoa.FISICA) {
+            return this.nome.compareTo(m.nome);
+        } else {
+            return this.razao.compareTo(m.razao);
+        }
     }
 }
