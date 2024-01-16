@@ -14,7 +14,7 @@ public class VECepExistente implements IValidacaoEndereco{
 
     @Override
     public void validar(Endereco e) {
-        if (repository.existsByCep(e.getCep()))
+        if (repository.existsByCep(e.getCep().replaceAll("[^0-9]", "")))
             throw new ValidacaoException("Esse Cep já está cadastrado!");
     }
 }

@@ -60,7 +60,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
 					<font size="31"/>
 				</textElement>
-				<text><![CDATA[Relatório]]></text>
+				<text><![CDATA[Relatório Monitorador Geral]]></text>
 			</staticText>
 			<line>
 				<reportElement x="0" y="0" width="555" height="1" uuid="4b815178-5106-471f-9b09-6ec33df785f3"/>

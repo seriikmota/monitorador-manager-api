@@ -8,6 +8,9 @@ import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoEndereco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -19,8 +22,10 @@ public class EnderecoService {
     @Autowired
     private List<IValidacaoEndereco> validacoes;
     private final ViaCepService viaCepService = new ViaCepService();
+    private final JasperService jasperService = new JasperService();
 
-    public void cadastrar(Endereco e){
+    public void cadastrar(Endereco e, Long idMonitorador){
+        e.setMonitorador(monitoradorRepository.getReferenceById(idMonitorador));
         validacoes.forEach(v -> v.validar(e));
         repository.save(e);
     }
@@ -43,21 +48,34 @@ public class EnderecoService {
 
     public void excluir(Long id){
         Endereco e = repository.getReferenceById(id);
-        if (repository.existsByCep(e.getCep()))
+        String cep = e.getCep().replaceAll("[^0-9]", "");
+        if (repository.existsByCep(cep))
             repository.delete(e);
         else
             throw new ValidacaoException("Este cep não está cadastrado");
     }
 
-    public List<Endereco> listarPorMonitorador(Long id) {
-        return repository.findByMonitoradorId(id);
-    }
-
-    public String buscarCep(String cep){
+    public Endereco buscarCep(String cep){
         cep = cep.replaceAll("[^0-9]", "");
         if (cep.length() == 8)
             return viaCepService.buscarCep(cep);
         else
             throw new ValidacaoException("Esse cep é inválido");
+    }
+
+    public List<Endereco> filtrar(String text, String estado, String cidade, Long monitorador) {
+        return repository.filtrarE(text, estado, cidade, monitorador);
+    }
+
+    public Path gerarRelatorioAll(){
+        List<Endereco> enderecos = repository.findAll();
+        Collections.sort(enderecos);
+        return jasperService.gerarPdfEndereco(enderecos);
+    }
+
+    public Path gerarRelatorio(Long id){
+        List<Endereco> enderecos = new ArrayList<>();
+        enderecos.add(repository.getReferenceById(id));
+        return jasperService.gerarPdfEndereco(enderecos);
     }
 }

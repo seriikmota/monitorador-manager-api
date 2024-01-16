@@ -17,12 +17,12 @@ import java.util.*;
 
 @Service
 public class MonitoradorService {
-    private final PoiService poiService = new PoiService();
-    private final JasperService jasperService = new JasperService();
     @Autowired
     private MonitoradorRepository repository;
     @Autowired
     private List<IValidacaoMonitorador> validacoes;
+    private final PoiService poiService = new PoiService();
+    private final JasperService jasperService = new JasperService();
 
     public void cadastrar(Monitorador m){
         validacoes.forEach(v -> v.validar(m));
@@ -55,26 +55,6 @@ public class MonitoradorService {
             throw new ValidacaoException("Esse monitorador não está cadastrado");
     }
 
-    public List<Monitorador> filtrarNome(String nome) {
-        return repository.findByNomeContains(nome);
-    }
-
-    public List<Monitorador> filtrarCpf(String cpf) {
-        return repository.findByCpfContains(cpf);
-    }
-
-    public List<Monitorador> filtrarCnpj(String cnpj) {
-        return repository.findByCnpjContains(cnpj);
-    }
-
-    public List<Monitorador> filtrarAtivo(Boolean ativo) {
-        return repository.findByAtivo(ativo);
-    }
-
-    public List<Monitorador> filtrarTipoPessoa(TipoPessoa tipo) {
-        return repository.findByTipo(tipo);
-    }
-
     public List<Monitorador> filtrar(String text, Boolean ativo, TipoPessoa tipoPessoa) {
         return repository.filtrar(text, ativo, tipoPessoa);
     }
@@ -93,13 +73,13 @@ public class MonitoradorService {
     public Path gerarRelatorioAll(){
         List<Monitorador> monitoradores = repository.findAll();
         Collections.sort(monitoradores);
-        return jasperService.gerarPdf(monitoradores);
+        return jasperService.gerarPdfMonitorador(monitoradores);
     }
 
     public Path gerarRelatorio(Long id){
         List<Monitorador> m = new ArrayList<>();
         m.add(repository.getReferenceById(id));
-        return jasperService.gerarPdf(m);
+        return jasperService.gerarPdfMonitorador(m);
     }
 
 }

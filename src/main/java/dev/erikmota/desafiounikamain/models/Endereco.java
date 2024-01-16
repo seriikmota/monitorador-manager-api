@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="endereco")
-public class Endereco{
+public class Endereco implements Comparable<Endereco> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,17 +21,17 @@ public class Endereco{
     private String telefone;
     private String cidade;
     private String estado;
-    private String principal;
+    private Boolean principal;
     @ManyToOne(optional = false)
     @JoinColumn(name = "monitorador_id")
-    @JsonBackReference
+    @JsonIgnore
     private Monitorador monitorador;
 
     public Endereco() {
 
     }
 
-    public Endereco(String endereco, String numero, String cep, String bairro, String telefone, String cidade, String estado, String principal, Monitorador monitorador) {
+    public Endereco(String cep, String endereco, String numero, String bairro, String cidade, String estado, String telefone, Boolean principal, Monitorador monitorador) {
         this.endereco = endereco;
         this.numero = numero;
         this.cep = cep;
@@ -76,11 +76,17 @@ public class Endereco{
     }
 
     public String getCep() {
-        return cep;
+        if (cep != null)
+            return cep.substring(0, 5) + "-" + cep.substring(5);
+        else
+            return null;
     }
 
     public void setCep(String cep) {
-        this.cep = cep;
+        if (cep != null)
+            this.cep = cep.replaceAll("[^0-9]", "");
+        else
+            this.cep = null;
     }
 
     public String getBairro() {
@@ -92,11 +98,20 @@ public class Endereco{
     }
 
     public String getTelefone() {
-        return telefone;
+        if (telefone != null)
+            return String.format("(%s) %s-%s",
+                    telefone.substring(0, 2),
+                    telefone.substring(2, 7),
+                    telefone.substring(7));
+        else
+            return null;
     }
 
     public void setTelefone(String telefone) {
-        this.telefone = telefone;
+        if (telefone != null)
+            this.telefone = telefone.replaceAll("[^0-9]", "");
+        else
+            this.telefone = null;
     }
 
     public String getCidade() {
@@ -115,11 +130,11 @@ public class Endereco{
         this.estado = estado;
     }
 
-    public String getPrincipal() {
+    public Boolean getPrincipal() {
         return principal;
     }
 
-    public void setPrincipal(String principal) {
+    public void setPrincipal(Boolean principal) {
         this.principal = principal;
     }
 
@@ -129,6 +144,43 @@ public class Endereco{
 
     public void setMonitorador(Monitorador monitorador) {
         this.monitorador = monitorador;
+    }
+
+    @Override
+    public int compareTo(Endereco e) {
+        int comparacaoEstado = this.estado.compareTo(e.estado);
+        if (comparacaoEstado != 0) {
+            return comparacaoEstado;
+        }
+        int comparacaoCidade = this.cidade.compareTo(e.cidade);
+        if (comparacaoCidade != 0) {
+            return comparacaoCidade;
+        }
+        return this.endereco.compareTo(e.endereco);
+    }
+
+    @Override
+    public String toString() {
+        return "Endereco{" +
+                "id=" + id +
+                ", endereco='" + endereco + '\'' +
+                ", numero='" + numero + '\'' +
+                ", cep='" + cep + '\'' +
+                ", bairro='" + bairro + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", cidade='" + cidade + '\'' +
+                ", estado='" + estado + '\'' +
+                ", principal=" + principal +
+                '}';
+    }
+
+    @JsonIgnore
+    @Transient
+    public String getMonitorador_id() {
+        if (monitorador.getTipo() == TipoPessoa.FISICA)
+            return monitorador.getNome();
+        else
+            return monitorador.getRazao();
     }
 
 }

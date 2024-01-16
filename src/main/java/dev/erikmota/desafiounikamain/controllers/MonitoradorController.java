@@ -88,45 +88,16 @@ public class MonitoradorController {
         }
     }
 
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity<List<Monitorador>> filtrarNome(@PathVariable String nome) {
-        List<Monitorador> monitoradores = service.filtrarNome(nome);
-        return ResponseEntity.ok(monitoradores);
-    }
-
-    @GetMapping("/cpf/{cpf}")
-    public ResponseEntity<List<Monitorador>> filtrarCpf(@PathVariable String cpf) {
-        List<Monitorador> monitoradores = service.filtrarCpf(cpf);
-        return ResponseEntity.ok(monitoradores);
-    }
-
-    @GetMapping("/cnpj/{cnpj}")
-    public ResponseEntity<List<Monitorador>> filtrarCnpj(@PathVariable String cnpj) {
-        List<Monitorador> monitoradores = service.filtrarCnpj(cnpj);
-        return ResponseEntity.ok(monitoradores);
-    }
-
-    @GetMapping("/ativo/{ativo}")
-    public ResponseEntity<List<Monitorador>> filtrarAtivo(@PathVariable Boolean ativo) {
-        List<Monitorador> monitoradores = service.filtrarAtivo(ativo);
-        return ResponseEntity.ok(monitoradores);
-    }
-
-    @GetMapping("/tipoPessoa/{tipoPessoa}")
-    public ResponseEntity<List<Monitorador>> filtrarTipoPessoa(@PathVariable TipoPessoa tipoPessoa) {
-        List<Monitorador> monitoradores = service.filtrarTipoPessoa(tipoPessoa);
-        return ResponseEntity.ok(monitoradores);
-    }
-
     @GetMapping("/filtrar")
     public ResponseEntity<List<Monitorador>> filtrar(@RequestParam(name = "text", required = false) String text,
                                                      @RequestParam(name = "ativo", required = false) Boolean ativo,
-                                                     @RequestParam(name = "tipo", required = false) TipoPessoa tipoPessoa){
+                                                     @RequestParam(name = "tipo", required = false) TipoPessoa tipoPessoa
+                                                     ){
         List<Monitorador> monitoradores = service.filtrar(text, ativo, tipoPessoa);
         return ResponseEntity.ok(monitoradores);
     }
 
-    @GetMapping("/modelo")
+    @GetMapping("/importar/modelo")
     public ResponseEntity<PathResource> modelo() {
         Path path = service.gerarModelo();
         PathResource resource = new PathResource(path);
