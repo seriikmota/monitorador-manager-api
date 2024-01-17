@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(5)
 public class VMCnpjExistente implements IValidacaoMonitorador {
 
     @Autowired
@@ -17,11 +18,9 @@ public class VMCnpjExistente implements IValidacaoMonitorador {
     @Override
     public void validar(Monitorador m) {
         if (m.getTipo() == TipoPessoa.JURIDICA) {
-            if (m.getCnpj() == null || m.getCnpj().isBlank())
-                throw new ValidacaoException("Pessoas juridicas devem inserir cnpj!");
-
-            else if (repository.existsByCnpj(m.getCnpj().replaceAll("[^0-9]", "")))
-                throw new ValidacaoException("Esse cnpj já está cadastrado!");
+            if (m.getCnpj() != null)
+                if (repository.existsByCnpj(m.getCnpj().replaceAll("[^0-9]", "")))
+                    throw new ValidacaoException("Esse cnpj já está cadastrado!");
         }
     }
 }

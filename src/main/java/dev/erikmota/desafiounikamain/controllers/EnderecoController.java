@@ -1,22 +1,21 @@
 package dev.erikmota.desafiounikamain.controllers;
 
 import dev.erikmota.desafiounikamain.models.Endereco;
-import dev.erikmota.desafiounikamain.models.Monitorador;
-import dev.erikmota.desafiounikamain.models.TipoPessoa;
 import dev.erikmota.desafiounikamain.service.EnderecoService;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.PathResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.Path;
-import java.util.Collections;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -26,25 +25,43 @@ public class EnderecoController {
     @Autowired
     private EnderecoService service;
 
-    @PostMapping("/{idMonitorador}")
+    @PostMapping()
     @Transactional
-    public ResponseEntity<?> cadastrar(@PathVariable Long idMonitorador, @RequestBody @Valid Endereco e){
+    public ResponseEntity<String> cadastrar(@RequestParam Long idMonitorador, @RequestBody @Valid Endereco e, BindingResult bindingResult) {
         try {
-            service.cadastrar(e, idMonitorador);
-            return ResponseEntity.ok().build();
-        } catch (ValidacaoException ex){
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            if (!bindingResult.hasErrors()) {
+                service.cadastrar(e, idMonitorador);
+                return ResponseEntity.ok().body("Success: Cadastro realizado com sucesso!");
+            }
+            else {
+                StringBuilder errorMessage = new StringBuilder("Erro:");
+                bindingResult.getFieldErrors().forEach(error ->
+                        errorMessage.append(" ").append(error.getDefaultMessage())
+                );
+                return ResponseEntity.badRequest().body(errorMessage.toString());
+            }
+        } catch (ValidacaoException ex) {
+            return ResponseEntity.badRequest().body("Erro: " + ex.getMessage());
         }
     }
 
-    @PutMapping("/{idMonitorador}/{idEndereco}")
+    @PutMapping("/{idEndereco}")
     @Transactional
-    public ResponseEntity<?> editar(@PathVariable Long idMonitorador, @PathVariable Long idEndereco,  @RequestBody @Valid Endereco e){
+    public ResponseEntity<?> editar(@PathVariable Long idEndereco,
+                                    @RequestParam Long idMonitorador,
+                                    @RequestBody @Valid Endereco e, BindingResult bindingResult){
         try {
-            service.editar(idMonitorador, idEndereco, e);
-            return ResponseEntity.ok().build();
+            if (!bindingResult.hasErrors()) {
+                service.editar(idEndereco, idMonitorador, e);
+                return ResponseEntity.ok().body("Success: Cadastro modificado com sucesso!");
+            }
+            else {
+                String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+                return ResponseEntity.badRequest().body(errorMessage);
+
+            }
         } catch (ValidacaoException | EntityNotFoundException ex){
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            return ResponseEntity.badRequest().body("Erro: " + ex.getMessage());
         }
     }
 
@@ -53,9 +70,9 @@ public class EnderecoController {
     public ResponseEntity<?> excluir(@PathVariable Long id){
         try {
             service.excluir(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("Success: Cadastro excluido com sucesso!");
         } catch (ValidacaoException | EntityNotFoundException ex){
-            return ResponseEntity.badRequest().body(ex.getMessage());
+            return ResponseEntity.badRequest().body("Erro: " + ex.getMessage());
         }
     }
 
@@ -64,16 +81,6 @@ public class EnderecoController {
         try {
             List<?> enderecos = service.listar();
             return ResponseEntity.ok(enderecos);
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/cep/{cep}")
-    public ResponseEntity<?> buscarCep(@PathVariable String cep){
-        try {
-            Endereco endereco = service.buscarCep(cep);
-            return ResponseEntity.ok(endereco);
         } catch (ValidacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -90,25 +97,33 @@ public class EnderecoController {
     }
 
     @GetMapping("/relatorio")
-    public ResponseEntity<PathResource> relatorio(@RequestParam(name = "id", required = false) Long id) {
+    public ResponseEntity<?> relatorio(@RequestParam(name = "id", required = false) Long id) {
         try {
-            Path path;
-            if (id != null)
-                path = service.gerarRelatorio(id);
-            else
-                path = service.gerarRelatorioAll();
+            String fileName = "RelatorioE" + (id != null ? "Individual" : "Geral");
 
-            PathResource resource = new PathResource(path);
+            byte[] relatorioBytes = (id != null) ? service.gerarRelatorio(id) : service.gerarRelatorioAll();
+
+            LocalDateTime date = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH-mm-ss");
+            fileName += date.format(formatter) + ".pdf";
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_PDF)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + path.getFileName() + "\"")
-                    .body(resource);
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .body(new ByteArrayResource(relatorioBytes));
 
         } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-
+    @GetMapping("/cep/{cep}")
+    public ResponseEntity<?> buscarCep(@PathVariable String cep){
+        try {
+            Endereco endereco = service.buscarCep(cep);
+            return ResponseEntity.ok(endereco);
+        } catch (ValidacaoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

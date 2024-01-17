@@ -9,14 +9,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(1)
 public class VMCpfCnpj implements IValidacaoMonitorador {
 
     @Override
     public void validar(Monitorador m) {
-        if (m.getCpf() == null && m.getCnpj() == null)
-            throw new ValidacaoException("É necessário inserir cpf e/ou cnpj!");
-
-        if (m.getTipo() != null){
+        if (m.getTipo() == null)
+            throw new ValidacaoException("O tipo da pessoa é obrigatório!");
+        else {
             if (m.getTipo() == TipoPessoa.FISICA) {
                 CPFValidator cpfValidator = new CPFValidator();
                 cpfValidator.initialize(null);

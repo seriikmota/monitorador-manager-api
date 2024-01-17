@@ -8,7 +8,6 @@ import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoEndereco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +29,7 @@ public class EnderecoService {
         repository.save(e);
     }
 
-    public void editar(Long idM, Long idE, Endereco e){
+    public void editar(Long idE, Long idM, Endereco e){
 
         Monitorador m = monitoradorRepository.getReferenceById(idM);
         Endereco novoEndereco = repository.getReferenceById(idE);
@@ -64,16 +63,16 @@ public class EnderecoService {
     }
 
     public List<Endereco> filtrar(String text, String estado, String cidade, Long monitorador) {
-        return repository.filtrarE(text, estado, cidade, monitorador);
+        return repository.filtrar(text, estado, cidade, monitorador);
     }
 
-    public Path gerarRelatorioAll(){
+    public byte[] gerarRelatorioAll(){
         List<Endereco> enderecos = repository.findAll();
         Collections.sort(enderecos);
         return jasperService.gerarPdfEndereco(enderecos);
     }
 
-    public Path gerarRelatorio(Long id){
+    public byte[] gerarRelatorio(Long id){
         List<Endereco> enderecos = new ArrayList<>();
         enderecos.add(repository.getReferenceById(id));
         return jasperService.gerarPdfEndereco(enderecos);

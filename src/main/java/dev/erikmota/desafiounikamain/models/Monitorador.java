@@ -3,6 +3,7 @@ package dev.erikmota.desafiounikamain.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CNPJ;
@@ -11,7 +12,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -21,7 +21,6 @@ public class Monitorador implements Comparable<Monitorador> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "O tipo da pessoa é obrigatório!")
     private TipoPessoa tipo;
     @CPF
     private String cpf;
@@ -31,13 +30,10 @@ public class Monitorador implements Comparable<Monitorador> {
     private String razao;
     private String rg;
     private String inscricao;
-    @NotBlank(message = "O email é obrigatório!")
     private String email;
     @JsonFormat(pattern = "dd/MM/yyyy")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @NotNull(message = "A data é obrigatória!")
     private LocalDate data;
-    @NotNull(message = "O campo ativo é obrigatório!")
     private Boolean ativo;
     @OneToMany(mappedBy = "monitorador")
     private List<Endereco> enderecos = new ArrayList<>();

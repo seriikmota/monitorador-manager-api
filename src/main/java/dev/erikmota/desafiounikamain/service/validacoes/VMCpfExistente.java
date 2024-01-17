@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(4)
 public class VMCpfExistente implements IValidacaoMonitorador {
 
     @Autowired
@@ -16,13 +17,9 @@ public class VMCpfExistente implements IValidacaoMonitorador {
 
     @Override
     public void validar(Monitorador m) {
-        if (m.getTipo() == TipoPessoa.FISICA) {
-            if (m.getCpf() == null || m.getCpf().isBlank())
-                throw new ValidacaoException("Pessoas físicas devem inserir cpf!");
-
-            else if (repository.existsByCpf(m.getCpf().replaceAll("[^0-9]", ""))) {
-                throw new ValidacaoException("Esse cpf já está cadastrado!");
-            }
-        }
+        if (m.getTipo() == TipoPessoa.FISICA)
+            if (m.getCpf() != null)
+                if (repository.existsByCpf(m.getCpf().replaceAll("[^0-9]", "")))
+                    throw new ValidacaoException("Esse cpf já está cadastrado!");
     }
 }

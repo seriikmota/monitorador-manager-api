@@ -4,15 +4,10 @@ import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.models.TipoPessoa;
 import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
 import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoMonitorador;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 
 @Service
@@ -59,7 +54,7 @@ public class MonitoradorService {
         return repository.filtrar(text, ativo, tipoPessoa);
     }
 
-    public Path gerarModelo(){
+    public byte[] gerarModelo(){
         return poiService.gerarModelo();
     }
     public void importar(MultipartFile file) {
@@ -70,16 +65,16 @@ public class MonitoradorService {
 
     }
 
-    public Path gerarRelatorioAll(){
+    public byte[] gerarRelatorioAll(){
         List<Monitorador> monitoradores = repository.findAll();
         Collections.sort(monitoradores);
         return jasperService.gerarPdfMonitorador(monitoradores);
     }
 
-    public Path gerarRelatorio(Long id){
-        List<Monitorador> m = new ArrayList<>();
-        m.add(repository.getReferenceById(id));
-        return jasperService.gerarPdfMonitorador(m);
+    public byte[] gerarRelatorio(Long id){
+        List<Monitorador> monitoradores = new ArrayList<>();
+        monitoradores.add(repository.getReferenceById(id));
+        return jasperService.gerarPdfMonitorador(monitoradores);
     }
 
 }

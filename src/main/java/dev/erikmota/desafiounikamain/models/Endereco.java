@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.*;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-
-import java.io.Serializable;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.core.annotation.Order;
 
 @Entity
 @Table(name="endereco")
@@ -13,14 +13,24 @@ public class Endereco implements Comparable<Endereco> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+    @Order(2)
+    @NotBlank(message = "O endereço é obrigatório!")
     private String endereco;
+    @Order()
+    @NotBlank(message = "O numero é obrigatório!")
     private String numero;
+    @Order(1)
+    @NotBlank(message = "O cep é obrigatório!")
     private String cep;
+    @NotBlank(message = "O bairro é obrigatório!")
     private String bairro;
+    @NotBlank(message = "O telefone é obrigatório!")
     private String telefone;
+    @NotBlank(message = "A cidade é obrigatória!")
     private String cidade;
+    @NotBlank(message = "O estado é obrigatório")
     private String estado;
+    @NotNull(message = "O campo principal é obrigatório!")
     private Boolean principal;
     @ManyToOne(optional = false)
     @JoinColumn(name = "monitorador_id")

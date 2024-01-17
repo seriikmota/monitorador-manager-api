@@ -4,24 +4,20 @@ import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.models.TipoPessoa;
 import dev.erikmota.desafiounikamain.service.MonitoradorService;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.PathResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/monitorador")
@@ -97,15 +93,27 @@ public class MonitoradorController {
         return ResponseEntity.ok(monitoradores);
     }
 
-    @GetMapping("/importar/modelo")
-    public ResponseEntity<PathResource> modelo() {
-        Path path = service.gerarModelo();
-        PathResource resource = new PathResource(path);
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + path.getFileName() + "\"")
-                .body(resource);
+    @GetMapping("/relatorio")
+    public ResponseEntity<?> relatorio(@RequestParam(name = "id", required = false) Long id) {
+        try {
+            String fileName = "RelatorioM" + (id != null ? "Individual" : "Geral");
+
+            byte[] relatorioBytes = (id != null) ? service.gerarRelatorio(id) : service.gerarRelatorioAll();
+
+            LocalDateTime date = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH-mm-ss");
+            fileName += date.format(formatter) + ".pdf";
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .body(new ByteArrayResource(relatorioBytes));
+
+        } catch (ValidacaoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
 
     @PostMapping("/importar")
     @Transactional
@@ -118,23 +126,18 @@ public class MonitoradorController {
         }
     }
 
-    @GetMapping("/relatorio")
-    public ResponseEntity<PathResource> relatorio(@RequestParam(name = "id", required = false) Long id) {
+    @GetMapping("/importar/modelo")
+    public ResponseEntity<?> modelo() {
         try {
-            Path path;
-            if (id != null)
-                path = service.gerarRelatorio(id);
-            else
-                path = service.gerarRelatorioAll();
-            PathResource resource = new PathResource(path);
-
+            byte[] modeloBytes = service.gerarModelo();
             return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + path.getFileName() + "\"")
-                    .body(resource);
-
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().build();
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"ModeloMonitorador.xlsx\"")
+                    .body(new ByteArrayResource(modeloBytes));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getCause());
         }
     }
 }
+
+

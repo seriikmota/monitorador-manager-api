@@ -7,11 +7,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(2)
 public class VMPessoaFisica implements IValidacaoMonitorador {
 
     @Override
     public void validar(Monitorador m) {
         if (m.getTipo() == TipoPessoa.FISICA) {
+            if (m.getCpf() == null || m.getCpf().isBlank())
+                throw new ValidacaoException("Pessoas físicas devem inserir cpf!");
             if (m.getNome() == null || m.getNome().isBlank())
                 throw new ValidacaoException("Pessoas físicas devem inserir o nome!");
             if (m.getRg() == null || m.getRg().isBlank())

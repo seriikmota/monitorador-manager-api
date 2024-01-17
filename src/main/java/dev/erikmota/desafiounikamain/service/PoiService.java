@@ -5,16 +5,10 @@ import dev.erikmota.desafiounikamain.models.TipoPessoa;
 import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoMonitorador;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.text.SimpleDateFormat;
+import java.io.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -112,15 +106,14 @@ public class PoiService {
         } catch (ValidacaoException e) {
             throw new ValidacaoException(e.getMessage() + " Linha: " + linha);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ValidacaoException("Linha: " + linha + " Coluna: " + coluna);
         }
         return monitoradores;
     }
 
-    public Path gerarModelo() {
+    public byte[] gerarModelo() {
         String[] colunas = {"Tipo Pessoa", "Cnpj", "Razao Social", "Inscrição Estadual", "Cpf", "Nome", "Rg", "Data", "Email", "Ativo"};
-        try (Workbook workbook = new XSSFWorkbook(); FileOutputStream fileOut = new FileOutputStream("src/main/resources/excel/ModeloMonitorador.xlsx")) {
+        try (Workbook workbook = new XSSFWorkbook()) {
             CreationHelper createHelper = workbook.getCreationHelper();
             Sheet sheet = workbook.createSheet("Monitorador");
             Font headerFont = workbook.createFont();
@@ -151,11 +144,14 @@ public class PoiService {
             for (int i = 0; i < 10; i++) {
                 sheet.autoSizeColumn(i);
             }
-            workbook.write(fileOut);
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            workbook.write(byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ValidacaoException("Erro ao gerar o modelo para importação de monitoradores!");
         }
-        return Path.of("src/main/resources/excel/ModeloMonitorador.xlsx");
     }
 
     private static LocalDate convertDate(Date data) {
