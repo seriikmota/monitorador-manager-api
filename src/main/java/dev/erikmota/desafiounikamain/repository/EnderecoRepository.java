@@ -15,6 +15,7 @@ import java.util.List;
 public interface EnderecoRepository extends JpaRepository<Endereco, Long>, JpaSpecificationExecutor<Endereco> {
 
     boolean existsByCep(String cep);
+    boolean existsByEndereco(String endereco);
     default List<Endereco> filtrar(String text, String estado, String cidade, Long monitorador_id) {
         return findAll((Specification<Endereco>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -22,9 +23,10 @@ public interface EnderecoRepository extends JpaRepository<Endereco, Long>, JpaSp
             if (!StringUtils.isEmptyOrWhitespaceOnly(text)){
                 Predicate textPredicate = criteriaBuilder.or(
                         criteriaBuilder.like(root.get("cep"), "%" + text + "%"),
-                        criteriaBuilder.like(root.get("estado"), "%" + text + "%"),
-                        criteriaBuilder.like(root.get("cidade"), "%" + text + "%"),
+                        criteriaBuilder.like(root.get("endereco"), "%" + text + "%"),
                         criteriaBuilder.like(root.get("bairro"), "%" + text + "%"),
+                        criteriaBuilder.like(root.get("cidade"), "%" + text + "%"),
+                        criteriaBuilder.like(root.get("estado"), "%" + text + "%"),
                         criteriaBuilder.like(root.get("telefone"), "%" + text + "%"));
 
                 predicates.add(textPredicate);

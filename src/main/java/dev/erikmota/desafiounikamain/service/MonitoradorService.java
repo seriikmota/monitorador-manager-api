@@ -44,8 +44,13 @@ public class MonitoradorService {
     }
 
     public void excluir(Long id){
-        if (repository.existsById(id))
-            repository.delete(repository.getReferenceById(id));
+        if (repository.existsById(id)){
+            Monitorador m = repository.getReferenceById(id);
+            if (m.getEnderecos().isEmpty())
+                repository.delete(m);
+            else
+                throw new ValidacaoException("Não é possivel excluir um monitorador com endereços cadastrados!");
+        }
         else
             throw new ValidacaoException("Esse monitorador não está cadastrado");
     }

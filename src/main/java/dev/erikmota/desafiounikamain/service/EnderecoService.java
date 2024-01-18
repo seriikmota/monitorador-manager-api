@@ -46,12 +46,10 @@ public class EnderecoService {
     }
 
     public void excluir(Long id){
-        Endereco e = repository.getReferenceById(id);
-        String cep = e.getCep().replaceAll("[^0-9]", "");
-        if (repository.existsByCep(cep))
-            repository.delete(e);
+        if (repository.existsById(id))
+            repository.delete(repository.getReferenceById(id));
         else
-            throw new ValidacaoException("Este cep não está cadastrado");
+            throw new ValidacaoException("Este endereço não está cadastrado");
     }
 
     public Endereco buscarCep(String cep){

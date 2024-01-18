@@ -4,9 +4,11 @@ import dev.erikmota.desafiounikamain.models.Endereco;
 import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(4)
 public class VEIdMonExistente implements IValidacaoEndereco {
     @Autowired
     private MonitoradorRepository repository;

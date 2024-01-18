@@ -18,83 +18,71 @@ import java.util.*;
 @Service
 public class PoiService {
 
+    public byte[] gerarModelo() {
+        String[] colunas = {"Tipo Pessoa", "CNPJ", "Razao Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Ativo"};
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Monitorador");
+            Row headerRow = sheet.createRow(0);
+
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            headerCellStyle.setFont(headerFont);
+
+            for (int i = 0; i < colunas.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(colunas[i]);
+                cell.setCellStyle(headerCellStyle);
+                sheet.setColumnWidth(i, 18 * 256);
+            }
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            workbook.write(byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            throw new ValidacaoException("Erro ao gerar o modelo para importação de monitoradores!");
+        }
+    }
+
     public List<Monitorador> importar(MultipartFile file, List<IValidacaoMonitorador> validacoes) {
         List<Monitorador> monitoradores = new ArrayList<>();
         int linha = 0, coluna = 0;
         try (XSSFWorkbook wb = new XSSFWorkbook(file.getInputStream())) {
-            Sheet sheet = wb.getSheetAt(0);
-            Iterator<Row> rowIterator = sheet.rowIterator();
+            Iterator<Row> rowIterator = wb.getSheetAt(0).rowIterator();
+
             if (!rowIterator.hasNext()) {
                 throw new ValidacaoException("O documento está vazio!");
             } else {
                 rowIterator.next();
+                linha++;
                 if (!rowIterator.hasNext())
                     throw new ValidacaoException("O documento está vazio!");
             }
-
             while (rowIterator.hasNext()) {
                 linha++;
                 Monitorador m = new Monitorador();
                 Row row = rowIterator.next();
-                Iterator<Cell> cellIterator = row.cellIterator();
-                while (cellIterator.hasNext()) {
-                    Cell cell = cellIterator.next();
+                for (Cell cell : row) {
                     int index = cell.getColumnIndex();
+                    coluna = index + 1;
 
                     switch (index) {
-                        case 0:
-                            coluna = 1;
-                            String tipoPessoa = cell.getStringCellValue().toUpperCase();
-                            try {
-                                m.setTipo(TipoPessoa.valueOf(tipoPessoa));
-                            } catch (Exception e) {
-                                throw new ValidacaoException("O tipo da pessoa está incorreto!");
-                            }
-                            break;
-                        case 1:
-                            coluna = 2;
-                            String cnpj = cell.toString().replaceAll("[^0-9]", "");
-                            if (cnpj.length() == 14) m.setCnpj(cnpj);
-                            else throw new ValidacaoException("Esse cnpj é inválido!");
-                            break;
-                        case 2:
-                            coluna = 3;
-                            m.setRazao(cell.getStringCellValue());
-                            break;
-                        case 3:
-                            coluna = 4;
-                            m.setInscricao(formatInscricao(cell.toString()));
-                            break;
-                        case 4:
-                            coluna = 5;
-                            String cpf = cell.toString().replaceAll("[^0-9]", "");
-                            if (cpf.length() == 11) m.setCpf(cpf);
-                            else throw new ValidacaoException("Esse cpf é inválido!");
-                            break;
-                        case 5:
-                            coluna = 6;
-                            m.setNome(cell.getStringCellValue());
-                            break;
-                        case 6:
-                            coluna = 7;
-                            m.setRg(cell.getStringCellValue());
-                            break;
-                        case 7:
-                            coluna = 8;
-                            try {
-                                m.setData(convertDate(cell.getDateCellValue()));
-                            } catch (IllegalStateException e){
-                                throw new ValidacaoException("A data está incorreta!");
-                            }
-                            break;
-                        case 8:
-                            coluna = 9;
-                            m.setEmail(cell.toString());
-                            break;
-                        case 9:
-                            coluna = 10;
-                            m.setAtivo(cell.getStringCellValue().equals("Sim"));
-                            break;
+                        case 0 -> m.setTipo(TipoPessoa.valueOf(cell.getStringCellValue().toUpperCase()));
+                        case 1 -> {
+                            String cnpj = obterValor(cell);
+                            m.setCnpj(cnpj != null && cnpj.replaceAll("[^0-9]", "").length() == 14 ? cnpj : null);
+                        }
+                        case 2 -> m.setRazao(cell.getStringCellValue());
+                        case 3 -> m.setInscricao(obterValor(cell));
+                        case 4 -> {
+                            String cpf = obterValor(cell);
+                            m.setCpf(cpf != null && cpf.replaceAll("[^0-9]", "").length() == 11 ? cpf : null);
+                        }
+                        case 5 -> m.setNome(cell.getStringCellValue());
+                        case 6 -> m.setRg(obterValor(cell));
+                        case 7 -> m.setData(converteData(cell.getDateCellValue()));
+                        case 8 -> m.setEmail(cell.getStringCellValue());
+                        case 9 -> m.setAtivo(cell.getStringCellValue().equalsIgnoreCase("Sim"));
                     }
                 }
                 validacoes.forEach(v -> v.validar(m));
@@ -102,7 +90,6 @@ public class PoiService {
                 coluna = 0;
                 verificaDuplicados(monitoradores);
             }
-            linha = 0;
         } catch (ValidacaoException e) {
             throw new ValidacaoException(e.getMessage() + " Linha: " + linha);
         } catch (Exception e) {
@@ -111,55 +98,11 @@ public class PoiService {
         return monitoradores;
     }
 
-    public byte[] gerarModelo() {
-        String[] colunas = {"Tipo Pessoa", "Cnpj", "Razao Social", "Inscrição Estadual", "Cpf", "Nome", "Rg", "Data", "Email", "Ativo"};
-        try (Workbook workbook = new XSSFWorkbook()) {
-            CreationHelper createHelper = workbook.getCreationHelper();
-            Sheet sheet = workbook.createSheet("Monitorador");
-            Font headerFont = workbook.createFont();
-            headerFont.setBold(true);
-            headerFont.setFontHeightInPoints((short) 14);
-            CellStyle headerCellStyle = workbook.createCellStyle();
-            headerCellStyle.setFont(headerFont);
-            Row headerRow = sheet.createRow(0);
-            for (int i = 0; i < colunas.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(colunas[i]);
-                cell.setCellStyle(headerCellStyle);
-            }
-            CellStyle dateCellStyle = workbook.createCellStyle();
-            dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
-
-            Row row = sheet.createRow(1);
-            row.createCell(0).setCellValue("FISICA ou JURIDICA");
-            row.createCell(1).setCellValue("XX.XXX.XXX/0001-XX");
-            row.createCell(2).setCellValue("Razao Social");
-            row.createCell(3).setCellValue("Inscrição estadual");
-            row.createCell(4).setCellValue("XXX.XXX.XXX-XX");
-            row.createCell(5).setCellValue("Nome");
-            row.createCell(6).setCellValue("Rg");
-            row.createCell(7).setCellValue("dd/MM/yyyy");
-            row.createCell(8).setCellValue("example@example.com");
-            row.createCell(9).setCellValue("Sim ou Não");
-            for (int i = 0; i < 10; i++) {
-                sheet.autoSizeColumn(i);
-            }
-
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            workbook.write(byteArrayOutputStream);
-            return byteArrayOutputStream.toByteArray();
-
-        } catch (IOException e) {
-            throw new ValidacaoException("Erro ao gerar o modelo para importação de monitoradores!");
-        }
-    }
-
-    private static LocalDate convertDate(Date data) {
+    private static LocalDate converteData(Date data) {
         if (data == null)
             throw new ValidacaoException("O campo data é obrigatório!");
-        Instant instant = data.toInstant();
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-        return localDateTime.toLocalDate();
+
+        return data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
     private static void verificaDuplicados(List<Monitorador> monitoradores){
@@ -173,12 +116,13 @@ public class PoiService {
         }
     }
 
-    private static String formatInscricao(String inscricao){
-        inscricao = inscricao.replace(".", "");
-        int index = inscricao.indexOf('E');
-        if (index != -1){
-            inscricao = inscricao.substring(0, index);
-        }
-        return inscricao;
+    private static String obterValor(Cell cell) {
+        return switch (cell.getCellType()) {
+            case STRING -> cell.getStringCellValue();
+            case NUMERIC -> String.format("%.0f", cell.getNumericCellValue());
+            default -> null;
+        };
     }
+
+
 }

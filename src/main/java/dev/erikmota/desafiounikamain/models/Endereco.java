@@ -13,24 +13,13 @@ public class Endereco implements Comparable<Endereco> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Order(2)
-    @NotBlank(message = "O endereço é obrigatório!")
     private String endereco;
-    @Order()
-    @NotBlank(message = "O numero é obrigatório!")
     private String numero;
-    @Order(1)
-    @NotBlank(message = "O cep é obrigatório!")
     private String cep;
-    @NotBlank(message = "O bairro é obrigatório!")
     private String bairro;
-    @NotBlank(message = "O telefone é obrigatório!")
     private String telefone;
-    @NotBlank(message = "A cidade é obrigatória!")
     private String cidade;
-    @NotBlank(message = "O estado é obrigatório")
     private String estado;
-    @NotNull(message = "O campo principal é obrigatório!")
     private Boolean principal;
     @ManyToOne(optional = false)
     @JoinColumn(name = "monitorador_id")
