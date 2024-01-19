@@ -12,45 +12,47 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class VMCnpjExistenteTest {
+class VMCpfExistenteTest {
     @InjectMocks
-    private VMCnpjExistente validacao;
+    private VMCpfExistente validacao;
     @Mock
     private MonitoradorRepository repository;
     @Mock
     private Monitorador m;
 
     @Test
-    @DisplayName("Retornar sucesso por pessoa fisica")
+    @DisplayName("Retornar sucesso por pessoa juridica")
     void validarCase1(){
-        given(m.getTipo()).willReturn(TipoPessoa.FISICA);
+        given(m.getTipo()).willReturn(TipoPessoa.JURIDICA);
 
         assertDoesNotThrow(() -> validacao.validar(m));
     }
 
     @Test
-    @DisplayName("Retornar sucesso por pessoa juridica, com cnpj não cadastrado")
+    @DisplayName("Retornar sucesso por pessoa fisica, com cpf não cadastrado")
     void validarCase2(){
 
-        given(m.getTipo()).willReturn(TipoPessoa.JURIDICA);
-        given(m.getCnpj()).willReturn("");
-        given(repository.existsByCnpj(m.getCnpj())).willReturn(false);
+        given(m.getTipo()).willReturn(TipoPessoa.FISICA);
+        given(m.getCpf()).willReturn("");
+        given(repository.existsByCpf(m.getCpf())).willReturn(false);
 
         assertDoesNotThrow(() -> validacao.validar(m));
     }
 
     @Test
-    @DisplayName("Retornar exception por pessoa juridica, com cnpj cadastrado")
+    @DisplayName("Retornar exception por pessoa fisica, com cpf cadastrado")
     void validarCase3(){
 
-        given(m.getTipo()).willReturn(TipoPessoa.JURIDICA);
-        given(m.getCnpj()).willReturn("");
-        given(repository.existsByCnpj(m.getCnpj())).willReturn(true);
+        given(m.getTipo()).willReturn(TipoPessoa.FISICA);
+        given(m.getCpf()).willReturn("");
+        given(repository.existsByCpf(m.getCpf())).willReturn(true);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Esse cnpj já está cadastrado!", exception.getMessage());
+        assertEquals("Esse cpf já está cadastrado!", exception.getMessage());
     }
+
 }

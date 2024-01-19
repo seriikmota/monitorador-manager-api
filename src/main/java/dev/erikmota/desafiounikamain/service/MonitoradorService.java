@@ -30,7 +30,6 @@ public class MonitoradorService {
     }
 
     public void editar(Long id, Monitorador m){
-
         Monitorador novoMonitorador = repository.getReferenceById(id);
         novoMonitorador.editar(m);
     }
@@ -52,7 +51,7 @@ public class MonitoradorService {
                 throw new ValidacaoException("Não é possivel excluir um monitorador com endereços cadastrados!");
         }
         else
-            throw new ValidacaoException("Esse monitorador não está cadastrado");
+            throw new ValidacaoException("Esse monitorador não está cadastrado!");
     }
 
     public List<Monitorador> filtrar(String text, Boolean ativo, TipoPessoa tipoPessoa) {

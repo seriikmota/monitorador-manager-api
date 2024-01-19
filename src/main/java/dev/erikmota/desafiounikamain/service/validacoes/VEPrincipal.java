@@ -19,6 +19,5 @@ public class VEPrincipal implements IValidacaoEndereco {
                 throw new ValidacaoException("Esse monitorador já possui endereço principal!");
             }
         }
-
     }
 }
