@@ -1,5 +1,6 @@
 package dev.erikmota.desafiounikamain.service;
 
+import dev.erikmota.desafiounikamain.models.Endereco;
 import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.models.TipoPessoa;
 import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoMonitorador;
@@ -9,11 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class PoiService {
@@ -41,6 +41,92 @@ public class PoiService {
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
             throw new ValidacaoException("Erro ao gerar o modelo para importação de monitoradores!");
+        }
+    }
+
+    public byte[] exportarMonitorador(List<Monitorador> monitoradorList) {
+        String[] colunas = {"Código", "Tipo Pessoa", "CNPJ", "Razao Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Ativo", "Endereços"};
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Monitorador");
+            Row headerRow = sheet.createRow(0);
+
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            headerCellStyle.setFont(headerFont);
+
+            for (int i = 0; i < colunas.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(colunas[i]);
+                cell.setCellStyle(headerCellStyle);
+                sheet.setColumnWidth(i, 18 * 256);
+            }
+
+            int linha = 1;
+
+            for (Monitorador m : monitoradorList) {
+                Row row = sheet.createRow(linha++);
+                AtomicInteger coluna = new AtomicInteger(11);
+                row.createCell(0).setCellValue(m.getId());
+                row.createCell(1).setCellValue(String.valueOf(m.getTipo()));
+                row.createCell(2).setCellValue(m.getCnpj());
+                row.createCell(3).setCellValue(m.getRazao());
+                row.createCell(4).setCellValue(m.getInscricao());
+                row.createCell(5).setCellValue(m.getCpf());
+                row.createCell(6).setCellValue(m.getNome());
+                row.createCell(7).setCellValue(m.getRg());
+                row.createCell(8).setCellValue(m.getData().toString());
+                row.createCell(9).setCellValue(m.getEmail());
+                row.createCell(10).setCellValue(m.getAtivo() ? "Sim" : "Não");
+            }
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            workbook.write(byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            throw new ValidacaoException("Erro ao gerar o relatorio de monitoradores!");
+        }
+    }
+
+    public byte[] exportarEndereco(List<Endereco> enderecoList) {
+        String[] colunas = {"Código", "Cep", "Endereço", "Número", "Bairro", "Cidade", "Estado", "Telefone", "Monitorador", "Principal"};
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Endereço");
+            Row headerRow = sheet.createRow(0);
+
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            headerCellStyle.setFont(headerFont);
+
+            for (int i = 0; i < colunas.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(colunas[i]);
+                cell.setCellStyle(headerCellStyle);
+                sheet.setColumnWidth(i, 18 * 256);
+            }
+
+            int linha = 1;
+
+            for (Endereco e : enderecoList) {
+                Row row = sheet.createRow(linha++);
+                row.createCell(0).setCellValue(e.getId());
+                row.createCell(1).setCellValue(e.getCep());
+                row.createCell(2).setCellValue(e.getEndereco());
+                row.createCell(3).setCellValue(e.getNumero());
+                row.createCell(4).setCellValue(e.getBairro());
+                row.createCell(5).setCellValue(e.getCidade());
+                row.createCell(6).setCellValue(e.getEstado());
+                row.createCell(7).setCellValue(e.getTelefone());
+                row.createCell(8).setCellValue(e.getMonitorador().getNomeOrRazao());
+                row.createCell(9).setCellValue(e.getPrincipal() ? "Sim" : "Não");
+            }
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            workbook.write(byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            throw new ValidacaoException("Erro ao gerar o relatorio de endereços!");
         }
     }
 
@@ -105,9 +191,9 @@ public class PoiService {
         return data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
-    private static void verificaDuplicados(List<Monitorador> monitoradores){
-        for (int i = monitoradores.size()-1; i >= 1; i--){
-            for (int j = i-1; j >= 0; j--){
+    private static void verificaDuplicados(List<Monitorador> monitoradores) {
+        for (int i = monitoradores.size() - 1; i >= 1; i--) {
+            for (int j = i - 1; j >= 0; j--) {
                 if (monitoradores.get(i).getCpf() != null && Objects.equals(monitoradores.get(i).getCpf(), monitoradores.get(j).getCpf()))
                     throw new ValidacaoException("Esse cpf já foi digitado!");
                 if (monitoradores.get(i).getCnpj() != null && Objects.equals(monitoradores.get(i).getCnpj(), monitoradores.get(j).getCnpj()))

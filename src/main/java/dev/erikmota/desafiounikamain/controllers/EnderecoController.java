@@ -96,19 +96,46 @@ public class EnderecoController {
         return ResponseEntity.ok(enderecos);
     }
 
-    @GetMapping("/relatorio")
-    public ResponseEntity<?> relatorio(@RequestParam(name = "id", required = false) Long id) {
+    @GetMapping("/relatorioPdf")
+    public ResponseEntity<?> relatorioPdf(@RequestParam(name = "id", required = false) Long id,
+                                          @RequestParam(name = "text", required = false) String text,
+                                          @RequestParam(name = "estado", required = false) String estado,
+                                          @RequestParam(name = "cidade", required = false) String cidade,
+                                          @RequestParam(name = "monitorador", required = false) Long monitorador) {
         try {
-            String fileName = "RelatorioE" + (id != null ? "Individual" : "Geral");
+            byte[] relatorioBytes = service.gerarRelatorioPdf(id, text, estado, cidade, monitorador);
 
-            byte[] relatorioBytes = (id != null) ? service.gerarRelatorio(id) : service.gerarRelatorioAll();
-
+            String fileName = "RelatorioE";
             LocalDateTime date = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH-mm-ss");
             fileName += date.format(formatter) + ".pdf";
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .body(new ByteArrayResource(relatorioBytes));
+
+        } catch (ValidacaoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/relatorioExcel")
+    public ResponseEntity<?> relatorioExcel(@RequestParam(name = "id", required = false) Long id,
+                                            @RequestParam(name = "text", required = false) String text,
+                                            @RequestParam(name = "estado", required = false) String estado,
+                                            @RequestParam(name = "cidade", required = false) String cidade,
+                                            @RequestParam(name = "monitorador", required = false) Long monitorador) {
+        try {
+            byte[] relatorioBytes = service.gerarRelatorioExcel(id, text, estado, cidade, monitorador);
+
+            String fileName = "RelatorioE";
+            LocalDateTime date = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH-mm-ss");
+            fileName += date.format(formatter) + ".xlsx";
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                     .body(new ByteArrayResource(relatorioBytes));
 

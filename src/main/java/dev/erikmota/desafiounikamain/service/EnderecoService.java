@@ -5,6 +5,7 @@ import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.repository.EnderecoRepository;
 import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
 import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoEndereco;
+import dev.erikmota.desafiounikamain.service.validacoes.VEPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class EnderecoService {
     private List<IValidacaoEndereco> validacoes;
     private final ViaCepService viaCepService = new ViaCepService();
     private final JasperService jasperService = new JasperService();
+    private final PoiService poiService = new PoiService();
 
     public void cadastrar(Endereco e, Long idMonitorador){
         e.setMonitorador(monitoradorRepository.getReferenceById(idMonitorador));
@@ -34,6 +36,10 @@ public class EnderecoService {
         Monitorador m = monitoradorRepository.getReferenceById(idM);
         Endereco novoEndereco = repository.getReferenceById(idE);
         e.setMonitorador(m);
+
+        VEPrincipal validar = new VEPrincipal();
+        validar.validar(e);
+
         novoEndereco.editar(e);
     }
 
@@ -64,15 +70,23 @@ public class EnderecoService {
         return repository.filtrar(text, estado, cidade, monitorador);
     }
 
-    public byte[] gerarRelatorioAll(){
-        List<Endereco> enderecos = repository.findAll();
+    public byte[] gerarRelatorioPdf(Long id, String text, String estado, String cidade, Long monitorador){
+        List<Endereco> enderecos = new ArrayList<>();
+        if (id == null)
+            enderecos = repository.filtrar(text, estado, cidade, monitorador);
+        else
+            enderecos.add(repository.getReferenceById(id));
         Collections.sort(enderecos);
         return jasperService.gerarPdfEndereco(enderecos);
     }
 
-    public byte[] gerarRelatorio(Long id){
+    public byte[] gerarRelatorioExcel(Long id, String text, String estado, String cidade, Long monitorador){
         List<Endereco> enderecos = new ArrayList<>();
-        enderecos.add(repository.getReferenceById(id));
-        return jasperService.gerarPdfEndereco(enderecos);
+        if (id == null)
+            enderecos = repository.filtrar(text, estado, cidade, monitorador);
+        else
+            enderecos.add(repository.getReferenceById(id));
+        Collections.sort(enderecos);
+        return poiService.exportarEndereco(enderecos);
     }
 }

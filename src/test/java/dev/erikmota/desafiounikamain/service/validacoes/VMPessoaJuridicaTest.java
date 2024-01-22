@@ -50,7 +50,7 @@ class VMPessoaJuridicaTest {
         VMPessoaJuridica validacao = new VMPessoaJuridica();
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Pessoas juridicas devem inserir cnpj!", exception.getMessage());;
+        assertEquals("Pessoas juridicas devem inserir cnpj!", exception.getMessage());
     }
 
     @Test

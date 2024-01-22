@@ -3,9 +3,6 @@ package dev.erikmota.desafiounikamain.models;
 import com.fasterxml.jackson.annotation.*;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.core.annotation.Order;
 
 @Entity
 @Table(name="endereco")
@@ -147,6 +144,10 @@ public class Endereco implements Comparable<Endereco> {
 
     @Override
     public int compareTo(Endereco e) {
+        int comparacaoMonitorador = this.monitorador.getNomeOrRazao().compareTo(e.monitorador.getNomeOrRazao());
+        if (comparacaoMonitorador != 0) {
+            return comparacaoMonitorador;
+        }
         int comparacaoEstado = this.estado.compareTo(e.estado);
         if (comparacaoEstado != 0) {
             return comparacaoEstado;

@@ -1,6 +1,7 @@
 package dev.erikmota.desafiounikamain.service.validacoes;
 
 import dev.erikmota.desafiounikamain.models.Endereco;
+import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.repository.EnderecoRepository;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;

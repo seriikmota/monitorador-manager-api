@@ -4,6 +4,7 @@ import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.models.TipoPessoa;
 import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
 import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoMonitorador;
+import dev.erikmota.desafiounikamain.service.validacoes.VEPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,16 +70,24 @@ public class MonitoradorService {
 
     }
 
-    public byte[] gerarRelatorioAll(){
-        List<Monitorador> monitoradores = repository.findAll();
+    public byte[] gerarRelatorioPdf(Long id, String text, Boolean ativo, TipoPessoa tipo){
+        List<Monitorador> monitoradores = new ArrayList<>();
+        if (id == null)
+            monitoradores = repository.filtrar(text, ativo, tipo);
+        else
+            monitoradores.add(repository.getReferenceById(id));
         Collections.sort(monitoradores);
         return jasperService.gerarPdfMonitorador(monitoradores);
     }
 
-    public byte[] gerarRelatorio(Long id){
+    public byte[] gerarRelatorioExcel(Long id, String text, Boolean ativo, TipoPessoa tipo){
         List<Monitorador> monitoradores = new ArrayList<>();
-        monitoradores.add(repository.getReferenceById(id));
-        return jasperService.gerarPdfMonitorador(monitoradores);
+        if (id == null)
+            monitoradores = repository.filtrar(text, ativo, tipo);
+        else
+            monitoradores.add(repository.getReferenceById(id));
+        Collections.sort(monitoradores);
+        return poiService.exportarMonitorador(monitoradores);
     }
 
 }

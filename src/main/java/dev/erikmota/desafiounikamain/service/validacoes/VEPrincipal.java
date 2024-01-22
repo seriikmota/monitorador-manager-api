@@ -1,7 +1,6 @@
 package dev.erikmota.desafiounikamain.service.validacoes;
 
 import dev.erikmota.desafiounikamain.models.Endereco;
-import dev.erikmota.desafiounikamain.models.Monitorador;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

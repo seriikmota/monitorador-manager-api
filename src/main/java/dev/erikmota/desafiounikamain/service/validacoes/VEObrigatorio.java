@@ -2,11 +2,9 @@ package dev.erikmota.desafiounikamain.service.validacoes;
 
 import dev.erikmota.desafiounikamain.models.Endereco;
 import dev.erikmota.desafiounikamain.service.ValidacaoException;
-import org.apache.poi.hssf.record.DVALRecord;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.Base64;
 
 @Component
 @Order(1)

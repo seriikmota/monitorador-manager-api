@@ -64,7 +64,6 @@ public class Test {
         } catch (Exception e) {
             throw new ValidacaoException("Linha: " + linha + " Coluna: " + coluna);
         }
-        monitoradores.forEach(System.out::println);
     }
 
     private static LocalDate converteData(Date data) {
