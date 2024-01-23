@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(4)
-public class VEIdMonExistente implements IVCadEndereco, IVEditarEndereco {
+public class VEIdMonExistente implements IVEndereco {
     @Autowired
     private MonitoradorRepository repository;
 

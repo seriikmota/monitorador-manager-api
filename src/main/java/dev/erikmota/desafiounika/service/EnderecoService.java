@@ -4,9 +4,7 @@ import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.repository.EnderecoRepository;
 import dev.erikmota.desafiounika.repository.MonitoradorRepository;
-import dev.erikmota.desafiounika.service.validacoes.IVCadEndereco;
-import dev.erikmota.desafiounika.service.validacoes.IVEditarEndereco;
-import dev.erikmota.desafiounika.service.validacoes.VEPrincipal;
+import dev.erikmota.desafiounika.service.validacoes.IVEndereco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +19,14 @@ public class EnderecoService {
     @Autowired
     private MonitoradorRepository monitoradorRepository;
     @Autowired
-    private List<IVCadEndereco> validacoesCad;
-    @Autowired
-    private List<IVEditarEndereco> validacoesEdit;
+    private List<IVEndereco> validacoes;
     private final ViaCepService viaCepService = new ViaCepService();
     private final JasperService jasperService = new JasperService();
     private final PoiService poiService = new PoiService();
 
     public void cadastrar(Endereco e, Long idMonitorador){
         e.setMonitorador(monitoradorRepository.getReferenceById(idMonitorador));
-        validacoesCad.forEach(v -> v.validar(e));
+        validacoes.forEach(v -> v.validar(e));
         repository.save(e);
     }
 
@@ -39,7 +35,7 @@ public class EnderecoService {
         Monitorador m = monitoradorRepository.getReferenceById(idM);
         Endereco novoEndereco = repository.getReferenceById(idE);
         e.setMonitorador(m);
-        validacoesEdit.forEach(v -> v.validar(e));
+        validacoes.forEach(v -> v.validar(e));
 
         novoEndereco.editar(e);
     }

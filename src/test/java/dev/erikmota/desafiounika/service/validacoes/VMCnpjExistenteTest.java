@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
@@ -37,6 +39,7 @@ class VMCnpjExistenteTest {
 
         given(m.getTipo()).willReturn(TipoPessoa.JURIDICA);
         given(m.getCnpj()).willReturn("");
+
         given(repository.existsByCnpj(m.getCnpj())).willReturn(false);
 
         assertDoesNotThrow(() -> validacao.validar(m));
@@ -49,6 +52,8 @@ class VMCnpjExistenteTest {
         given(m.getTipo()).willReturn(TipoPessoa.JURIDICA);
         given(m.getCnpj()).willReturn("");
         given(repository.existsByCnpj(m.getCnpj())).willReturn(true);
+
+        given(repository.findByCnpj("")).willReturn(new Monitorador());
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
         assertEquals("Esse CNPJ já está cadastrado!", exception.getMessage());

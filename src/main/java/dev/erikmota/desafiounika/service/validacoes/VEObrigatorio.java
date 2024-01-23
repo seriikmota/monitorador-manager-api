@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(1)
-public class VEObrigatorio implements IVCadEndereco, IVEditarEndereco {
+public class VEObrigatorio implements IVEndereco {
     @Override
     public void validar(Endereco e) {
         if (e.getCep() == null)

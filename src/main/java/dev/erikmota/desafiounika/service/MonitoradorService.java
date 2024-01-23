@@ -3,8 +3,7 @@ package dev.erikmota.desafiounika.service;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
 import dev.erikmota.desafiounika.repository.MonitoradorRepository;
-import dev.erikmota.desafiounika.service.validacoes.IVCadMonitorador;
-import dev.erikmota.desafiounika.service.validacoes.IVEditarMonitorador;
+import dev.erikmota.desafiounika.service.validacoes.IVMonitorador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,20 +15,18 @@ public class MonitoradorService {
     @Autowired
     private MonitoradorRepository repository;
     @Autowired
-    private List<IVCadMonitorador> validacoesCad;
-    @Autowired
-    private List<IVEditarMonitorador> validacoesEdit;
+    private List<IVMonitorador> validacoes;
     private final PoiService poiService = new PoiService();
     private final JasperService jasperService = new JasperService();
 
     public void cadastrar(Monitorador m){
-        validacoesCad.forEach(v -> v.validar(m));
+        validacoes.forEach(v -> v.validar(m));
         repository.save(m);
     }
 
     public void editar(Long id, Monitorador m){
         Monitorador novoMonitorador = repository.getReferenceById(id);
-        validacoesEdit.forEach(v -> v.validar(m));
+        validacoes.forEach(v -> v.validar(m));
         novoMonitorador.editar(m);
     }
 
@@ -61,7 +58,7 @@ public class MonitoradorService {
         return poiService.gerarModelo();
     }
     public void importar(MultipartFile file) {
-        List<Monitorador> monitoradores = poiService.importar(file, validacoesCad);
+        List<Monitorador> monitoradores = poiService.importar(file, validacoes);
         if (!monitoradores.isEmpty()){
             monitoradores.forEach(this::cadastrar);
         }

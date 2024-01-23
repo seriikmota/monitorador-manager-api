@@ -40,6 +40,8 @@ class VEEnderecoTest {
         given(e.getEndereco()).willReturn("");
         given(repository.existsByEndereco(anyString())).willReturn(false);
 
+        given(repository.findByCep("")).willReturn(new Endereco());
+
         assertDoesNotThrow(() -> validacao.validar(e));
     }
 
@@ -50,6 +52,8 @@ class VEEnderecoTest {
         given(repository.existsByCep(e.getCep())).willReturn(true);
         given(e.getEndereco()).willReturn("");
         given(repository.existsByEndereco(e.getEndereco())).willReturn(true);
+
+        given(repository.findByCep("")).willReturn(new Endereco());
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
         assertEquals("O campo Endereço já existe, especifique mais!", exception.getMessage());

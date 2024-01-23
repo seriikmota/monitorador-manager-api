@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(2)
-public class VMPessoaFisica implements IVCadMonitorador, IVEditarMonitorador {
+public class VMPessoaFisica implements IVMonitorador {
 
     @Override
     public void validar(Monitorador m) {

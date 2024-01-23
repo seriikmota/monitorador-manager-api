@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Component
 @Order(2)
-public class VEEndereco implements IVCadEndereco, IVEditarEndereco {
+public class VEEndereco implements IVEndereco {
     @Autowired
     private EnderecoRepository repository;
 

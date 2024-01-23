@@ -14,8 +14,8 @@ import java.util.List;
 public interface MonitoradorRepository extends JpaRepository<Monitorador, Long>, JpaSpecificationExecutor<Monitorador> {
     boolean existsByCpf(String cpf);
     boolean existsByCnpj(String cnpj);
-    boolean existsByNome(String nome);
-    boolean existsByRazao(String razao);
+    Monitorador findByCpf(String cpf);
+    Monitorador findByCnpj(String cnpj);
 
     default List<Monitorador> filtrar(String text, Boolean ativo, TipoPessoa tipo) {
         return findAll((Specification<Monitorador>) (root, query, criteriaBuilder) -> {

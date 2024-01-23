@@ -3,7 +3,7 @@ package dev.erikmota.desafiounika.service;
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
-import dev.erikmota.desafiounika.service.validacoes.IVCadMonitorador;
+import dev.erikmota.desafiounika.service.validacoes.IVMonitorador;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -130,7 +130,7 @@ public class PoiService {
         }
     }
 
-    public List<Monitorador> importar(MultipartFile file, List<IVCadMonitorador> validacoes) {
+    public List<Monitorador> importar(MultipartFile file, List<IVMonitorador> validacoes) {
         List<Monitorador> monitoradores = new ArrayList<>();
         int linha = 0, coluna = 0;
         try (XSSFWorkbook wb = new XSSFWorkbook(file.getInputStream())) {

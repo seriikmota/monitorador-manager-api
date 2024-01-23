@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(1)
-public class VMCpfCnpj implements IVCadMonitorador, IVEditarMonitorador {
+public class VMCpfCnpj implements IVMonitorador {
 
     @Override
     public void validar(Monitorador m) {

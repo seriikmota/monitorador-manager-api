@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 @Order(5)
-public class VMCnpjExistente implements IVCadMonitorador {
+public class VMCnpjExistente implements IVMonitorador {
 
     @Autowired
     private MonitoradorRepository repository;
@@ -18,9 +20,12 @@ public class VMCnpjExistente implements IVCadMonitorador {
     @Override
     public void validar(Monitorador m) {
         if (m.getTipo() == TipoPessoa.JURIDICA) {
-            if (m.getCnpj() != null)
-                if (repository.existsByCnpj(m.getCnpj().replaceAll("[^0-9]", "")))
-                    throw new ValidacaoException("Esse CNPJ já está cadastrado!");
+            if (m.getCnpj() != null){
+                String cnpj = m.getCnpj().replaceAll("[^0-9]", "");
+                if (repository.existsByCnpj(cnpj))
+                    if (!Objects.equals(repository.findByCnpj(cnpj).getId(), m.getId()))
+                        throw new ValidacaoException("Esse CNPJ já está cadastrado!");
+            }
         }
     }
 }
