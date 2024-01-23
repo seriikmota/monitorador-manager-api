@@ -51,7 +51,7 @@ class VMCpfExistenteTest {
         given(repository.existsByCpf(m.getCpf())).willReturn(true);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Esse cpf já está cadastrado!", exception.getMessage());
+        assertEquals("Esse CPF já está cadastrado!", exception.getMessage());
     }
 
 }

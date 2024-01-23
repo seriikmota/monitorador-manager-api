@@ -32,7 +32,9 @@ class MonitoradorServiceTest {
     @Mock
     private MonitoradorRepository repository;
     @Mock
-    private List<IValidacaoMonitorador> validacoes;
+    private List<IVCadMonitorador> validacoesCad;
+    @Mock
+    private List<IVEditarMonitorador> validacoesEdit;
 
     @Test
     @DisplayName("Retornar sucesso por salvar no repository")

@@ -3,7 +3,7 @@ package dev.erikmota.desafiounika.service;
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
-import dev.erikmota.desafiounika.service.validacoes.IValidacaoMonitorador;
+import dev.erikmota.desafiounika.service.validacoes.IVCadMonitorador;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -130,7 +130,7 @@ public class PoiService {
         }
     }
 
-    public List<Monitorador> importar(MultipartFile file, List<IValidacaoMonitorador> validacoes) {
+    public List<Monitorador> importar(MultipartFile file, List<IVCadMonitorador> validacoes) {
         List<Monitorador> monitoradores = new ArrayList<>();
         int linha = 0, coluna = 0;
         try (XSSFWorkbook wb = new XSSFWorkbook(file.getInputStream())) {
@@ -186,7 +186,7 @@ public class PoiService {
 
     private static LocalDate converteData(Date data) {
         if (data == null)
-            throw new ValidacaoException("O campo data é obrigatório!");
+            throw new ValidacaoException("O campo Data é obrigatório!");
 
         return data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
@@ -195,9 +195,9 @@ public class PoiService {
         for (int i = monitoradores.size() - 1; i >= 1; i--) {
             for (int j = i - 1; j >= 0; j--) {
                 if (monitoradores.get(i).getCpf() != null && Objects.equals(monitoradores.get(i).getCpf(), monitoradores.get(j).getCpf()))
-                    throw new ValidacaoException("Esse cpf já foi digitado!");
+                    throw new ValidacaoException("Esse CPF já foi digitado!");
                 if (monitoradores.get(i).getCnpj() != null && Objects.equals(monitoradores.get(i).getCnpj(), monitoradores.get(j).getCnpj()))
-                    throw new ValidacaoException("Esse cnpj já foi digitado!");
+                    throw new ValidacaoException("Esse CNPJ já foi digitado!");
             }
         }
     }

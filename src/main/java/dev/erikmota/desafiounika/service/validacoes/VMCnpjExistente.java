@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(5)
-public class VMCnpjExistente implements IValidacaoMonitorador {
+public class VMCnpjExistente implements IVCadMonitorador {
 
     @Autowired
     private MonitoradorRepository repository;
@@ -20,7 +20,7 @@ public class VMCnpjExistente implements IValidacaoMonitorador {
         if (m.getTipo() == TipoPessoa.JURIDICA) {
             if (m.getCnpj() != null)
                 if (repository.existsByCnpj(m.getCnpj().replaceAll("[^0-9]", "")))
-                    throw new ValidacaoException("Esse cnpj já está cadastrado!");
+                    throw new ValidacaoException("Esse CNPJ já está cadastrado!");
         }
     }
 }

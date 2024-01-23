@@ -20,7 +20,7 @@ class VMCpfCnpjTest {
         VMCpfCnpj validacao = new VMCpfCnpj();
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("O tipo da pessoa é obrigatório!", exception.getMessage());
+        assertEquals("O Tipo da Pessoa é obrigatório!", exception.getMessage());
     }
     @Test
     @DisplayName("Retornar sucesso por pessoa fisica e cpf valido")
@@ -45,7 +45,7 @@ class VMCpfCnpjTest {
         VMCpfCnpj validacao = new VMCpfCnpj();
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Esse cpf é inválido!", exception.getMessage());
+        assertEquals("Esse CPF é inválido!", exception.getMessage());
     }
     @Test
     @DisplayName("Retornar sucesso por pessoa juridica e cnpj valido")
@@ -70,7 +70,7 @@ class VMCpfCnpjTest {
         VMCpfCnpj validacao = new VMCpfCnpj();
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Esse cnpj é inválido!", exception.getMessage());
+        assertEquals("Esse CNPJ é inválido!", exception.getMessage());
     }
 
 }

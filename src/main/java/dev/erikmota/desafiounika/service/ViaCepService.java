@@ -28,7 +28,7 @@ public class ViaCepService {
             EnderecoViaCep enderecoViaCep = mapper.readValue(json, mapper.getTypeFactory().constructType(EnderecoViaCep.class));
             return enderecoViaCep.toEndereco();
         } catch (Exception e){
-            throw new ValidacaoException("Erro ao encontrar o cep!");
+            throw new ValidacaoException("Erro ao encontrar o CEP!");
         }
     }
 }

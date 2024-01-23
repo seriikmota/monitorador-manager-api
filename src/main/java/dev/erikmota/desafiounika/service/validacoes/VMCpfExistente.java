@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(4)
-public class VMCpfExistente implements IValidacaoMonitorador {
+public class VMCpfExistente implements IVCadMonitorador {
 
     @Autowired
     private MonitoradorRepository repository;
@@ -20,6 +20,6 @@ public class VMCpfExistente implements IValidacaoMonitorador {
         if (m.getTipo() == TipoPessoa.FISICA)
             if (m.getCpf() != null)
                 if (repository.existsByCpf(m.getCpf().replaceAll("[^0-9]", "")))
-                    throw new ValidacaoException("Esse cpf já está cadastrado!");
+                    throw new ValidacaoException("Esse CPF já está cadastrado!");
     }
 }

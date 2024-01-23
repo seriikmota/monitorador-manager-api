@@ -10,24 +10,24 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(1)
-public class VMCpfCnpj implements IValidacaoMonitorador {
+public class VMCpfCnpj implements IVCadMonitorador, IVEditarMonitorador {
 
     @Override
     public void validar(Monitorador m) {
         if (m.getTipo() == null)
-            throw new ValidacaoException("O tipo da pessoa é obrigatório!");
+            throw new ValidacaoException("O Tipo da Pessoa é obrigatório!");
         else {
             if (m.getTipo() == TipoPessoa.FISICA) {
                 CPFValidator cpfValidator = new CPFValidator();
                 cpfValidator.initialize(null);
                 if (!cpfValidator.isValid(m.getCpf(), null))
-                    throw new ValidacaoException("Esse cpf é inválido!");
+                    throw new ValidacaoException("Esse CPF é inválido!");
             }
             else {
                 CNPJValidator cnpjValidator = new CNPJValidator();
                 cnpjValidator.initialize(null);
                 if (!cnpjValidator.isValid(m.getCnpj(), null))
-                    throw new ValidacaoException("Esse cnpj é inválido!");
+                    throw new ValidacaoException("Esse CNPJ é inválido!");
             }
         }
     }

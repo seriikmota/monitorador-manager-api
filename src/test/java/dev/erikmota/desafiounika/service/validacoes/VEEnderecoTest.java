@@ -52,6 +52,6 @@ class VEEnderecoTest {
         given(repository.existsByEndereco(e.getEndereco())).willReturn(true);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("O campo endereço já existe, especifique mais!", exception.getMessage());
+        assertEquals("O campo Endereço já existe, especifique mais!", exception.getMessage());
     }
 }

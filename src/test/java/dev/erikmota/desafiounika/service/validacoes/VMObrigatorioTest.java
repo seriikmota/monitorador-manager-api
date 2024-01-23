@@ -37,7 +37,7 @@ class VMObrigatorioTest {
         given(m.getData()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("O data é obrigatório!", exception.getMessage());
+        assertEquals("A Data é obrigatória!", exception.getMessage());
     }
     @Test
     @DisplayName("Retornar exception por monitorador sem email")
@@ -46,7 +46,7 @@ class VMObrigatorioTest {
         given(m.getEmail()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("O email é obrigatório!", exception.getMessage());
+        assertEquals("O Email é obrigatório!", exception.getMessage());
     }
 
     @Test
@@ -66,6 +66,6 @@ class VMObrigatorioTest {
         given(m.getAtivo()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("O ativo é obrigatório!", exception.getMessage());
+        assertEquals("O campo Ativo é obrigatório!", exception.getMessage());
     }
 }

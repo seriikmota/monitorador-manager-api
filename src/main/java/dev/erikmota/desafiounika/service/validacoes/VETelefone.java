@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(3)
-public class VETelefone implements IValidacaoEndereco {
+public class VETelefone implements IVCadEndereco, IVEditarEndereco {
     @Override
     public void validar(Endereco e) {
         String telefone = e.getTelefone().replaceAll("[^0-9]", "");

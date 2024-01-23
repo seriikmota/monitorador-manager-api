@@ -8,17 +8,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(2)
-public class VMPessoaFisica implements IValidacaoMonitorador {
+public class VMPessoaFisica implements IVCadMonitorador, IVEditarMonitorador {
 
     @Override
     public void validar(Monitorador m) {
         if (m.getTipo() == TipoPessoa.FISICA) {
             if (m.getCpf() == null || m.getCpf().isBlank())
-                throw new ValidacaoException("Pessoas físicas devem inserir cpf!");
+                throw new ValidacaoException("Pessoa física deve inserir CPF!");
             if (m.getNome() == null || m.getNome().isBlank())
-                throw new ValidacaoException("Pessoas físicas devem inserir o nome!");
+                throw new ValidacaoException("Pessoa física deve inserir o Nome!");
             if (m.getRg() == null || m.getRg().isBlank())
-                throw new ValidacaoException("Pessoas físicas devem inserir o rg!");
+                throw new ValidacaoException("Pessoa física deve inserir o Rg!");
         }
     }
 }

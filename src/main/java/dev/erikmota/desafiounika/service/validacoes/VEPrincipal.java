@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 @Order(5)
-public class VEPrincipal implements IValidacaoEndereco {
+public class VEPrincipal implements IVCadEndereco, IVEditarEndereco {
     @Override
     public void validar(Endereco e) {
         List<Endereco> enderecoList = e.getMonitorador().getEnderecos();

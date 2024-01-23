@@ -31,7 +31,7 @@ public class EnderecoController {
         try {
             if (!bindingResult.hasErrors()) {
                 service.cadastrar(e, idMonitorador);
-                return ResponseEntity.ok().body("Success: Cadastro realizado com sucesso!");
+                return ResponseEntity.ok().body("Cadastro realizado com sucesso!");
             }
             else {
                 StringBuilder errorMessage = new StringBuilder("Erro:");
@@ -53,7 +53,7 @@ public class EnderecoController {
         try {
             if (!bindingResult.hasErrors()) {
                 service.editar(idEndereco, idMonitorador, e);
-                return ResponseEntity.ok().body("Success: Cadastro modificado com sucesso!");
+                return ResponseEntity.ok().body("Cadastro modificado com sucesso!");
             }
             else {
                 String errorMessage = bindingResult.getFieldError().getDefaultMessage();
@@ -70,7 +70,7 @@ public class EnderecoController {
     public ResponseEntity<?> excluir(@PathVariable Long id){
         try {
             service.excluir(id);
-            return ResponseEntity.ok().body("Success: Cadastro excluido com sucesso!");
+            return ResponseEntity.ok().body("Cadastro excluido com sucesso!");
         } catch (ValidacaoException | EntityNotFoundException ex){
             return ResponseEntity.badRequest().body("Erro: " + ex.getMessage());
         }

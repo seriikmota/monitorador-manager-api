@@ -8,20 +8,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(6)
-public class VMObrigatorio implements IValidacaoMonitorador {
+public class VMObrigatorio implements IVCadMonitorador, IVEditarMonitorador {
 
     @Override
     public void validar(Monitorador m) {
         if (m.getData() == null)
-            throw new ValidacaoException("O data é obrigatório!");
+            throw new ValidacaoException("A Data é obrigatória!");
         if (m.getEmail() == null)
-            throw new ValidacaoException("O email é obrigatório!");
+            throw new ValidacaoException("O Email é obrigatório!");
         else {
             EmailValidator emailValidator = new EmailValidator();
             if (!emailValidator.isValid(m.getEmail(), null))
                 throw new ValidacaoException("Digite um email válido!");
         }
         if (m.getAtivo() == null)
-            throw new ValidacaoException("O ativo é obrigatório!");
+            throw new ValidacaoException("O campo Ativo é obrigatório!");
     }
 }

@@ -50,7 +50,7 @@ class VMPessoaJuridicaTest {
         VMPessoaJuridica validacao = new VMPessoaJuridica();
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Pessoas juridicas devem inserir cnpj!", exception.getMessage());
+        assertEquals("Pessoa jurídica deve inserir o CNPJ!", exception.getMessage());
     }
 
     @Test
@@ -65,7 +65,7 @@ class VMPessoaJuridicaTest {
         VMPessoaJuridica validacao = new VMPessoaJuridica();
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Pessoas jurídicas devem inserir a razao social!", exception.getMessage());
+        assertEquals("Pessoa jurídica deve inserir a Razao Social!", exception.getMessage());
     }
 
     @Test
@@ -80,6 +80,6 @@ class VMPessoaJuridicaTest {
         VMPessoaJuridica validacao = new VMPessoaJuridica();
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Pessoas jurídicas devem inserir a inscrição estadual!", exception.getMessage());
+        assertEquals("Pessoa jurídica deve inserir a Inscrição Estadual!", exception.getMessage());
     }
 }

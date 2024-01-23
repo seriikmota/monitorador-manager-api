@@ -8,17 +8,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(3)
-public class VMPessoaJuridica implements IValidacaoMonitorador {
+public class VMPessoaJuridica implements IVCadMonitorador, IVEditarMonitorador {
 
     @Override
     public void validar(Monitorador m) {
         if (m.getTipo() == TipoPessoa.JURIDICA) {
             if (m.getCnpj() == null || m.getCnpj().isBlank())
-                throw new ValidacaoException("Pessoas juridicas devem inserir cnpj!");
+                throw new ValidacaoException("Pessoa jurídica deve inserir o CNPJ!");
             if (m.getRazao() == null || m.getRazao().isBlank())
-                throw new ValidacaoException("Pessoas jurídicas devem inserir a razao social!");
+                throw new ValidacaoException("Pessoa jurídica deve inserir a Razao Social!");
             if (m.getInscricao() == null || m.getInscricao().isBlank())
-                throw new ValidacaoException("Pessoas jurídicas devem inserir a inscrição estadual!");
+                throw new ValidacaoException("Pessoa jurídica deve inserir a Inscrição Estadual!");
         }
     }
 }

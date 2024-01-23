@@ -45,7 +45,7 @@ class VEObrigatorioTest {
         given(e.getCep()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("O cep é obrigatório!", exception.getMessage());
+        assertEquals("O CEP é obrigatório!", exception.getMessage());
     }
 
     @Test
@@ -55,7 +55,7 @@ class VEObrigatorioTest {
         given(e.getEndereco()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("O endereço é obrigatório!", exception.getMessage());
+        assertEquals("O Endereço é obrigatório!", exception.getMessage());
     }
 
     @Test
@@ -69,7 +69,7 @@ class VEObrigatorioTest {
                 "O número é obrigatório!");
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("O número é obrigatório!", exception.getMessage());
+        assertEquals("O Número é obrigatório!", exception.getMessage());
     }
 
     @Test
@@ -81,7 +81,7 @@ class VEObrigatorioTest {
         given(e.getBairro()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("O bairro é obrigatório!", exception.getMessage());
+        assertEquals("O Bairro é obrigatório!", exception.getMessage());
     }
 
     @Test
@@ -94,7 +94,7 @@ class VEObrigatorioTest {
         given(e.getCidade()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("A cidade é obrigatória!", exception.getMessage());
+        assertEquals("A Cidade é obrigatória!", exception.getMessage());
     }
 
     @Test
@@ -108,7 +108,7 @@ class VEObrigatorioTest {
         given(e.getEstado()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("O estado é obrigatório!", exception.getMessage());
+        assertEquals("O Estado é obrigatório!", exception.getMessage());
     }
 
     @Test
@@ -123,7 +123,7 @@ class VEObrigatorioTest {
         given(e.getTelefone()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("O telefone é obrigatório!", exception.getMessage());
+        assertEquals("O Telefone é obrigatório!", exception.getMessage());
     }
 
     @Test
@@ -139,7 +139,7 @@ class VEObrigatorioTest {
         given(e.getMonitorador()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("O monitorador deve ser definido!", exception.getMessage());
+        assertEquals("O Monitorador deve ser definido!", exception.getMessage());
     }
 
     @Test
@@ -156,6 +156,6 @@ class VEObrigatorioTest {
         given(e.getPrincipal()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("O campo principal é obrigatório!", exception.getMessage());
+        assertEquals("O campo Principal é obrigatório!", exception.getMessage());
     }
 }

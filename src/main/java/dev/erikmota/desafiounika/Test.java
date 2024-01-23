@@ -66,7 +66,7 @@ public class Test {
 
     private static LocalDate converteData(Date data) {
         if (data == null)
-            throw new ValidacaoException("O campo data é obrigatório!");
+            throw new ValidacaoException("O campo Data é obrigatório!");
 
         return data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
@@ -84,10 +84,10 @@ public class Test {
             for (int j = i-1; j >= 0; j--){
                 if (monitoradores.get(i).getTipo() == TipoPessoa.FISICA)
                     if (monitoradores.get(i).getCpf() != null && Objects.equals(monitoradores.get(i).getCpf(), monitoradores.get(j).getCpf()))
-                        throw new ValidacaoException("Esse cpf já foi digitado!");
+                        throw new ValidacaoException("Esse CPF já foi digitado!");
                 else
                     if (monitoradores.get(i).getCnpj() != null && Objects.equals(monitoradores.get(i).getCnpj(), monitoradores.get(j).getCnpj()))
-                        throw new ValidacaoException("Esse cnpj já foi digitado!");
+                        throw new ValidacaoException("Esse CNPJ já foi digitado!");
             }
         }
     }

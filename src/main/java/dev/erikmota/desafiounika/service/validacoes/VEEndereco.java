@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(2)
-public class VEEndereco implements IValidacaoEndereco {
+public class VEEndereco implements IVCadEndereco, IVEditarEndereco {
     @Autowired
     private EnderecoRepository repository;
 
@@ -17,6 +17,6 @@ public class VEEndereco implements IValidacaoEndereco {
     public void validar(Endereco e) {
         if (repository.existsByCep(e.getCep().replaceAll("[^0-9]", "")))
             if (repository.existsByEndereco(e.getEndereco()))
-                throw new ValidacaoException("O campo endereço já existe, especifique mais!");
+                throw new ValidacaoException("O campo Endereço já existe, especifique mais!");
     }
 }

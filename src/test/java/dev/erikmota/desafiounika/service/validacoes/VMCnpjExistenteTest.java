@@ -51,6 +51,6 @@ class VMCnpjExistenteTest {
         given(repository.existsByCnpj(m.getCnpj())).willReturn(true);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Esse cnpj já está cadastrado!", exception.getMessage());
+        assertEquals("Esse CNPJ já está cadastrado!", exception.getMessage());
     }
 }

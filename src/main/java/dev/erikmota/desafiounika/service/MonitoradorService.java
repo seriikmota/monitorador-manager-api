@@ -3,7 +3,8 @@ package dev.erikmota.desafiounika.service;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
 import dev.erikmota.desafiounika.repository.MonitoradorRepository;
-import dev.erikmota.desafiounika.service.validacoes.IValidacaoMonitorador;
+import dev.erikmota.desafiounika.service.validacoes.IVCadMonitorador;
+import dev.erikmota.desafiounika.service.validacoes.IVEditarMonitorador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,12 +16,14 @@ public class MonitoradorService {
     @Autowired
     private MonitoradorRepository repository;
     @Autowired
-    private List<IValidacaoMonitorador> validacoes;
+    private List<IVCadMonitorador> validacoesCad;
+    @Autowired
+    private List<IVEditarMonitorador> validacoesEdit;
     private final PoiService poiService = new PoiService();
     private final JasperService jasperService = new JasperService();
 
     public void cadastrar(Monitorador m){
-        validacoes.forEach(v -> v.validar(m));
+        validacoesCad.forEach(v -> v.validar(m));
         if (m.getTipo() == TipoPessoa.FISICA){
             m.setCnpj(null); m.setRazao(null); m.setInscricao(null);
         } else {
@@ -31,6 +34,12 @@ public class MonitoradorService {
 
     public void editar(Long id, Monitorador m){
         Monitorador novoMonitorador = repository.getReferenceById(id);
+        validacoesEdit.forEach(v -> v.validar(m));
+        if (m.getTipo() == TipoPessoa.FISICA){
+            m.setCnpj(null); m.setRazao(null); m.setInscricao(null);
+        } else {
+            m.setCpf(null); m.setNome(null); m.setRg(null);
+        }
         novoMonitorador.editar(m);
     }
 
@@ -62,7 +71,7 @@ public class MonitoradorService {
         return poiService.gerarModelo();
     }
     public void importar(MultipartFile file) {
-        List<Monitorador> monitoradores = poiService.importar(file, validacoes);
+        List<Monitorador> monitoradores = poiService.importar(file, validacoesCad);
         if (!monitoradores.isEmpty()){
             monitoradores.forEach(this::cadastrar);
         }

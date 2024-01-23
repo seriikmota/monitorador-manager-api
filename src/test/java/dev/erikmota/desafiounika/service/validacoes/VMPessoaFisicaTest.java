@@ -50,7 +50,7 @@ class VMPessoaFisicaTest {
         VMPessoaFisica validacao = new VMPessoaFisica();
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Pessoas físicas devem inserir cpf!", exception.getMessage());
+        assertEquals("Pessoa física deve inserir CPF!", exception.getMessage());
     }
 
     @Test
@@ -65,7 +65,7 @@ class VMPessoaFisicaTest {
         VMPessoaFisica validacao = new VMPessoaFisica();
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Pessoas físicas devem inserir o nome!", exception.getMessage());
+        assertEquals("Pessoa física deve inserir o Nome!", exception.getMessage());
     }
 
     @Test
@@ -80,6 +80,6 @@ class VMPessoaFisicaTest {
         VMPessoaFisica validacao = new VMPessoaFisica();
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("Pessoas físicas devem inserir o rg!", exception.getMessage());
+        assertEquals("Pessoa física deve inserir o Rg!", exception.getMessage());
     }
 }
