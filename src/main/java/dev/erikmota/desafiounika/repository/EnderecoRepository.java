@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface EnderecoRepository extends JpaRepository<Endereco, Long>, JpaSpecificationExecutor<Endereco> {
 
+    Endereco findByCep(String cep);
     boolean existsByCep(String cep);
     boolean existsByEndereco(String endereco);
     default List<Endereco> filtrar(String text, String estado, String cidade, Long monitorador_id) {

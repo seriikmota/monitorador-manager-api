@@ -57,7 +57,7 @@ public class MonitoradorService {
             if (m.getEnderecos().isEmpty())
                 repository.delete(m);
             else
-                throw new ValidacaoException("Não é possivel excluir um monitorador com endereços cadastrados!");
+                throw new ValidacaoException("Não é possivel excluir um monitorador com endereço cadastrado!");
         }
         else
             throw new ValidacaoException("Esse monitorador não está cadastrado!");
