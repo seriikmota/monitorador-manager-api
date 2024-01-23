@@ -24,7 +24,7 @@ class VMObrigatorioTest {
     @Test
     @DisplayName("Retornar sucesso por monitorador com data, email, ativo")
     void validarCase1(){
-        given(m.getData()).willReturn(LocalDate.of(2024,1,1));
+        given(m.getData()).willReturn("01/01/2024");
         given(m.getEmail()).willReturn("example@gmail.com");
         given(m.getAtivo()).willReturn(true);
 
@@ -42,7 +42,7 @@ class VMObrigatorioTest {
     @Test
     @DisplayName("Retornar exception por monitorador sem email")
     void validarCase3(){
-        given(m.getData()).willReturn(LocalDate.of(2024,1,1));
+        given(m.getData()).willReturn("01/01/2024");
         given(m.getEmail()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
@@ -52,7 +52,7 @@ class VMObrigatorioTest {
     @Test
     @DisplayName("Retornar exception por monitorador com email inválido")
     void validarCase5(){
-        given(m.getData()).willReturn(LocalDate.of(2024,1,1));
+        given(m.getData()).willReturn("01/01/2024");
         given(m.getEmail()).willReturn("example");
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
@@ -61,7 +61,7 @@ class VMObrigatorioTest {
     @Test
     @DisplayName("Retornar exception por monitorador sem ativo")
     void validarCase4(){
-        given(m.getData()).willReturn(LocalDate.of(2024,1,1));
+        given(m.getData()).willReturn("01/01/2024");
         given(m.getEmail()).willReturn("example@gmail.com");
         given(m.getAtivo()).willReturn(null);
 

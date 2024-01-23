@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,8 +149,13 @@ public class Monitorador implements Comparable<Monitorador> {
         this.inscricao = inscricao;
     }
 
-    public LocalDate getData() {
+    /*public LocalDate getData() {
         return data;
+    }*/
+
+    public String getData() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return data.format(formatter);
     }
 
     public void setData(LocalDate data) {
