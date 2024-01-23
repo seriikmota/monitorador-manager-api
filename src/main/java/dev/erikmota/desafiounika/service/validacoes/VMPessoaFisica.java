@@ -19,6 +19,9 @@ public class VMPessoaFisica implements IVCadMonitorador, IVEditarMonitorador {
                 throw new ValidacaoException("Pessoa física deve inserir o Nome!");
             if (m.getRg() == null || m.getRg().isBlank())
                 throw new ValidacaoException("Pessoa física deve inserir o Rg!");
+            m.setCnpj(null);
+            m.setRazao(null);
+            m.setInscricao(null);
         }
     }
 }

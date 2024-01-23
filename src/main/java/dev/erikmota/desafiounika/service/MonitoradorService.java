@@ -24,22 +24,12 @@ public class MonitoradorService {
 
     public void cadastrar(Monitorador m){
         validacoesCad.forEach(v -> v.validar(m));
-        if (m.getTipo() == TipoPessoa.FISICA){
-            m.setCnpj(null); m.setRazao(null); m.setInscricao(null);
-        } else {
-            m.setCpf(null); m.setNome(null); m.setRg(null);
-        }
         repository.save(m);
     }
 
     public void editar(Long id, Monitorador m){
         Monitorador novoMonitorador = repository.getReferenceById(id);
         validacoesEdit.forEach(v -> v.validar(m));
-        if (m.getTipo() == TipoPessoa.FISICA){
-            m.setCnpj(null); m.setRazao(null); m.setInscricao(null);
-        } else {
-            m.setCpf(null); m.setNome(null); m.setRg(null);
-        }
         novoMonitorador.editar(m);
     }
 

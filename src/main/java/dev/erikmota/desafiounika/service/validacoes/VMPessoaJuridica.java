@@ -19,6 +19,9 @@ public class VMPessoaJuridica implements IVCadMonitorador, IVEditarMonitorador {
                 throw new ValidacaoException("Pessoa jurídica deve inserir a Razao Social!");
             if (m.getInscricao() == null || m.getInscricao().isBlank())
                 throw new ValidacaoException("Pessoa jurídica deve inserir a Inscrição Estadual!");
+            m.setCpf(null);
+            m.setNome(null);
+            m.setRg(null);
         }
     }
 }
