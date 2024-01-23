@@ -1,8 +1,8 @@
-package dev.erikmota.desafiounikamain.repository;
+package dev.erikmota.desafiounika.repository;
 
 import com.mysql.cj.util.StringUtils;
-import dev.erikmota.desafiounikamain.models.Monitorador;
-import dev.erikmota.desafiounikamain.models.TipoPessoa;
+import dev.erikmota.desafiounika.models.Monitorador;
+import dev.erikmota.desafiounika.models.TipoPessoa;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;

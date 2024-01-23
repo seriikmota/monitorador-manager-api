@@ -1,8 +1,8 @@
-package dev.erikmota.desafiounikamain.service.validacoes;
+package dev.erikmota.desafiounika.service.validacoes;
 
-import dev.erikmota.desafiounikamain.models.Endereco;
-import dev.erikmota.desafiounikamain.repository.EnderecoRepository;
-import dev.erikmota.desafiounikamain.service.ValidacaoException;
+import dev.erikmota.desafiounika.models.Endereco;
+import dev.erikmota.desafiounika.repository.EnderecoRepository;
+import dev.erikmota.desafiounika.service.ValidacaoException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

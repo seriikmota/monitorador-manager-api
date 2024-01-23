@@ -1,4 +1,4 @@
-package dev.erikmota.desafiounikamain;
+package dev.erikmota.desafiounika;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

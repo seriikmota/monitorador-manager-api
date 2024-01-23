@@ -1,4 +1,4 @@
-package dev.erikmota.desafiounikamain.models;
+package dev.erikmota.desafiounika.models;
 
 public enum TipoPessoa {
     FISICA, JURIDICA

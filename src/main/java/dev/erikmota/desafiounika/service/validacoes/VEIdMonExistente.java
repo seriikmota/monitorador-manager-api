@@ -1,8 +1,8 @@
-package dev.erikmota.desafiounikamain.service.validacoes;
+package dev.erikmota.desafiounika.service.validacoes;
 
-import dev.erikmota.desafiounikamain.models.Endereco;
-import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
-import dev.erikmota.desafiounikamain.service.ValidacaoException;
+import dev.erikmota.desafiounika.models.Endereco;
+import dev.erikmota.desafiounika.repository.MonitoradorRepository;
+import dev.erikmota.desafiounika.service.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

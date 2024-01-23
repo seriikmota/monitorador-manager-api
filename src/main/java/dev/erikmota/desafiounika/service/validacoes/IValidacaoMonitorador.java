@@ -1,6 +1,6 @@
-package dev.erikmota.desafiounikamain.service.validacoes;
+package dev.erikmota.desafiounika.service.validacoes;
 
-import dev.erikmota.desafiounikamain.models.Monitorador;
+import dev.erikmota.desafiounika.models.Monitorador;
 
 public interface IValidacaoMonitorador {
     void validar(Monitorador m);

@@ -1,9 +1,9 @@
-package dev.erikmota.desafiounikamain.controllers;
+package dev.erikmota.desafiounika.controllers;
 
-import dev.erikmota.desafiounikamain.models.Monitorador;
-import dev.erikmota.desafiounikamain.models.TipoPessoa;
-import dev.erikmota.desafiounikamain.service.MonitoradorService;
-import dev.erikmota.desafiounikamain.service.ValidacaoException;
+import dev.erikmota.desafiounika.models.Monitorador;
+import dev.erikmota.desafiounika.models.TipoPessoa;
+import dev.erikmota.desafiounika.service.MonitoradorService;
+import dev.erikmota.desafiounika.service.ValidacaoException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;

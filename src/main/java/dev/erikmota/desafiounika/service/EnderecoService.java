@@ -1,11 +1,11 @@
-package dev.erikmota.desafiounikamain.service;
+package dev.erikmota.desafiounika.service;
 
-import dev.erikmota.desafiounikamain.models.Endereco;
-import dev.erikmota.desafiounikamain.models.Monitorador;
-import dev.erikmota.desafiounikamain.repository.EnderecoRepository;
-import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
-import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoEndereco;
-import dev.erikmota.desafiounikamain.service.validacoes.VEPrincipal;
+import dev.erikmota.desafiounika.models.Endereco;
+import dev.erikmota.desafiounika.models.Monitorador;
+import dev.erikmota.desafiounika.repository.EnderecoRepository;
+import dev.erikmota.desafiounika.repository.MonitoradorRepository;
+import dev.erikmota.desafiounika.service.validacoes.IValidacaoEndereco;
+import dev.erikmota.desafiounika.service.validacoes.VEPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

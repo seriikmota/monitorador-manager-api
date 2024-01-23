@@ -1,6 +1,6 @@
-package dev.erikmota.desafiounikamain.service.validacoes;
+package dev.erikmota.desafiounika.service.validacoes;
 
-import dev.erikmota.desafiounikamain.models.Endereco;
+import dev.erikmota.desafiounika.models.Endereco;
 
 public interface IValidacaoEndereco {
     void validar(Endereco e);

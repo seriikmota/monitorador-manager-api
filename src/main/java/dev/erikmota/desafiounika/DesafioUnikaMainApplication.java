@@ -1,4 +1,4 @@
-package dev.erikmota.desafiounikamain;
+package dev.erikmota.desafiounika;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

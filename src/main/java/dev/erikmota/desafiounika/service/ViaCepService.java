@@ -1,8 +1,8 @@
-package dev.erikmota.desafiounikamain.service;
+package dev.erikmota.desafiounika.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.erikmota.desafiounikamain.models.Endereco;
-import dev.erikmota.desafiounikamain.models.EnderecoViaCep;
+import dev.erikmota.desafiounika.models.Endereco;
+import dev.erikmota.desafiounika.models.EnderecoViaCep;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;

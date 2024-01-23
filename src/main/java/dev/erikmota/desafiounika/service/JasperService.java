@@ -1,4 +1,4 @@
-package dev.erikmota.desafiounikamain.service;
+package dev.erikmota.desafiounika.service;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;

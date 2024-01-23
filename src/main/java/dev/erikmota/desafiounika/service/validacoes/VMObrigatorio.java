@@ -1,7 +1,7 @@
-package dev.erikmota.desafiounikamain.service.validacoes;
+package dev.erikmota.desafiounika.service.validacoes;
 
-import dev.erikmota.desafiounikamain.models.Monitorador;
-import dev.erikmota.desafiounikamain.service.ValidacaoException;
+import dev.erikmota.desafiounika.models.Monitorador;
+import dev.erikmota.desafiounika.service.ValidacaoException;
 import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

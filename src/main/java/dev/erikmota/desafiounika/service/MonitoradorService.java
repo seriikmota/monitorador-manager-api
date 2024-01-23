@@ -1,10 +1,9 @@
-package dev.erikmota.desafiounikamain.service;
+package dev.erikmota.desafiounika.service;
 
-import dev.erikmota.desafiounikamain.models.Monitorador;
-import dev.erikmota.desafiounikamain.models.TipoPessoa;
-import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
-import dev.erikmota.desafiounikamain.service.validacoes.IValidacaoMonitorador;
-import dev.erikmota.desafiounikamain.service.validacoes.VEPrincipal;
+import dev.erikmota.desafiounika.models.Monitorador;
+import dev.erikmota.desafiounika.models.TipoPessoa;
+import dev.erikmota.desafiounika.repository.MonitoradorRepository;
+import dev.erikmota.desafiounika.service.validacoes.IValidacaoMonitorador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

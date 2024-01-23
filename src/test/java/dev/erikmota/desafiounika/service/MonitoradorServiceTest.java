@@ -1,27 +1,22 @@
-package dev.erikmota.desafiounikamain.service;
+package dev.erikmota.desafiounika.service;
 
-import dev.erikmota.desafiounikamain.models.Endereco;
-import dev.erikmota.desafiounikamain.models.Monitorador;
-import dev.erikmota.desafiounikamain.models.TipoPessoa;
-import dev.erikmota.desafiounikamain.repository.MonitoradorRepository;
-import dev.erikmota.desafiounikamain.service.validacoes.*;
+import dev.erikmota.desafiounika.models.Endereco;
+import dev.erikmota.desafiounika.models.Monitorador;
+import dev.erikmota.desafiounika.models.TipoPessoa;
+import dev.erikmota.desafiounika.repository.MonitoradorRepository;
+import dev.erikmota.desafiounika.service.validacoes.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;

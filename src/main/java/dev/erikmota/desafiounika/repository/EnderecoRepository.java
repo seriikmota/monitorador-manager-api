@@ -1,8 +1,8 @@
-package dev.erikmota.desafiounikamain.repository;
+package dev.erikmota.desafiounika.repository;
 
 import com.mysql.cj.util.StringUtils;
-import dev.erikmota.desafiounikamain.models.Endereco;
-import dev.erikmota.desafiounikamain.models.Monitorador;
+import dev.erikmota.desafiounika.models.Endereco;
+import dev.erikmota.desafiounika.models.Monitorador;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;

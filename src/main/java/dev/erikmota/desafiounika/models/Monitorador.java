@@ -1,4 +1,4 @@
-package dev.erikmota.desafiounikamain.models;
+package dev.erikmota.desafiounika.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
