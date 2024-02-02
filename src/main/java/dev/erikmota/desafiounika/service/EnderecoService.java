@@ -24,8 +24,8 @@ public class EnderecoService {
     private final JasperService jasperService = new JasperService();
     private final PoiService poiService = new PoiService();
 
-    public void cadastrar(Endereco e, Long idMonitorador){
-        e.setMonitorador(monitoradorRepository.getReferenceById(idMonitorador));
+    public void cadastrar(Endereco e, Long idM){
+        e.setMonitorador(monitoradorRepository.getReferenceById(idM));
         validacoes.forEach(v -> v.validar(e));
         repository.save(e);
     }

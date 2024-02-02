@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/monitorador")
+@CrossOrigin(origins = {"http://localhost:8080/", "http://localhost:4200/"})
 public class MonitoradorController {
 
     @Autowired
@@ -28,11 +31,11 @@ public class MonitoradorController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<String> cadastrar(@RequestBody @Valid Monitorador m, BindingResult bindingResult) {
+    public ResponseEntity<?> cadastrar(@RequestBody @Valid Monitorador m, BindingResult bindingResult) {
         try {
             if (!bindingResult.hasErrors()) {
                 service.cadastrar(m);
-                return ResponseEntity.ok().body("Cadastro realizado com sucesso!");
+                return ResponseEntity.status(HttpStatus.CREATED).build();
             } else {
                 StringBuilder errorMessage = new StringBuilder("Erro:");
                 bindingResult.getFieldErrors().forEach(error ->
@@ -41,7 +44,7 @@ public class MonitoradorController {
                 return ResponseEntity.badRequest().body(errorMessage.toString());
             }
         } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -51,13 +54,13 @@ public class MonitoradorController {
         try {
             if (!bindingResult.hasErrors()) {
                 service.editar(id, m);
-                return ResponseEntity.ok().body("Cadastro modificado com sucesso!");
+                return ResponseEntity.ok().build();
             } else {
-                String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+                String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
                 return ResponseEntity.badRequest().body(errorMessage);
             }
         } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -66,12 +69,11 @@ public class MonitoradorController {
     public ResponseEntity<String> excluir(@PathVariable Long id) {
         try {
             service.excluir(id);
-            return ResponseEntity.ok().body("Cadastro excluido com sucesso!");
+            return ResponseEntity.ok().build();
         } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
     @GetMapping
     public ResponseEntity<?> listar() {
         try {
@@ -143,9 +145,9 @@ public class MonitoradorController {
     public ResponseEntity<String> importar(@RequestParam("file") MultipartFile file) {
         try {
             service.importar(file);
-            return ResponseEntity.ok().body("Importação realizada com sucesso!");
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

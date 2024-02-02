@@ -20,18 +20,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/endereco")
+@CrossOrigin(origins = {"http://localhost:8080/", "http://localhost:4200/"})
 public class EnderecoController {
 
     @Autowired
     private EnderecoService service;
 
-    @PostMapping()
+    @PostMapping
     @Transactional
-    public ResponseEntity<String> cadastrar(@RequestParam Long idMonitorador, @RequestBody @Valid Endereco e, BindingResult bindingResult) {
+    public ResponseEntity<String> cadastrar(@RequestParam Long idM, @RequestBody @Valid Endereco e, BindingResult bindingResult) {
         try {
             if (!bindingResult.hasErrors()) {
-                service.cadastrar(e, idMonitorador);
-                return ResponseEntity.ok().body("Cadastro realizado com sucesso!");
+                service.cadastrar(e, idM);
+                return ResponseEntity.ok().build();
             }
             else {
                 StringBuilder errorMessage = new StringBuilder("Erro:");
@@ -41,19 +42,19 @@ public class EnderecoController {
                 return ResponseEntity.badRequest().body(errorMessage.toString());
             }
         } catch (ValidacaoException ex) {
-            return ResponseEntity.badRequest().body("Erro: " + ex.getMessage());
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
-    @PutMapping("/{idEndereco}")
+    @PutMapping("/{idE}")
     @Transactional
-    public ResponseEntity<?> editar(@PathVariable Long idEndereco,
-                                    @RequestParam Long idMonitorador,
+    public ResponseEntity<?> editar(@PathVariable Long idE,
+                                    @RequestParam Long idM,
                                     @RequestBody @Valid Endereco e, BindingResult bindingResult){
         try {
             if (!bindingResult.hasErrors()) {
-                service.editar(idEndereco, idMonitorador, e);
-                return ResponseEntity.ok().body("Cadastro modificado com sucesso!");
+                service.editar(idE, idM, e);
+                return ResponseEntity.ok().build();
             }
             else {
                 String errorMessage = bindingResult.getFieldError().getDefaultMessage();
@@ -61,7 +62,7 @@ public class EnderecoController {
 
             }
         } catch (ValidacaoException | EntityNotFoundException ex){
-            return ResponseEntity.badRequest().body("Erro: " + ex.getMessage());
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
@@ -70,9 +71,9 @@ public class EnderecoController {
     public ResponseEntity<?> excluir(@PathVariable Long id){
         try {
             service.excluir(id);
-            return ResponseEntity.ok().body("Cadastro excluido com sucesso!");
+            return ResponseEntity.ok().build();
         } catch (ValidacaoException | EntityNotFoundException ex){
-            return ResponseEntity.badRequest().body("Erro: " + ex.getMessage());
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
