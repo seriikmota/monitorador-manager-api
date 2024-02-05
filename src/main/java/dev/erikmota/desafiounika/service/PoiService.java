@@ -179,7 +179,7 @@ public class PoiService {
         } catch (ValidacaoException e) {
             throw new ValidacaoException(e.getMessage() + " Linha: " + linha);
         } catch (Exception e) {
-            throw new ValidacaoException("Linha: " + linha + " Coluna: " + coluna);
+            throw new ValidacaoException("Erro na Linha: " + linha + " Coluna: " + coluna);
         }
         return monitoradores;
     }

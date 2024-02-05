@@ -16,12 +16,20 @@ public class MonitoradorService {
     private MonitoradorRepository repository;
     @Autowired
     private List<IVMonitorador> validacoes;
+    @Autowired
+    private EnderecoService enderecoService;
     private final PoiService poiService = new PoiService();
     private final JasperService jasperService = new JasperService();
 
     public void cadastrar(Monitorador m){
+        System.out.println(m);
         validacoes.forEach(v -> v.validar(m));
-        repository.save(m);
+        if(m.getEnderecos().isEmpty())
+            repository.save(m);
+        else{
+            repository.save(m);
+            enderecoService.cadastrar(m.getEnderecos().get(0), m.getId());
+        }
     }
 
     public void editar(Long id, Monitorador m){
