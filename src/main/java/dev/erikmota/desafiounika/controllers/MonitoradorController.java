@@ -32,7 +32,7 @@ public class MonitoradorController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> cadastrar(@RequestBody @Valid Monitorador m, BindingResult bindingResult) {
+    public ResponseEntity<String> cadastrar(@RequestBody @Valid Monitorador m, BindingResult bindingResult) {
         try {
             if (!bindingResult.hasErrors()) {
                 service.cadastrar(m);

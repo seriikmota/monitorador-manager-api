@@ -1,6 +1,7 @@
 package dev.erikmota.desafiounika.controllers;
 
 import dev.erikmota.desafiounika.models.Endereco;
+import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.service.EnderecoService;
 import dev.erikmota.desafiounika.service.ValidacaoException;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/endereco")
@@ -48,7 +50,7 @@ public class EnderecoController {
 
     @PutMapping("/{idE}")
     @Transactional
-    public ResponseEntity<?> editar(@PathVariable Long idE,
+    public ResponseEntity<String> editar(@PathVariable Long idE,
                                     @RequestParam Long idM,
                                     @RequestBody @Valid Endereco e, BindingResult bindingResult){
         try {
@@ -57,7 +59,7 @@ public class EnderecoController {
                 return ResponseEntity.ok().build();
             }
             else {
-                String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+                String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
                 return ResponseEntity.badRequest().body(errorMessage);
 
             }
@@ -68,7 +70,7 @@ public class EnderecoController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> excluir(@PathVariable Long id){
+    public ResponseEntity<String> excluir(@PathVariable Long id){
         try {
             service.excluir(id);
             return ResponseEntity.ok().build();
@@ -80,7 +82,7 @@ public class EnderecoController {
     @GetMapping
     public ResponseEntity<?> listar(){
         try {
-            List<?> enderecos = service.listar();
+            List<Endereco> enderecos = service.listar();
             return ResponseEntity.ok(enderecos);
         } catch (ValidacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -1,5 +1,7 @@
 package dev.erikmota.desafiounika.service;
 
+import dev.erikmota.desafiounika.models.Endereco;
+import dev.erikmota.desafiounika.models.Monitorador;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.stereotype.Component;
@@ -10,7 +12,7 @@ import java.util.*;
 
 @Component
 public class JasperService {
-    public byte[] gerarPdfMonitorador(List<?> lista) {
+    public byte[] gerarPdfMonitorador(List<Monitorador> lista) {
         if (lista.isEmpty())
             throw new ValidacaoException("Não é possivel gerar relatorio sem monitoradores");
         String file;
@@ -22,7 +24,7 @@ public class JasperService {
         return gerarPdf(file, lista);
     }
 
-    public byte[] gerarPdfEndereco(List<?> lista) {
+    public byte[] gerarPdfEndereco(List<Endereco> lista) {
         if (lista.isEmpty())
             throw new ValidacaoException("Não é possivel gerar relatorio sem endereços");
         String file;

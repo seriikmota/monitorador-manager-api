@@ -40,7 +40,7 @@ public class EnderecoService {
         novoEndereco.editar(e);
     }
 
-    public List<?> listar(){
+    public List<Endereco> listar(){
         try {
             return repository.findAll();
         } catch (Exception e) {
