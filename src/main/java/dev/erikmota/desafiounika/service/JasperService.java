@@ -11,6 +11,8 @@ import java.util.*;
 @Component
 public class JasperService {
     public byte[] gerarPdfMonitorador(List<?> lista) {
+        if (lista.isEmpty())
+            throw new ValidacaoException("Não é possivel gerar relatorio sem monitoradores");
         String file;
         if (lista.size() != 1) {
             file = "/src/main/resources/reports/RelatorioMGeral.jasper";
@@ -21,6 +23,8 @@ public class JasperService {
     }
 
     public byte[] gerarPdfEndereco(List<?> lista) {
+        if (lista.isEmpty())
+            throw new ValidacaoException("Não é possivel gerar relatorio sem endereços");
         String file;
         if (lista.size() != 1) {
             file = "/src/main/resources/reports/RelatorioEGeral.jasper";

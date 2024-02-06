@@ -1,5 +1,6 @@
 package dev.erikmota.desafiounika.service;
 
+import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
 import dev.erikmota.desafiounika.repository.MonitoradorRepository;
@@ -22,18 +23,20 @@ public class MonitoradorService {
     private final JasperService jasperService = new JasperService();
 
     public void cadastrar(Monitorador m){
-        System.out.println(m);
         validacoes.forEach(v -> v.validar(m));
         if(m.getEnderecos().isEmpty())
             repository.save(m);
         else{
+            Endereco e = m.getEnderecos().get(0);
+            m.setEnderecos(Collections.emptyList());
             repository.save(m);
-            enderecoService.cadastrar(m.getEnderecos().get(0), m.getId());
+            enderecoService.cadastrar(e, m.getId());
         }
     }
 
     public void editar(Long id, Monitorador m){
         Monitorador novoMonitorador = repository.getReferenceById(id);
+        m.setId(id);
         validacoes.forEach(v -> v.validar(m));
         novoMonitorador.editar(m);
     }
@@ -49,10 +52,11 @@ public class MonitoradorService {
     public void excluir(Long id){
         if (repository.existsById(id)){
             Monitorador m = repository.getReferenceById(id);
-            if (m.getEnderecos().isEmpty())
+            repository.delete(m);
+            /*if (m.getEnderecos().isEmpty())
                 repository.delete(m);
             else
-                throw new ValidacaoException("Não é possivel excluir um monitorador com endereço cadastrado!");
+                throw new ValidacaoException("Não é possivel excluir um monitorador com endereço cadastrado!");*/
         }
         else
             throw new ValidacaoException("Esse monitorador não está cadastrado!");

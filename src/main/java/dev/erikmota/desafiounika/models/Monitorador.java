@@ -33,7 +33,7 @@ public class Monitorador implements Comparable<Monitorador> {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate data;
     private Boolean ativo;
-    @OneToMany(mappedBy = "monitorador")
+    @OneToMany(mappedBy = "monitorador", cascade = CascadeType.ALL)
     private List<Endereco> enderecos = new ArrayList<>();
 
     public Monitorador(){
@@ -176,6 +176,10 @@ public class Monitorador implements Comparable<Monitorador> {
 
     public void setEnderecos(List<Endereco> enderecos) {
         this.enderecos = enderecos;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {

@@ -45,6 +45,8 @@ public class PoiService {
     }
 
     public byte[] exportarMonitorador(List<Monitorador> monitoradorList) {
+        if (monitoradorList.isEmpty())
+            throw new ValidacaoException("Não é possível gerar relatorio sem monitoradores!");
         String[] colunas = {"Código", "Tipo Pessoa", "CNPJ", "Razao Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Ativo", "Endereços"};
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Monitorador");
@@ -89,6 +91,8 @@ public class PoiService {
     }
 
     public byte[] exportarEndereco(List<Endereco> enderecoList) {
+        if (enderecoList.isEmpty())
+            throw new ValidacaoException("Não é possível gerar relatorio sem endereços!");
         String[] colunas = {"Código", "Cep", "Endereço", "Número", "Bairro", "Cidade", "Estado", "Telefone", "Monitorador", "Principal"};
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Endereço");
@@ -131,6 +135,9 @@ public class PoiService {
     }
 
     public List<Monitorador> importar(MultipartFile file, List<IVMonitorador> validacoes) {
+        if (!Objects.requireNonNull(file.getOriginalFilename()).endsWith(".xlsx"))
+            throw new ValidacaoException("Esse tipo de arquivo não é suportado, apenas .xlsx!");
+
         List<Monitorador> monitoradores = new ArrayList<>();
         int linha = 0, coluna = 0;
         try (XSSFWorkbook wb = new XSSFWorkbook(file.getInputStream())) {
