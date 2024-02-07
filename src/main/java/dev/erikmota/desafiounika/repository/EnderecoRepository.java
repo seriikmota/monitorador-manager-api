@@ -8,15 +8,13 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface EnderecoRepository extends JpaRepository<Endereco, Long>, JpaSpecificationExecutor<Endereco> {
-
-    Endereco findByCep(String cep);
-    boolean existsByCep(String cep);
-    boolean existsByEndereco(String endereco);
+    boolean existsByEnderecoAndNumero(String endereco, String numero);
     default List<Endereco> filtrar(String text, String estado, String cidade, Long monitorador_id) {
         return findAll((Specification<Endereco>) (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -47,5 +45,4 @@ public interface EnderecoRepository extends JpaRepository<Endereco, Long>, JpaSp
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         });
     }
-
 }

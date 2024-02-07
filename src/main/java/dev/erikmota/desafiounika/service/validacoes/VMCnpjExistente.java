@@ -14,8 +14,11 @@ import java.util.Objects;
 @Order(5)
 public class VMCnpjExistente implements IVMonitorador {
 
-    @Autowired
-    private MonitoradorRepository repository;
+    private final MonitoradorRepository repository;
+
+    public VMCnpjExistente(MonitoradorRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public void validar(Monitorador m) {

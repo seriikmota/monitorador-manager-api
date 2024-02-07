@@ -24,38 +24,23 @@ class VEEnderecoTest {
     private EnderecoRepository repository;
 
     @Test
-    @DisplayName("Retornar sucesso cep não existir no banco")
+    @DisplayName("Retornar sucesso se o endereço e número não existir no banco")
     void validarCase1() {
-        given(e.getCep()).willReturn("");
-        given(repository.existsByCep(anyString())).willReturn(false);
+        given(e.getEndereco()).willReturn("");
+        given(e.getNumero()).willReturn("");
+        given(repository.existsByEnderecoAndNumero(anyString(), anyString())).willReturn(false);
 
         assertDoesNotThrow(() -> validacao.validar(e));
     }
 
     @Test
-    @DisplayName("Retornar sucesso cep existir no banco, mas não ter endereço igual")
+    @DisplayName("Retornar exception caso endereço e número já estejam cadastrados")
     void validarCase2() {
-        given(e.getCep()).willReturn("");
-        given(repository.existsByCep(anyString())).willReturn(true);
         given(e.getEndereco()).willReturn("");
-        given(repository.existsByEndereco(anyString())).willReturn(false);
-
-        given(repository.findByCep("")).willReturn(new Endereco());
-
-        assertDoesNotThrow(() -> validacao.validar(e));
-    }
-
-    @Test
-    @DisplayName("Retornar sucesso cep existir no banco e ter endereço igual")
-    void validarCase3() {
-        given(e.getCep()).willReturn("");
-        given(repository.existsByCep(e.getCep())).willReturn(true);
-        given(e.getEndereco()).willReturn("");
-        given(repository.existsByEndereco(e.getEndereco())).willReturn(true);
-
-        given(repository.findByCep("")).willReturn(new Endereco());
+        given(e.getNumero()).willReturn("");
+        given(repository.existsByEnderecoAndNumero(anyString(), anyString())).willReturn(true);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("O campo Endereço já existe, especifique mais!", exception.getMessage());
+        assertEquals("Esse endereço já existe, altere o campo endereço e/ou número!", exception.getMessage());
     }
 }

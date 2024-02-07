@@ -149,10 +149,6 @@ public class Monitorador implements Comparable<Monitorador> {
         this.inscricao = inscricao;
     }
 
-    /*public LocalDate getData() {
-        return data;
-    }*/
-
     public String getData() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return data.format(formatter);

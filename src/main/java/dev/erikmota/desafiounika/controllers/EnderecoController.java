@@ -1,7 +1,6 @@
 package dev.erikmota.desafiounika.controllers;
 
 import dev.erikmota.desafiounika.models.Endereco;
-import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.service.EnderecoService;
 import dev.erikmota.desafiounika.service.ValidacaoException;
 import jakarta.persistence.EntityNotFoundException;

@@ -45,7 +45,7 @@ public class JasperService {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperFilePath, new HashMap<>(), dataSource);
             return JasperExportManager.exportReportToPdf(jasperPrint);
         } catch (Exception e) {
-            throw new ValidacaoException("Erro ao gerar o relatório de endereço!");
+            throw new ValidacaoException("Erro ao gerar o relatório!");
         }
     }
 }

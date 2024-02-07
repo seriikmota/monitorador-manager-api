@@ -56,7 +56,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
 					<font size="31"/>
 				</textElement>
-				<text><![CDATA[Relatório Endereço Individual]]></text>
+				<text><![CDATA[Relatório Endereço]]></text>
 			</staticText>
 			<line>
 				<reportElement x="0" y="0" width="555" height="1" uuid="4b815178-5106-471f-9b09-6ec33df785f3"/>
@@ -165,7 +165,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="13"/>
 				</textElement>
-				<text><![CDATA[Id: ]]></text>
+				<text><![CDATA[ID:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="80" width="130" height="30" uuid="187ef4d8-f448-4a55-a083-839a17da8ae6">
@@ -237,7 +237,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="13"/>
 				</textElement>
-				<text><![CDATA[Cep:]]></text>
+				<text><![CDATA[CEP: ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="200" width="130" height="30" uuid="f708747d-2b1d-4c03-92c8-fca4721fc331">

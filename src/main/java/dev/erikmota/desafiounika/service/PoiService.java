@@ -13,28 +13,14 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class PoiService {
-
     public byte[] gerarModelo() {
         String[] colunas = {"Tipo Pessoa", "CNPJ", "Razao Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Ativo"};
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Monitorador");
-            Row headerRow = sheet.createRow(0);
-
-            Font headerFont = workbook.createFont();
-            headerFont.setBold(true);
-            CellStyle headerCellStyle = workbook.createCellStyle();
-            headerCellStyle.setFont(headerFont);
-
-            for (int i = 0; i < colunas.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(colunas[i]);
-                cell.setCellStyle(headerCellStyle);
-                sheet.setColumnWidth(i, 18 * 256);
-            }
+            configExportExcel(workbook, sheet, colunas);
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             workbook.write(byteArrayOutputStream);
@@ -47,28 +33,15 @@ public class PoiService {
     public byte[] exportarMonitorador(List<Monitorador> monitoradorList) {
         if (monitoradorList.isEmpty())
             throw new ValidacaoException("Não é possível gerar relatorio sem monitoradores!");
-        String[] colunas = {"Código", "Tipo Pessoa", "CNPJ", "Razao Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Ativo", "Endereços"};
+        String[] colunas = {"Código", "Tipo Pessoa", "CNPJ", "Razao Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Ativo"};
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Monitorador");
-            Row headerRow = sheet.createRow(0);
-
-            Font headerFont = workbook.createFont();
-            headerFont.setBold(true);
-            CellStyle headerCellStyle = workbook.createCellStyle();
-            headerCellStyle.setFont(headerFont);
-
-            for (int i = 0; i < colunas.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(colunas[i]);
-                cell.setCellStyle(headerCellStyle);
-                sheet.setColumnWidth(i, 18 * 256);
-            }
+            configExportExcel(workbook, sheet, colunas);
 
             int linha = 1;
 
             for (Monitorador m : monitoradorList) {
                 Row row = sheet.createRow(linha++);
-                AtomicInteger coluna = new AtomicInteger(11);
                 row.createCell(0).setCellValue(m.getId());
                 row.createCell(1).setCellValue(String.valueOf(m.getTipo()));
                 row.createCell(2).setCellValue(m.getCnpj());
@@ -77,7 +50,7 @@ public class PoiService {
                 row.createCell(5).setCellValue(m.getCpf());
                 row.createCell(6).setCellValue(m.getNome());
                 row.createCell(7).setCellValue(m.getRg());
-                row.createCell(8).setCellValue(m.getData().toString());
+                row.createCell(8).setCellValue(m.getData());
                 row.createCell(9).setCellValue(m.getEmail());
                 row.createCell(10).setCellValue(m.getAtivo() ? "Sim" : "Não");
             }
@@ -93,22 +66,10 @@ public class PoiService {
     public byte[] exportarEndereco(List<Endereco> enderecoList) {
         if (enderecoList.isEmpty())
             throw new ValidacaoException("Não é possível gerar relatorio sem endereços!");
-        String[] colunas = {"Código", "Cep", "Endereço", "Número", "Bairro", "Cidade", "Estado", "Telefone", "Monitorador", "Principal"};
+        String[] colunas = {"Código", "CEP", "Endereço", "Número", "Bairro", "Cidade", "Estado", "Telefone", "Monitorador", "Principal"};
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Endereço");
-            Row headerRow = sheet.createRow(0);
-
-            Font headerFont = workbook.createFont();
-            headerFont.setBold(true);
-            CellStyle headerCellStyle = workbook.createCellStyle();
-            headerCellStyle.setFont(headerFont);
-
-            for (int i = 0; i < colunas.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(colunas[i]);
-                cell.setCellStyle(headerCellStyle);
-                sheet.setColumnWidth(i, 18 * 256);
-            }
+            configExportExcel(workbook, sheet, colunas);
 
             int linha = 1;
 
@@ -131,6 +92,22 @@ public class PoiService {
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
             throw new ValidacaoException("Erro ao gerar o relatorio de endereços!");
+        }
+    }
+
+    private void configExportExcel(Workbook workbook, Sheet sheet, String[] colunas){
+        Row headerRow = sheet.createRow(0);
+
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        for (int i = 0; i < colunas.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(colunas[i]);
+            cell.setCellStyle(headerCellStyle);
+            sheet.setColumnWidth(i, 18 * 256);
         }
     }
 
