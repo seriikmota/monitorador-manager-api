@@ -71,8 +71,7 @@ public class EnderecoDAO {
             }
             return lista;
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new ValidacaoException("Erro no filter monitoradorDao");
+            throw new ValidacaoException("Erro ao realizar a filtragem de endereços!");
         }
     }
 }

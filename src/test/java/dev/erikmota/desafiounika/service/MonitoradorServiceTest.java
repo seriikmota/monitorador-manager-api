@@ -1,5 +1,6 @@
 package dev.erikmota.desafiounika.service;
 
+import dev.erikmota.desafiounika.dao.MonitoradorDAO;
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
@@ -31,6 +32,8 @@ class MonitoradorServiceTest {
     private Endereco e;
     @Mock
     private MonitoradorRepository repository;
+    @Mock
+    private MonitoradorDAO monitoradorDAO;
     @Mock
     private List<IVMonitorador> validacoesCad;
 
@@ -101,11 +104,11 @@ class MonitoradorServiceTest {
         TipoPessoa tipoPessoa = TipoPessoa.FISICA;
 
         List<Monitorador> resultadoEsperado = Arrays.asList(new Monitorador(), new Monitorador());
-        when(repository.filtrar(text, ativo, tipoPessoa)).thenReturn(resultadoEsperado);
+        when(monitoradorDAO.filter(text, ativo, tipoPessoa)).thenReturn(resultadoEsperado);
 
         List<Monitorador> resultadoAtual = service.filtrar(text, ativo, tipoPessoa);
 
-        verify(repository).filtrar(text, ativo, tipoPessoa);
+        verify(monitoradorDAO).filter(text, ativo, tipoPessoa);
         assertEquals(resultadoEsperado, resultadoAtual);
     }
 }

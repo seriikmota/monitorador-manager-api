@@ -72,8 +72,7 @@ public class MonitoradorDAO {
             }
             return lista;
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            throw new ValidacaoException("Erro ao filtrar monitorador!");
+            throw new ValidacaoException("Erro ao realizar a filtragem de monitoradores!");
         }
     }
 }
