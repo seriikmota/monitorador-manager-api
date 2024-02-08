@@ -1,5 +1,6 @@
 package dev.erikmota.desafiounika.service;
 
+import dev.erikmota.desafiounika.dao.MonitoradorDAO;
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
@@ -13,14 +14,21 @@ import java.util.*;
 
 @Service
 public class MonitoradorService {
-    @Autowired
-    private MonitoradorRepository repository;
-    @Autowired
-    private List<IVMonitorador> validacoes;
-    @Autowired
-    private EnderecoService enderecoService;
-    private final PoiService poiService = new PoiService();
-    private final JasperService jasperService = new JasperService();
+    private final MonitoradorRepository repository;
+    private final MonitoradorDAO monitoradorDAO;
+    private final EnderecoService enderecoService;
+    private final List<IVMonitorador> validacoes;
+    private final PoiService poiService;
+    private final JasperService jasperService;
+
+    public MonitoradorService(MonitoradorRepository repository, MonitoradorDAO monitoradorDAO, EnderecoService enderecoService, List<IVMonitorador> validacoes, PoiService poiService, JasperService jasperService) {
+        this.repository = repository;
+        this.monitoradorDAO = monitoradorDAO;
+        this.enderecoService = enderecoService;
+        this.validacoes = validacoes;
+        this.poiService = poiService;
+        this.jasperService = jasperService;
+    }
 
     public void cadastrar(Monitorador m){
         validacoes.forEach(v -> v.validar(m));
@@ -43,7 +51,9 @@ public class MonitoradorService {
 
     public List<Monitorador> listar(){
         try {
-            return repository.findAll();
+            List<Monitorador> monitoradores = repository.findAll();
+            Collections.sort(monitoradores);
+            return monitoradores;
         } catch (Exception e) {
             throw new ValidacaoException("Erro ao listar os monitoradores");
         }
@@ -59,7 +69,9 @@ public class MonitoradorService {
     }
 
     public List<Monitorador> filtrar(String text, Boolean ativo, TipoPessoa tipoPessoa) {
-        return repository.filtrar(text, ativo, tipoPessoa);
+        List<Monitorador> monitoradores = monitoradorDAO.filter(text, ativo, tipoPessoa);
+        Collections.sort(monitoradores);
+        return monitoradores;
     }
 
     public byte[] gerarModelo(){
@@ -76,7 +88,7 @@ public class MonitoradorService {
     public byte[] gerarRelatorioPdf(Long id, String text, Boolean ativo, TipoPessoa tipo){
         List<Monitorador> monitoradores = new ArrayList<>();
         if (id == null)
-            monitoradores = repository.filtrar(text, ativo, tipo);
+            monitoradores = monitoradorDAO.filter(text, ativo, tipo);
         else
             monitoradores.add(repository.getReferenceById(id));
         Collections.sort(monitoradores);
@@ -86,7 +98,7 @@ public class MonitoradorService {
     public byte[] gerarRelatorioExcel(Long id, String text, Boolean ativo, TipoPessoa tipo){
         List<Monitorador> monitoradores = new ArrayList<>();
         if (id == null)
-            monitoradores = repository.filtrar(text, ativo, tipo);
+            monitoradores = monitoradorDAO.filter(text, ativo, tipo);
         else
             monitoradores.add(repository.getReferenceById(id));
         Collections.sort(monitoradores);

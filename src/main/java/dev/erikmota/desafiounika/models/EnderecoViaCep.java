@@ -19,7 +19,7 @@ public class EnderecoViaCep {
     }
 
     public Endereco toEndereco(){
-        return new Endereco(cep, logradouro, null, bairro, localidade, uf, null, null, null);
+        return new Endereco(null, cep, logradouro, null, bairro, localidade, uf, null, null, null);
     }
 
 }

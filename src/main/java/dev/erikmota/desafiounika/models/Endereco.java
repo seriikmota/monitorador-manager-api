@@ -27,7 +27,8 @@ public class Endereco implements Comparable<Endereco> {
 
     }
 
-    public Endereco(String cep, String endereco, String numero, String bairro, String cidade, String estado, String telefone, Boolean principal, Monitorador monitorador) {
+    public Endereco(Long id, String cep, String endereco, String numero, String bairro, String cidade, String estado, String telefone, Boolean principal, Monitorador monitorador) {
+        this.id = id;
         this.endereco = endereco;
         this.numero = numero;
         this.cep = cep;
@@ -144,10 +145,6 @@ public class Endereco implements Comparable<Endereco> {
 
     @Override
     public int compareTo(Endereco e) {
-        int comparacaoMonitorador = this.monitorador.getNomeOrRazao().compareTo(e.monitorador.getNomeOrRazao());
-        if (comparacaoMonitorador != 0) {
-            return comparacaoMonitorador;
-        }
         int comparacaoEstado = this.estado.compareTo(e.estado);
         if (comparacaoEstado != 0) {
             return comparacaoEstado;

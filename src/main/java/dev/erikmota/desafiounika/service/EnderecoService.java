@@ -1,5 +1,6 @@
 package dev.erikmota.desafiounika.service;
 
+import dev.erikmota.desafiounika.dao.EnderecoDAO;
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.repository.EnderecoRepository;
@@ -14,15 +15,23 @@ import java.util.List;
 
 @Service
 public class EnderecoService {
-    @Autowired
-    private EnderecoRepository repository;
-    @Autowired
-    private MonitoradorRepository monitoradorRepository;
-    @Autowired
-    private List<IVEndereco> validacoes;
-    private final ViaCepService viaCepService = new ViaCepService();
-    private final JasperService jasperService = new JasperService();
-    private final PoiService poiService = new PoiService();
+    private final EnderecoRepository repository;
+    private final EnderecoDAO enderecoDAO;
+    private final MonitoradorRepository monitoradorRepository;
+    private final List<IVEndereco> validacoes;
+    private final ViaCepService viaCepService;
+    private final JasperService jasperService;
+    private final PoiService poiService;
+
+    public EnderecoService(EnderecoRepository repository, EnderecoDAO enderecoDAO, MonitoradorRepository monitoradorRepository, List<IVEndereco> validacoes, ViaCepService viaCepService, JasperService jasperService, PoiService poiService) {
+        this.repository = repository;
+        this.enderecoDAO = enderecoDAO;
+        this.monitoradorRepository = monitoradorRepository;
+        this.validacoes = validacoes;
+        this.viaCepService = viaCepService;
+        this.jasperService = jasperService;
+        this.poiService = poiService;
+    }
 
     public void cadastrar(Endereco e, Long idM){
         e.setMonitorador(monitoradorRepository.getReferenceById(idM));
@@ -31,7 +40,6 @@ public class EnderecoService {
     }
 
     public void editar(Long idE, Long idM, Endereco e){
-
         Monitorador m = monitoradorRepository.getReferenceById(idM);
         Endereco novoEndereco = repository.getReferenceById(idE);
         e.setMonitorador(m);
@@ -42,7 +50,9 @@ public class EnderecoService {
 
     public List<Endereco> listar(){
         try {
-            return repository.findAll();
+            List<Endereco> enderecos = repository.findAll();
+            Collections.sort(enderecos);
+            return enderecos;
         } catch (Exception e) {
             throw new ValidacaoException("Erro ao listar os endereços");
         }
@@ -64,13 +74,15 @@ public class EnderecoService {
     }
 
     public List<Endereco> filtrar(String text, String estado, String cidade, Long monitorador) {
-        return repository.filtrar(text, estado, cidade, monitorador);
+        List<Endereco> enderecos = enderecoDAO.filter(text, estado, cidade, monitorador);
+        Collections.sort(enderecos);
+        return enderecos;
     }
 
     public byte[] gerarRelatorioPdf(Long id, String text, String estado, String cidade, Long monitorador){
         List<Endereco> enderecos = new ArrayList<>();
         if (id == null)
-            enderecos = repository.filtrar(text, estado, cidade, monitorador);
+            enderecos = enderecoDAO.filter(text, estado, cidade, monitorador);
         else
             enderecos.add(repository.getReferenceById(id));
         Collections.sort(enderecos);
@@ -80,7 +92,7 @@ public class EnderecoService {
     public byte[] gerarRelatorioExcel(Long id, String text, String estado, String cidade, Long monitorador){
         List<Endereco> enderecos = new ArrayList<>();
         if (id == null)
-            enderecos = repository.filtrar(text, estado, cidade, monitorador);
+            enderecos = enderecoDAO.filter(text, estado, cidade, monitorador);
         else
             enderecos.add(repository.getReferenceById(id));
         Collections.sort(enderecos);

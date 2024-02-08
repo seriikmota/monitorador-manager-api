@@ -40,17 +40,19 @@ public class Monitorador implements Comparable<Monitorador> {
 
     }
 
-    public Monitorador(TipoPessoa tipo, String cnpj, String razao, String inscricao, String cpf, String nome, String rg, LocalDate data, String email, Boolean ativo) {
+    public Monitorador(Long id, TipoPessoa tipo, String cpf, String nome, String rg, String cnpj, String razao, String inscricao, String email, LocalDate data, Boolean ativo, List<Endereco> enderecos) {
+        this.id = id;
         this.tipo = tipo;
         setCpf(cpf);
         setCnpj(cnpj);
-        this.nome = nome;
-        this.razao = razao;
+        setNome(nome);
+        setRazao(razao);
         this.email = email;
         this.rg = rg;
         this.inscricao = inscricao;
         this.data = data;
         this.ativo = ativo;
+        this.enderecos = enderecos;
     }
 
     public void editar(Monitorador m) {
