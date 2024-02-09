@@ -3,7 +3,9 @@ package dev.erikmota.desafiounika.controllers;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
 import dev.erikmota.desafiounika.service.MonitoradorService;
-import dev.erikmota.desafiounika.service.ValidacaoException;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
+import dev.erikmota.desafiounika.service.exceptions.JasperException;
+import dev.erikmota.desafiounika.service.exceptions.PoiException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,35 +35,36 @@ public class MonitoradorController {
     @PostMapping
     @Transactional
     public ResponseEntity<String> cadastrar(@RequestBody @Valid Monitorador m, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errorMessage = "Erro: " + Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
         try {
-            if (!bindingResult.hasErrors()) {
-                service.cadastrar(m);
-                return ResponseEntity.status(HttpStatus.CREATED).build();
-            } else {
-                StringBuilder errorMessage = new StringBuilder("Erro:");
-                bindingResult.getFieldErrors().forEach(error ->
-                        errorMessage.append(" ").append(error.getDefaultMessage())
-                );
-                return ResponseEntity.badRequest().body(errorMessage.toString());
-            }
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            service.cadastrar(m);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (ValidacaoException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody @Valid Monitorador m, BindingResult bindingResult) {
+    public ResponseEntity<String> editar(@RequestBody @Valid Monitorador m, @PathVariable Long id, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errorMessage = "Erro: " + Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
         try {
-            if (!bindingResult.hasErrors()) {
-                service.editar(id, m);
-                return ResponseEntity.ok().build();
-            } else {
-                String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-                return ResponseEntity.badRequest().body(errorMessage);
-            }
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            service.editar(m, id);
+            return ResponseEntity.ok().build();
+        } catch (ValidacaoException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
 
@@ -70,54 +74,56 @@ public class MonitoradorController {
         try {
             service.excluir(id);
             return ResponseEntity.ok().build();
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ValidacaoException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
+
     @GetMapping
-    public ResponseEntity<?> listar() {
-        try {
-            List<Monitorador> monitoradores = service.listar();
-            return ResponseEntity.ok(monitoradores);
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<List<Monitorador>> listar() {
+        return ResponseEntity.ok(service.listar());
     }
 
     @GetMapping("/filtrar")
-    public ResponseEntity<List<Monitorador>> filtrar(@RequestParam(name = "text", required = false) String text,
-                                                     @RequestParam(name = "ativo", required = false) Boolean ativo,
-                                                     @RequestParam(name = "tipo", required = false) TipoPessoa tipoPessoa
-    ) {
-        List<Monitorador> monitoradores = service.filtrar(text, ativo, tipoPessoa);
-        return ResponseEntity.ok(monitoradores);
+    public ResponseEntity<?> filtrar(@RequestParam(name = "text", required = false) String text,
+                                     @RequestParam(name = "ativo", required = false) Boolean ativo,
+                                     @RequestParam(name = "tipo", required = false) TipoPessoa tipoPessoa) {
+        try {
+            return ResponseEntity.ok(service.filtrar(text, ativo, tipoPessoa));
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a filtragem dos monitoradores!");
+        }
     }
 
-    @GetMapping("/relatorioPdf")
+    @GetMapping("/pdf")
     public ResponseEntity<?> relatorioPdf(@RequestParam(name = "id", required = false) Long id,
                                           @RequestParam(name = "text", required = false) String text,
                                           @RequestParam(name = "ativo", required = false) Boolean ativo,
                                           @RequestParam(name = "tipo", required = false) TipoPessoa tipo) {
         try {
-
             byte[] relatorioBytes = service.gerarRelatorioPdf(id, text, ativo, tipo);
 
-            String fileName = "RelatorioM";
             LocalDateTime date = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH-mm-ss");
-            fileName += date.format(formatter) + ".pdf";
+            String fileName = "RelatorioM" + date.format(formatter) + ".pdf";
 
-             return ResponseEntity.ok()
+            return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_PDF)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                     .body(new ByteArrayResource(relatorioBytes));
-
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (JasperException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
 
-    @GetMapping("/relatorioExcel")
+    @GetMapping("/excel")
     public ResponseEntity<?> relatorioExcel(@RequestParam(name = "id", required = false) Long id,
                                             @RequestParam(name = "text", required = false) String text,
                                             @RequestParam(name = "ativo", required = false) Boolean ativo,
@@ -125,18 +131,19 @@ public class MonitoradorController {
         try {
             byte[] relatorioBytes = service.gerarRelatorioExcel(id, text, ativo, tipo);
 
-            String fileName = "RelatorioM";
             LocalDateTime date = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH-mm-ss");
-            fileName += date.format(formatter) + ".xlsx";
+            String fileName = "RelatorioM" + date.format(formatter) + ".xlsx";
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                     .body(new ByteArrayResource(relatorioBytes));
-
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ValidacaoException | PoiException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
 
@@ -146,8 +153,8 @@ public class MonitoradorController {
         try {
             service.importar(file);
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ValidacaoException | PoiException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
@@ -159,11 +166,13 @@ public class MonitoradorController {
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"ModeloMonitorador.xlsx\"")
                     .body(new ByteArrayResource(modeloBytes));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getCause());
+        } catch (ValidacaoException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
-
 }
 
 

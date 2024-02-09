@@ -2,8 +2,9 @@ package dev.erikmota.desafiounika.controllers;
 
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.service.EnderecoService;
-import dev.erikmota.desafiounika.service.ValidacaoException;
-import jakarta.persistence.EntityNotFoundException;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
+import dev.erikmota.desafiounika.service.exceptions.JasperException;
+import dev.erikmota.desafiounika.service.exceptions.PoiException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,41 +31,37 @@ public class EnderecoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<String> cadastrar(@RequestParam Long idM, @RequestBody @Valid Endereco e, BindingResult bindingResult) {
+    public ResponseEntity<String> cadastrar(@RequestBody @Valid Endereco e, @RequestParam(name = "monitoradorId") Long monitoradorId, BindingResult bindingResult) {
+       if (bindingResult.hasErrors()){
+           String errorMessage = "Erro: " + Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+           return ResponseEntity.badRequest().body(errorMessage);
+       }
         try {
-            if (!bindingResult.hasErrors()) {
-                service.cadastrar(e, idM);
-                return ResponseEntity.ok().build();
-            }
-            else {
-                StringBuilder errorMessage = new StringBuilder("Erro:");
-                bindingResult.getFieldErrors().forEach(error ->
-                        errorMessage.append(" ").append(error.getDefaultMessage())
-                );
-                return ResponseEntity.badRequest().body(errorMessage.toString());
-            }
+            service.cadastrar(e, monitoradorId);
+            return ResponseEntity.ok().build();
         } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
 
-    @PutMapping("/{idE}")
+    @PutMapping("/{enderecoId}")
     @Transactional
-    public ResponseEntity<String> editar(@PathVariable Long idE,
-                                    @RequestParam Long idM,
-                                    @RequestBody @Valid Endereco e, BindingResult bindingResult){
+    public ResponseEntity<String> editar(@RequestBody @Valid Endereco e, @PathVariable Long enderecoId, @RequestParam(name = "monitoradorId") Long monitoradorId, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            String errorMessage = "Erro: " + Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
         try {
-            if (!bindingResult.hasErrors()) {
-                service.editar(idE, idM, e);
-                return ResponseEntity.ok().build();
-            }
-            else {
-                String errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-                return ResponseEntity.badRequest().body(errorMessage);
-
-            }
-        } catch (ValidacaoException | EntityNotFoundException ex){
+            service.editar(e, enderecoId, monitoradorId);
+            return ResponseEntity.ok().build();
+        } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
 
@@ -73,86 +71,91 @@ public class EnderecoController {
         try {
             service.excluir(id);
             return ResponseEntity.ok().build();
-        } catch (ValidacaoException | EntityNotFoundException ex){
+        } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
 
     @GetMapping
-    public ResponseEntity<?> listar(){
-        try {
-            List<Endereco> enderecos = service.listar();
-            return ResponseEntity.ok(enderecos);
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<List<Endereco>> listar(){
+        return ResponseEntity.ok(service.listar());
     }
 
     @GetMapping("/filtrar")
-    public ResponseEntity<List<Endereco>> filtrar(@RequestParam(name = "text", required = false) String text,
-                                                     @RequestParam(name = "estado", required = false) String estado,
-                                                     @RequestParam(name = "cidade", required = false) String cidade,
-                                                     @RequestParam(name = "monitorador", required = false) Long monitorador
-                                                     ){
-        List<Endereco> enderecos = service.filtrar(text, estado, cidade, monitorador);
-        return ResponseEntity.ok(enderecos);
+    public ResponseEntity<?> filtrar(@RequestParam(name = "text", required = false) String text,
+                                                  @RequestParam(name = "cidade", required = false) String cidade,
+                                                  @RequestParam(name = "estado", required = false) String estado,
+                                                  @RequestParam(name = "monitoradorId", required = false) Long monitoradorId) {
+        try {
+            return ResponseEntity.ok(service.filtrar(text, estado, cidade, monitoradorId));
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a filtragem de endereços!");
+        }
     }
 
-    @GetMapping("/relatorioPdf")
+    @GetMapping("/pdf")
     public ResponseEntity<?> relatorioPdf(@RequestParam(name = "id", required = false) Long id,
                                           @RequestParam(name = "text", required = false) String text,
-                                          @RequestParam(name = "estado", required = false) String estado,
                                           @RequestParam(name = "cidade", required = false) String cidade,
-                                          @RequestParam(name = "monitorador", required = false) Long monitorador) {
+                                          @RequestParam(name = "estado", required = false) String estado,
+                                          @RequestParam(name = "monitoradorId", required = false) Long monitoradorId) {
         try {
-            byte[] relatorioBytes = service.gerarRelatorioPdf(id, text, estado, cidade, monitorador);
+            byte[] relatorioBytes = service.gerarRelatorioPdf(id, text, estado, cidade, monitoradorId);
 
-            String fileName = "RelatorioE";
             LocalDateTime date = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH-mm-ss");
-            fileName += date.format(formatter) + ".pdf";
+            String fileName = "RelatorioE" +  date.format(formatter) + ".pdf";
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_PDF)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                     .body(new ByteArrayResource(relatorioBytes));
-
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (JasperException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
 
-    @GetMapping("/relatorioExcel")
+    @GetMapping("/excel")
     public ResponseEntity<?> relatorioExcel(@RequestParam(name = "id", required = false) Long id,
                                             @RequestParam(name = "text", required = false) String text,
                                             @RequestParam(name = "estado", required = false) String estado,
                                             @RequestParam(name = "cidade", required = false) String cidade,
-                                            @RequestParam(name = "monitorador", required = false) Long monitorador) {
+                                            @RequestParam(name = "monitoradorId", required = false) Long monitoradorId) {
         try {
-            byte[] relatorioBytes = service.gerarRelatorioExcel(id, text, estado, cidade, monitorador);
+            byte[] relatorioBytes = service.gerarRelatorioExcel(id, text, estado, cidade, monitoradorId);
 
-            String fileName = "RelatorioE";
             LocalDateTime date = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH-mm-ss");
-            fileName += date.format(formatter) + ".xlsx";
+            String fileName = "RelatorioE" +  date.format(formatter) + ".xlsx";
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                     .body(new ByteArrayResource(relatorioBytes));
-
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ValidacaoException | PoiException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
 
     @GetMapping("/cep/{cep}")
     public ResponseEntity<?> buscarCep(@PathVariable String cep){
         try {
-            Endereco endereco = service.buscarCep(cep);
-            return ResponseEntity.ok(endereco);
-        } catch (ValidacaoException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok(service.buscarCep(cep));
+        } catch (ValidacaoException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex){
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
 }

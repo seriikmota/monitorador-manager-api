@@ -5,8 +5,8 @@ import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
 import dev.erikmota.desafiounika.repository.MonitoradorRepository;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import dev.erikmota.desafiounika.service.validacoes.IVMonitorador;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,9 +32,9 @@ public class MonitoradorService {
 
     public void cadastrar(Monitorador m){
         validacoes.forEach(v -> v.validar(m));
-        if(m.getEnderecos().isEmpty())
+        if (m.getEnderecos().isEmpty())
             repository.save(m);
-        else{
+        else {
             Endereco e = m.getEnderecos().get(0);
             m.setEnderecos(Collections.emptyList());
             repository.save(m);
@@ -42,21 +42,11 @@ public class MonitoradorService {
         }
     }
 
-    public void editar(Long id, Monitorador m){
-        Monitorador novoMonitorador = repository.getReferenceById(id);
+    public void editar(Monitorador m, Long id){
         m.setId(id);
         validacoes.forEach(v -> v.validar(m));
+        Monitorador novoMonitorador = repository.getReferenceById(id);
         novoMonitorador.editar(m);
-    }
-
-    public List<Monitorador> listar(){
-        try {
-            List<Monitorador> monitoradores = repository.findAll();
-            Collections.sort(monitoradores);
-            return monitoradores;
-        } catch (Exception e) {
-            throw new ValidacaoException("Erro ao listar os monitoradores");
-        }
     }
 
     public void excluir(Long id){
@@ -68,6 +58,12 @@ public class MonitoradorService {
             throw new ValidacaoException("Esse monitorador não está cadastrado!");
     }
 
+    public List<Monitorador> listar(){
+        List<Monitorador> monitoradores = repository.findAll();
+        Collections.sort(monitoradores);
+        return monitoradores;
+    }
+
     public List<Monitorador> filtrar(String text, Boolean ativo, TipoPessoa tipoPessoa) {
         List<Monitorador> monitoradores = monitoradorDAO.filter(text, ativo, tipoPessoa);
         Collections.sort(monitoradores);
@@ -77,32 +73,33 @@ public class MonitoradorService {
     public byte[] gerarModelo(){
         return poiService.gerarModelo();
     }
+
     public void importar(MultipartFile file) {
         List<Monitorador> monitoradores = poiService.importar(file, validacoes);
-        if (!monitoradores.isEmpty()){
+        if (!monitoradores.isEmpty())
             monitoradores.forEach(this::cadastrar);
-        }
-
     }
 
     public byte[] gerarRelatorioPdf(Long id, String text, Boolean ativo, TipoPessoa tipo){
-        List<Monitorador> monitoradores = new ArrayList<>();
-        if (id == null)
-            monitoradores = monitoradorDAO.filter(text, ativo, tipo);
-        else
-            monitoradores.add(repository.getReferenceById(id));
-        Collections.sort(monitoradores);
-        return jasperService.gerarPdfMonitorador(monitoradores);
+        if (id == null){
+            List<Monitorador> monitoradores = monitoradorDAO.filter(text, ativo, tipo);
+            Collections.sort(monitoradores);
+            return jasperService.gerarPdfMonitorador(monitoradores);
+        }
+        else {
+            return jasperService.gerarPdfMonitorador(List.of(repository.getReferenceById(id)));
+        }
     }
 
     public byte[] gerarRelatorioExcel(Long id, String text, Boolean ativo, TipoPessoa tipo){
-        List<Monitorador> monitoradores = new ArrayList<>();
-        if (id == null)
-            monitoradores = monitoradorDAO.filter(text, ativo, tipo);
-        else
-            monitoradores.add(repository.getReferenceById(id));
-        Collections.sort(monitoradores);
-        return poiService.exportarMonitorador(monitoradores);
+        if (id == null){
+            List<Monitorador> monitoradores = monitoradorDAO.filter(text, ativo, tipo);
+            Collections.sort(monitoradores);
+            return poiService.exportarMonitorador(monitoradores);
+        }
+        else {
+            return poiService.exportarMonitorador(List.of(repository.getReferenceById(id)));
+        }
     }
 
 }

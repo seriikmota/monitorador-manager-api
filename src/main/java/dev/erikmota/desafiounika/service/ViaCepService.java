@@ -3,6 +3,7 @@ package dev.erikmota.desafiounika.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.EnderecoViaCep;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -28,7 +29,7 @@ public class ViaCepService {
             EnderecoViaCep enderecoViaCep = mapper.readValue(json, mapper.getTypeFactory().constructType(EnderecoViaCep.class));
             return enderecoViaCep.toEndereco();
         } catch (Exception e){
-            throw new ValidacaoException("Erro ao encontrar o CEP!");
+            throw new ValidacaoException(" Ocorreu um erro ao encontrar o CEP!");
         }
     }
 }

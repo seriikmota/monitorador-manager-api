@@ -1,4 +1,4 @@
-package dev.erikmota.desafiounika.service;
+package dev.erikmota.desafiounika.service.exceptions;
 
 public class ValidacaoException extends RuntimeException {
     public ValidacaoException(String message){

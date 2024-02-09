@@ -3,8 +3,7 @@ package dev.erikmota.desafiounika.service.validacoes;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
 import dev.erikmota.desafiounika.repository.MonitoradorRepository;
-import dev.erikmota.desafiounika.service.ValidacaoException;
-import org.springframework.beans.factory.annotation.Autowired;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 

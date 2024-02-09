@@ -2,7 +2,7 @@ package dev.erikmota.desafiounika.service.validacoes;
 
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
-import dev.erikmota.desafiounika.service.ValidacaoException;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import org.hibernate.validator.internal.constraintvalidators.hv.br.CNPJValidator;
 import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator;
 import org.springframework.core.annotation.Order;

@@ -5,11 +5,10 @@ import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.repository.EnderecoRepository;
 import dev.erikmota.desafiounika.repository.MonitoradorRepository;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import dev.erikmota.desafiounika.service.validacoes.IVEndereco;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,29 +32,19 @@ public class EnderecoService {
         this.poiService = poiService;
     }
 
-    public void cadastrar(Endereco e, Long idM){
-        e.setMonitorador(monitoradorRepository.getReferenceById(idM));
+    public void cadastrar(Endereco e, Long monitoradorId){
+        e.setMonitorador(monitoradorRepository.getReferenceById(monitoradorId));
         validacoes.forEach(v -> v.validar(e));
         repository.save(e);
     }
 
-    public void editar(Long idE, Long idM, Endereco e){
-        Monitorador m = monitoradorRepository.getReferenceById(idM);
+    public void editar(Endereco e, Long idE, Long monitoradorId){
+        Monitorador m = monitoradorRepository.getReferenceById(monitoradorId);
         Endereco novoEndereco = repository.getReferenceById(idE);
         e.setMonitorador(m);
         validacoes.forEach(v -> v.validar(e));
 
         novoEndereco.editar(e);
-    }
-
-    public List<Endereco> listar(){
-        try {
-            List<Endereco> enderecos = repository.findAll();
-            Collections.sort(enderecos);
-            return enderecos;
-        } catch (Exception e) {
-            throw new ValidacaoException("Erro ao listar os endereços");
-        }
     }
 
     public void excluir(Long id){
@@ -65,12 +54,10 @@ public class EnderecoService {
             throw new ValidacaoException("Este endereço não está cadastrado");
     }
 
-    public Endereco buscarCep(String cep){
-        cep = cep.replaceAll("[^0-9]", "");
-        if (cep.length() == 8)
-            return viaCepService.buscarCep(cep);
-        else
-            throw new ValidacaoException("Esse CEP é inválido");
+    public List<Endereco> listar(){
+        List<Endereco> enderecos = repository.findAll();
+        Collections.sort(enderecos);
+        return enderecos;
     }
 
     public List<Endereco> filtrar(String text, String estado, String cidade, Long monitorador) {
@@ -80,22 +67,30 @@ public class EnderecoService {
     }
 
     public byte[] gerarRelatorioPdf(Long id, String text, String estado, String cidade, Long monitorador){
-        List<Endereco> enderecos = new ArrayList<>();
-        if (id == null)
-            enderecos = enderecoDAO.filter(text, estado, cidade, monitorador);
+        if (id == null){
+            List<Endereco> enderecos = enderecoDAO.filter(text, estado, cidade, monitorador);
+            Collections.sort(enderecos);
+            return jasperService.gerarPdfEndereco(enderecos);
+        }
         else
-            enderecos.add(repository.getReferenceById(id));
-        Collections.sort(enderecos);
-        return jasperService.gerarPdfEndereco(enderecos);
+            return jasperService.gerarPdfEndereco(List.of(repository.getReferenceById(id)));
     }
 
     public byte[] gerarRelatorioExcel(Long id, String text, String estado, String cidade, Long monitorador){
-        List<Endereco> enderecos = new ArrayList<>();
-        if (id == null)
-            enderecos = enderecoDAO.filter(text, estado, cidade, monitorador);
+        if (id == null){
+            List<Endereco> enderecos = enderecoDAO.filter(text, estado, cidade, monitorador);
+            Collections.sort(enderecos);
+            return poiService.exportarEndereco(enderecos);
+        }
         else
-            enderecos.add(repository.getReferenceById(id));
-        Collections.sort(enderecos);
-        return poiService.exportarEndereco(enderecos);
+            return poiService.exportarEndereco(List.of(repository.getReferenceById(id)));
+    }
+
+    public Endereco buscarCep(String cep){
+        cep = cep.replaceAll("[^0-9]", "");
+        if (cep.length() == 8)
+            return viaCepService.buscarCep(cep);
+        else
+            throw new ValidacaoException("Esse CEP é inválido");
     }
 }

@@ -2,7 +2,7 @@ package dev.erikmota.desafiounika.service.validacoes;
 
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.repository.EnderecoRepository;
-import dev.erikmota.desafiounika.service.ValidacaoException;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

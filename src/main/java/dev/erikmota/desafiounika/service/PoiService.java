@@ -3,6 +3,8 @@ package dev.erikmota.desafiounika.service;
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
+import dev.erikmota.desafiounika.service.exceptions.PoiException;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import dev.erikmota.desafiounika.service.validacoes.IVMonitorador;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -25,14 +27,14 @@ public class PoiService {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             workbook.write(byteArrayOutputStream);
             return byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            throw new ValidacaoException("Erro ao gerar o modelo para importação de monitoradores!");
+        } catch (IOException ex) {
+            throw new PoiException(" Ocorreu um erro ao gerar o modelo para importação de monitoradores!");
         }
     }
 
     public byte[] exportarMonitorador(List<Monitorador> monitoradorList) {
         if (monitoradorList.isEmpty())
-            throw new ValidacaoException("Não é possível gerar relatorio sem monitoradores!");
+            throw new PoiException("Não é possível gerar relatorio sem monitoradores!");
         String[] colunas = {"Código", "Tipo Pessoa", "CNPJ", "Razao Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Ativo"};
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Monitorador");
@@ -54,18 +56,17 @@ public class PoiService {
                 row.createCell(9).setCellValue(m.getEmail());
                 row.createCell(10).setCellValue(m.getAtivo() ? "Sim" : "Não");
             }
-
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             workbook.write(byteArrayOutputStream);
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
-            throw new ValidacaoException("Erro ao gerar o relatorio de monitoradores!");
+            throw new PoiException(" Ocorreu um erro ao gerar o relatorio de monitoradores!");
         }
     }
 
     public byte[] exportarEndereco(List<Endereco> enderecoList) {
         if (enderecoList.isEmpty())
-            throw new ValidacaoException("Não é possível gerar relatorio sem endereços!");
+            throw new PoiException("Não é possível gerar relatorio sem endereços!");
         String[] colunas = {"Código", "CEP", "Endereço", "Número", "Bairro", "Cidade", "Estado", "Telefone", "Monitorador", "Principal"};
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Endereço");
@@ -86,23 +87,20 @@ public class PoiService {
                 row.createCell(8).setCellValue(e.getMonitorador().getNomeOrRazao());
                 row.createCell(9).setCellValue(e.getPrincipal() ? "Sim" : "Não");
             }
-
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             workbook.write(byteArrayOutputStream);
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
-            throw new ValidacaoException("Erro ao gerar o relatorio de endereços!");
+            throw new PoiException(" Ocorreu um erro ao gerar o relatorio de endereços!");
         }
     }
 
-    private void configExportExcel(Workbook workbook, Sheet sheet, String[] colunas){
+    private void configExportExcel(Workbook workbook, Sheet sheet, String[] colunas) {
         Row headerRow = sheet.createRow(0);
-
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
         CellStyle headerCellStyle = workbook.createCellStyle();
         headerCellStyle.setFont(headerFont);
-
         for (int i = 0; i < colunas.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(colunas[i]);
@@ -113,7 +111,7 @@ public class PoiService {
 
     public List<Monitorador> importar(MultipartFile file, List<IVMonitorador> validacoes) {
         if (!Objects.requireNonNull(file.getOriginalFilename()).endsWith(".xlsx"))
-            throw new ValidacaoException("Esse tipo de arquivo não é suportado, apenas .xlsx!");
+            throw new PoiException("Esse tipo de arquivo não é suportado, apenas .xlsx!");
 
         List<Monitorador> monitoradores = new ArrayList<>();
         int linha = 0, coluna = 0;
@@ -121,12 +119,12 @@ public class PoiService {
             Iterator<Row> rowIterator = wb.getSheetAt(0).rowIterator();
 
             if (!rowIterator.hasNext()) {
-                throw new ValidacaoException("O documento está vazio!");
+                throw new PoiException("O documento está vazio!");
             } else {
                 rowIterator.next();
                 linha++;
                 if (!rowIterator.hasNext())
-                    throw new ValidacaoException("O documento está vazio!");
+                    throw new PoiException("O documento está vazio!");
             }
             while (rowIterator.hasNext()) {
                 linha++;
@@ -161,17 +159,19 @@ public class PoiService {
                 verificaDuplicados(monitoradores);
             }
         } catch (ValidacaoException e) {
-            throw new ValidacaoException(e.getMessage() + " Linha: " + linha);
-        } catch (Exception e) {
-            throw new ValidacaoException("Erro na Linha: " + linha + " Coluna: " + coluna);
+            throw new PoiException(e.getMessage() + " Linha: " + linha);
+        } catch (PoiException ex) {
+            throw new PoiException(ex.getMessage());
+        } catch (Exception ex) {
+            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            throw new PoiException("Erro na Linha: " + linha + " Coluna: " + coluna);
         }
         return monitoradores;
     }
 
     private static LocalDate converteData(Date data) {
         if (data == null)
-            throw new ValidacaoException("O campo Data é obrigatório!");
-
+            throw new PoiException("O campo Data é obrigatório!");
         return data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
@@ -179,9 +179,9 @@ public class PoiService {
         for (int i = monitoradores.size() - 1; i >= 1; i--) {
             for (int j = i - 1; j >= 0; j--) {
                 if (monitoradores.get(i).getCpf() != null && Objects.equals(monitoradores.get(i).getCpf(), monitoradores.get(j).getCpf()))
-                    throw new ValidacaoException("Esse CPF já foi digitado!");
+                    throw new PoiException("Esse CPF já foi digitado!");
                 if (monitoradores.get(i).getCnpj() != null && Objects.equals(monitoradores.get(i).getCnpj(), monitoradores.get(j).getCnpj()))
-                    throw new ValidacaoException("Esse CNPJ já foi digitado!");
+                    throw new PoiException("Esse CNPJ já foi digitado!");
             }
         }
     }

@@ -2,10 +2,8 @@ package dev.erikmota.desafiounika.dao;
 
 import com.mysql.cj.util.StringUtils;
 import dev.erikmota.desafiounika.models.Endereco;
-import dev.erikmota.desafiounika.models.Monitorador;
-import dev.erikmota.desafiounika.models.TipoPessoa;
-import dev.erikmota.desafiounika.service.ValidacaoException;
-import org.springframework.beans.factory.annotation.Autowired;
+import dev.erikmota.desafiounika.repository.MonitoradorRepository;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -15,9 +13,11 @@ import java.util.List;
 
 @Repository
 public class EnderecoDAO {
+    private final MonitoradorRepository monitoradorRepository;
     private final DataSource dataSource;
 
-    public EnderecoDAO(DataSource dataSource) {
+    public EnderecoDAO(MonitoradorRepository monitoradorRepository, DataSource dataSource) {
+        this.monitoradorRepository = monitoradorRepository;
         this.dataSource = dataSource;
     }
 
@@ -66,12 +66,12 @@ public class EnderecoDAO {
                         resultSet.getString("estado"),
                         resultSet.getString("telefone"),
                         resultSet.getBoolean("principal"),
-                        null);
+                        monitoradorRepository.getReferenceById(resultSet.getLong("monitorador_id")));
                 lista.add(e);
             }
             return lista;
         } catch (SQLException e) {
-            throw new ValidacaoException("Erro ao realizar a filtragem de endereços!");
+            throw new ValidacaoException(" Ocorreu um erro ao realizar a filtragem de endereços!");
         }
     }
 }
