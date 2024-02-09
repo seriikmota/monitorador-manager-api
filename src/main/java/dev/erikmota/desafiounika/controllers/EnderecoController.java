@@ -31,7 +31,7 @@ public class EnderecoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<String> cadastrar(@RequestBody @Valid Endereco e, @RequestParam(name = "monitoradorId") Long monitoradorId, BindingResult bindingResult) {
+    public ResponseEntity<String> cadastrar(@RequestParam(name = "monitoradorId") Long monitoradorId, @RequestBody @Valid Endereco e, BindingResult bindingResult) {
        if (bindingResult.hasErrors()){
            String errorMessage = "Erro: " + Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
            return ResponseEntity.badRequest().body(errorMessage);
@@ -49,7 +49,7 @@ public class EnderecoController {
 
     @PutMapping("/{enderecoId}")
     @Transactional
-    public ResponseEntity<String> editar(@RequestBody @Valid Endereco e, @PathVariable Long enderecoId, @RequestParam(name = "monitoradorId") Long monitoradorId, BindingResult bindingResult){
+    public ResponseEntity<String> editar(@PathVariable Long enderecoId, @RequestParam(name = "monitoradorId") Long monitoradorId, @RequestBody @Valid Endereco e, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             String errorMessage = "Erro: " + Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             return ResponseEntity.badRequest().body(errorMessage);

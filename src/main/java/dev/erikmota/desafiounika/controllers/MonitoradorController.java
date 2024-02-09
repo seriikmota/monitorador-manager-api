@@ -52,7 +52,7 @@ public class MonitoradorController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> editar(@RequestBody @Valid Monitorador m, @PathVariable Long id, BindingResult bindingResult) {
+    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody @Valid Monitorador m, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMessage = "Erro: " + Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
             return ResponseEntity.badRequest().body(errorMessage);
