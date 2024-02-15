@@ -1,8 +1,8 @@
 package dev.erikmota.desafiounika.service.validacoes;
 
+import dev.erikmota.desafiounika.dao.MonitoradorDAO;
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.models.Monitorador;
-import dev.erikmota.desafiounika.repository.MonitoradorRepository;
 import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,13 +23,13 @@ class VEIdMonExistenteTest {
     @Mock
     private Monitorador m;
     @Mock
-    private MonitoradorRepository repository;
+    private MonitoradorDAO monitoradorDAO;
 
     @Test
     @DisplayName("Retornar sucesso para monitorador existente")
     void validarCase1(){
         given(e.getMonitorador()).willReturn(m);
-        given(repository.existsById(m.getId())).willReturn(true);
+        given(monitoradorDAO.existsById(m.getId())).willReturn(true);
 
         assertDoesNotThrow(() -> validacao.validar(e));
     }
@@ -38,7 +38,7 @@ class VEIdMonExistenteTest {
     @DisplayName("Retornar exception para monitorador não existente")
     void validarCase2(){
         given(e.getMonitorador()).willReturn(m);
-        given(repository.existsById(m.getId())).willReturn(false);
+        given(monitoradorDAO.existsById(m.getId())).willReturn(false);
 
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));

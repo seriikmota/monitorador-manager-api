@@ -7,7 +7,6 @@ import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import dev.erikmota.desafiounika.service.exceptions.JasperException;
 import dev.erikmota.desafiounika.service.exceptions.PoiException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,8 +27,11 @@ import java.util.Objects;
 @CrossOrigin(origins = {"http://localhost:8080/", "http://localhost:4200/"})
 public class MonitoradorController {
 
-    @Autowired
-    private MonitoradorService service;
+    private final MonitoradorService service;
+
+    public MonitoradorController(MonitoradorService service) {
+        this.service = service;
+    }
 
     @PostMapping
     @Transactional
@@ -45,7 +46,7 @@ public class MonitoradorController {
         } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
@@ -63,7 +64,7 @@ public class MonitoradorController {
         } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
@@ -77,7 +78,7 @@ public class MonitoradorController {
         } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
@@ -94,7 +95,7 @@ public class MonitoradorController {
         try {
             return ResponseEntity.ok(service.filtrar(text, ativo, tipoPessoa));
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a filtragem dos monitoradores!");
         }
     }
@@ -118,7 +119,7 @@ public class MonitoradorController {
         } catch (JasperException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
@@ -142,7 +143,7 @@ public class MonitoradorController {
         } catch (ValidacaoException | PoiException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
@@ -169,7 +170,7 @@ public class MonitoradorController {
         } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }

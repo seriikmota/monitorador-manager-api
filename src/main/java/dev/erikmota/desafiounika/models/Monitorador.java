@@ -2,15 +2,15 @@ package dev.erikmota.desafiounika.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mysql.cj.util.StringUtils;
 import jakarta.persistence.*;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Entity
 @Table(name="monitorador")
@@ -22,51 +22,42 @@ public class Monitorador implements Comparable<Monitorador> {
     private TipoPessoa tipo;
     @CPF
     private String cpf;
+    private String nome;
+    private String rg;
     @CNPJ
     private String cnpj;
-    private String nome;
     private String razao;
-    private String rg;
     private String inscricao;
     private String email;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate data;
     private Boolean ativo;
-    @OneToMany(mappedBy = "monitorador", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "monitorador")
     private List<Endereco> enderecos = new ArrayList<>();
 
-    public Monitorador(){
-
-    }
+    public Monitorador() {}
 
     public Monitorador(Long id, TipoPessoa tipo, String cpf, String nome, String rg, String cnpj, String razao, String inscricao, String email, LocalDate data, Boolean ativo, List<Endereco> enderecos) {
         this.id = id;
         this.tipo = tipo;
-        setCpf(cpf);
-        setCnpj(cnpj);
-        setNome(nome);
-        setRazao(razao);
-        this.email = email;
+        this.setCpf(cpf);
+        this.nome = nome;
         this.rg = rg;
+        this.setCnpj(cnpj);
+        this.razao = razao;
         this.inscricao = inscricao;
+        this.email = email;
         this.data = data;
         this.ativo = ativo;
         this.enderecos = enderecos;
     }
 
-    public void editar(Monitorador m) {
-        this.tipo = m.tipo;
-        this.cpf = m.cpf;
-        this.cnpj = m.cnpj;
-        this.nome = m.nome;
-        this.razao = m.razao;
-        this.email = m.email;
-        this.rg = m.rg;
-        this.inscricao = m.inscricao;
-        this.data = m.data;
-        this.ativo = m.ativo;
-        this.enderecos = m.enderecos;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public TipoPessoa getTipo() {
@@ -78,32 +69,12 @@ public class Monitorador implements Comparable<Monitorador> {
     }
 
     public String getCpf() {
-        if (cpf != null)
-            return cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9);
-        else
-            return null;
+        return cpf;
     }
 
     public void setCpf(String cpf) {
-        if (cpf != null)
+        if (!StringUtils.isEmptyOrWhitespaceOnly(cpf))
             this.cpf = cpf.replaceAll("[^0-9]", "");
-        else
-            this.cpf = null;
-    }
-
-    public String getCnpj() {
-        if (cnpj != null)
-            return cnpj.substring(0, 2) + "." + cnpj.substring(2, 5) + "." +
-                    cnpj.substring(5, 8) + "/" + cnpj.substring(8, 12) + "-" + cnpj.substring(12);
-        else
-            return null;
-    }
-
-    public void setCnpj(String cnpj) {
-        if (cnpj != null)
-            this.cnpj = cnpj.replaceAll("[^0-9]", "");
-        else
-            this.cnpj = null;
     }
 
     public String getNome() {
@@ -111,28 +82,7 @@ public class Monitorador implements Comparable<Monitorador> {
     }
 
     public void setNome(String nome) {
-        if (nome == null || nome.isEmpty())
-            this.nome = null;
-        else
-            this.nome = nome;
-
-    }
-
-    public String getRazao() {
-        return razao;
-    }
-
-    public void setRazao(String razao) {
-        if (razao == null || razao.isEmpty()) this.razao = null;
-        else this.razao = razao;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+        this.nome = nome;
     }
 
     public String getRg() {
@@ -143,6 +93,23 @@ public class Monitorador implements Comparable<Monitorador> {
         this.rg = rg;
     }
 
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        if (!StringUtils.isEmptyOrWhitespaceOnly(cnpj))
+            this.cnpj = cnpj.replaceAll("[^0-9]", "");
+    }
+
+    public String getRazao() {
+        return razao;
+    }
+
+    public void setRazao(String razao) {
+        this.razao = razao;
+    }
+
     public String getInscricao() {
         return inscricao;
     }
@@ -151,9 +118,16 @@ public class Monitorador implements Comparable<Monitorador> {
         this.inscricao = inscricao;
     }
 
-    public String getData() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return data.format(formatter);
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public LocalDate getData() {
+        return data;
     }
 
     public void setData(LocalDate data) {
@@ -176,31 +150,6 @@ public class Monitorador implements Comparable<Monitorador> {
         this.enderecos = enderecos;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return "Monitorador{" +
-                "tipo=" + tipo +
-                ", cpf='" + cpf + '\'' +
-                ", cnpj='" + cnpj + '\'' +
-                ", nome='" + nome + '\'' +
-                ", razao='" + razao + '\'' +
-                ", rg='" + rg + '\'' +
-                ", inscricao='" + inscricao + '\'' +
-                ", email='" + email + '\'' +
-                ", data='" + data + '\'' +
-                ", ativo=" + ativo +
-                ", enderecos=" + enderecos +
-                '}';
-    }
-
     @Override
     public int compareTo(Monitorador m) {
         int comparacaoTipo = this.tipo.compareTo(m.tipo);
@@ -220,5 +169,19 @@ public class Monitorador implements Comparable<Monitorador> {
             return nome;
         else
             return razao;
+    }
+
+    @Override
+    public String toString() {
+        return "\ntipo=" + tipo +
+                ", \ncpf='" + cpf + '\'' +
+                ", \nnome='" + nome + '\'' +
+                ", \nrg='" + rg + '\'' +
+                ", \ncnpj='" + cnpj + '\'' +
+                ", \nrazao='" + razao + '\'' +
+                ", \ninscricao='" + inscricao + '\'' +
+                ", \nemail='" + email + '\'' +
+                ", \ndata=" + data +
+                ", \nativo=" + ativo + "\n";
     }
 }

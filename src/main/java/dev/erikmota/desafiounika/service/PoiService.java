@@ -19,7 +19,7 @@ import java.util.*;
 @Service
 public class PoiService {
     public byte[] gerarModelo() {
-        String[] colunas = {"Tipo Pessoa", "CNPJ", "Razao Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Ativo"};
+        String[] colunas = {"Tipo Pessoa", "CNPJ", "Razão Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Status"};
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Monitorador");
             configExportExcel(workbook, sheet, colunas);
@@ -35,10 +35,14 @@ public class PoiService {
     public byte[] exportarMonitorador(List<Monitorador> monitoradorList) {
         if (monitoradorList.isEmpty())
             throw new PoiException("Não é possível gerar relatorio sem monitoradores!");
-        String[] colunas = {"Código", "Tipo Pessoa", "CNPJ", "Razao Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Ativo"};
+        String[] colunas = {"Código", "Tipo Pessoa", "CNPJ", "Razão Social", "Inscrição Estadual", "CPF", "Nome", "RG", "Data", "Email", "Status"};
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Monitorador");
             configExportExcel(workbook, sheet, colunas);
+
+            CreationHelper createHelper = workbook.getCreationHelper();
+            CellStyle dateCellStyle = workbook.createCellStyle();
+            dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
 
             int linha = 1;
 
@@ -52,9 +56,11 @@ public class PoiService {
                 row.createCell(5).setCellValue(m.getCpf());
                 row.createCell(6).setCellValue(m.getNome());
                 row.createCell(7).setCellValue(m.getRg());
-                row.createCell(8).setCellValue(m.getData());
+                Cell cell = row.createCell(8);
+                cell.setCellValue(m.getData());
+                cell.setCellStyle(dateCellStyle);
                 row.createCell(9).setCellValue(m.getEmail());
-                row.createCell(10).setCellValue(m.getAtivo() ? "Sim" : "Não");
+                row.createCell(10).setCellValue(m.getAtivo() ? "Ativo" : "Inativo");
             }
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             workbook.write(byteArrayOutputStream);
@@ -67,7 +73,7 @@ public class PoiService {
     public byte[] exportarEndereco(List<Endereco> enderecoList) {
         if (enderecoList.isEmpty())
             throw new PoiException("Não é possível gerar relatorio sem endereços!");
-        String[] colunas = {"Código", "CEP", "Endereço", "Número", "Bairro", "Cidade", "Estado", "Telefone", "Monitorador", "Principal"};
+        String[] colunas = {"Código", "CEP", "Endereço", "Número", "Bairro", "Cidade", "Estado", "Telefone", "Código Monitorador", "Nome Monitorador", "Principal"};
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Endereço");
             configExportExcel(workbook, sheet, colunas);
@@ -84,8 +90,9 @@ public class PoiService {
                 row.createCell(5).setCellValue(e.getCidade());
                 row.createCell(6).setCellValue(e.getEstado());
                 row.createCell(7).setCellValue(e.getTelefone());
-                row.createCell(8).setCellValue(e.getMonitorador().getNomeOrRazao());
-                row.createCell(9).setCellValue(e.getPrincipal() ? "Sim" : "Não");
+                row.createCell(8).setCellValue(e.getMonitorador().getId());
+                row.createCell(9).setCellValue(e.getMonitorador().getNomeOrRazao());
+                row.createCell(10).setCellValue(e.getPrincipal() ? "Sim" : "Não");
             }
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             workbook.write(byteArrayOutputStream);
@@ -135,22 +142,16 @@ public class PoiService {
                     coluna = index + 1;
 
                     switch (index) {
-                        case 0 -> m.setTipo(TipoPessoa.valueOf(cell.getStringCellValue().toUpperCase()));
-                        case 1 -> {
-                            String cnpj = obterValor(cell);
-                            m.setCnpj(cnpj != null && cnpj.replaceAll("[^0-9]", "").length() == 14 ? cnpj : null);
-                        }
-                        case 2 -> m.setRazao(cell.getStringCellValue());
+                        case 0 -> m.setTipo(TipoPessoa.valueOf(obterValor(cell).toUpperCase()));
+                        case 1 -> m.setCnpj(obterValor(cell));
+                        case 2 -> m.setRazao(obterValor(cell));
                         case 3 -> m.setInscricao(obterValor(cell));
-                        case 4 -> {
-                            String cpf = obterValor(cell);
-                            m.setCpf(cpf != null && cpf.replaceAll("[^0-9]", "").length() == 11 ? cpf : null);
-                        }
-                        case 5 -> m.setNome(cell.getStringCellValue());
+                        case 4 -> m.setCpf(obterValor(cell));
+                        case 5 -> m.setNome(obterValor(cell));
                         case 6 -> m.setRg(obterValor(cell));
                         case 7 -> m.setData(converteData(cell.getDateCellValue()));
-                        case 8 -> m.setEmail(cell.getStringCellValue());
-                        case 9 -> m.setAtivo(cell.getStringCellValue().equalsIgnoreCase("Sim"));
+                        case 8 -> m.setEmail(obterValor(cell));
+                        case 9 -> m.setAtivo(obterValor(cell).equalsIgnoreCase("Ativo"));
                     }
                 }
                 validacoes.forEach(v -> v.validar(m));

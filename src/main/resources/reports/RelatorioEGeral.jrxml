@@ -2,9 +2,38 @@
 <!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4bf183ac-c57e-45d3-bef1-a9ad1121735d">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Desafio"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Correto"/>
+	<parameter name="CIDADE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ESTADO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TEXT" class="java.lang.String">
+		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MONITORADOR_ID" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ID" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+	</parameter>
 	<queryString language="SQL">
-		<![CDATA[select * from endereco]]>
+		<![CDATA[SELECT e.*, m.nome, m.razao
+FROM endereco e, monitorador m
+WHERE m.id = e.monitorador_id
+AND ($P{ID} is null or e.id = $P{ID})
+AND ($P{MONITORADOR_ID} is null or e.monitorador_id = $P{MONITORADOR_ID})
+AND ($P{CIDADE} is null or e.cidade LIKE CONCAT('%', $P{CIDADE}, '%'))
+AND ($P{ESTADO} is null or e.estado LIKE CONCAT('%', $P{ESTADO}, '%'))
+AND ($P{TEXT} is null or 
+	(e.cep LIKE CONCAT('%', $P{TEXT}, '%')
+	OR e.endereco LIKE CONCAT('%', $P{TEXT}, '%')
+	OR e.bairro LIKE CONCAT('%', $P{TEXT}, '%')
+	OR e.cidade LIKE CONCAT('%', $P{TEXT}, '%')
+	OR e.estado LIKE CONCAT('%', $P{TEXT}, '%')
+	OR e.telefone LIKE CONCAT('%', $P{TEXT}, '%'))
+)]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.label" value="id"/>
@@ -42,9 +71,17 @@
 		<property name="com.jaspersoft.studio.field.label" value="telefone"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="endereco"/>
 	</field>
-	<field name="monitorador_id" class="java.lang.String">
+	<field name="monitorador_id" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.label" value="monitorador_id"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="endereco"/>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="monitorador"/>
+	</field>
+	<field name="razao" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="razao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="monitorador"/>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -78,35 +115,35 @@
 					<text><![CDATA[ID]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="58" y="0" width="58" height="30" uuid="187ef4d8-f448-4a55-a083-839a17da8ae6">
+					<reportElement x="58" y="0" width="80" height="30" uuid="187ef4d8-f448-4a55-a083-839a17da8ae6">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3d9a1333-e7f7-48dd-add0-7706c968e74e"/>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<text><![CDATA[Endereco]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="116" y="0" width="52" height="30" uuid="45550fce-f5e1-45bc-bad7-65b05ad4add2">
+					<reportElement x="138" y="0" width="52" height="30" uuid="45550fce-f5e1-45bc-bad7-65b05ad4add2">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bc491153-3a77-48b3-9757-359e8e1c095f"/>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<text><![CDATA[Número]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="168" y="0" width="62" height="30" uuid="ebe87e49-6a22-46d3-bc2a-06f76f80f866">
+					<reportElement x="190" y="0" width="62" height="30" uuid="ebe87e49-6a22-46d3-bc2a-06f76f80f866">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b0e32b96-531e-423c-83ff-7ae2799c52f4"/>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<text><![CDATA[Bairro]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="230" y="0" width="58" height="30" uuid="dbe57fc2-7501-448b-8ab6-b26358779606">
+					<reportElement x="252" y="0" width="58" height="30" uuid="dbe57fc2-7501-448b-8ab6-b26358779606">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dac9ee57-dbb7-4428-8a55-5cee39870acf"/>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
 					<text><![CDATA[Cidade]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="288" y="0" width="68" height="30" uuid="f708747d-2b1d-4c03-92c8-fca4721fc331">
+					<reportElement x="310" y="0" width="46" height="30" uuid="f708747d-2b1d-4c03-92c8-fca4721fc331">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="920264e6-3e29-437b-bd22-d91ae32b1727"/>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
@@ -155,7 +192,7 @@
 				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="288" y="6" width="68" height="20" uuid="2e5709f8-8525-4e7b-b312-fcc34759fe0c">
+				<reportElement x="310" y="6" width="46" height="20" uuid="2e5709f8-8525-4e7b-b312-fcc34759fe0c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b0e32b96-531e-423c-83ff-7ae2799c52f4"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -170,10 +207,13 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{telefone}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[String.format("(%s) %s-%s",
+                    $F{telefone}.substring(0, 2),
+                    $F{telefone}.substring(2, 7),
+                    $F{telefone}.substring(7))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="58" y="6" width="58" height="20" uuid="ee7825f4-bb17-41a7-8601-a903a70b8699">
+				<reportElement x="58" y="6" width="80" height="20" uuid="ee7825f4-bb17-41a7-8601-a903a70b8699">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bc491153-3a77-48b3-9757-359e8e1c095f"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -182,7 +222,7 @@
 				<textFieldExpression><![CDATA[$F{endereco}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="230" y="6" width="58" height="20" uuid="6f080d41-b816-4f99-b53e-87c77d75dd6b">
+				<reportElement x="252" y="6" width="58" height="20" uuid="6f080d41-b816-4f99-b53e-87c77d75dd6b">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3d9a1333-e7f7-48dd-add0-7706c968e74e"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -191,7 +231,7 @@
 				<textFieldExpression><![CDATA[$F{cidade}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="116" y="6" width="52" height="20" uuid="65e80f74-5076-487d-bc9d-9bc2dcc8092c">
+				<reportElement x="138" y="6" width="52" height="20" uuid="65e80f74-5076-487d-bc9d-9bc2dcc8092c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dac9ee57-dbb7-4428-8a55-5cee39870acf"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -200,7 +240,7 @@
 				<textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="168" y="6" width="62" height="20" uuid="40355170-dec9-4235-b1dd-66922681e54c">
+				<reportElement x="190" y="6" width="62" height="20" uuid="40355170-dec9-4235-b1dd-66922681e54c">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b0e32b96-531e-423c-83ff-7ae2799c52f4"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -224,19 +264,19 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cep}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cep}.substring(0, 5) + "-" + $F{cep}.substring(5)]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="0" width="555" height="1" uuid="2e8d9157-7cbb-4d2d-b203-a16c9d73d597"/>
 			</line>
 			<textField isBlankWhenNull="true">
-				<reportElement x="410" y="6" width="102" height="20" uuid="657b7c63-eb36-4bd5-8a1d-3b9c0d2ced24">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ae75a2e8-8295-4b27-bd67-90957351012b"/>
+				<reportElement x="410" y="6" width="102" height="20" uuid="c0eab6a1-4361-4a70-a28b-7de22f5078f6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="920264e6-3e29-437b-bd22-d91ae32b1727"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{monitorador_id}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nome} != null ? $F{nome} : $F{razao}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

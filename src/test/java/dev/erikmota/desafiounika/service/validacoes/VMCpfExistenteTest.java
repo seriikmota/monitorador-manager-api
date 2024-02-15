@@ -1,8 +1,8 @@
 package dev.erikmota.desafiounika.service.validacoes;
 
+import dev.erikmota.desafiounika.dao.MonitoradorDAO;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
-import dev.erikmota.desafiounika.repository.MonitoradorRepository;
 import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ class VMCpfExistenteTest {
     @InjectMocks
     private VMCpfExistente validacao;
     @Mock
-    private MonitoradorRepository repository;
+    private MonitoradorDAO monitoradorDAO;
     @Mock
     private Monitorador m;
 
@@ -37,7 +37,7 @@ class VMCpfExistenteTest {
 
         given(m.getTipo()).willReturn(TipoPessoa.FISICA);
         given(m.getCpf()).willReturn("");
-        given(repository.existsByCpf(m.getCpf())).willReturn(false);
+        given(monitoradorDAO.existsByCpf(m.getCpf())).willReturn(false);
 
         assertDoesNotThrow(() -> validacao.validar(m));
     }
@@ -48,9 +48,9 @@ class VMCpfExistenteTest {
 
         given(m.getTipo()).willReturn(TipoPessoa.FISICA);
         given(m.getCpf()).willReturn("");
-        given(repository.existsByCpf(m.getCpf())).willReturn(true);
+        given(monitoradorDAO.existsByCpf(m.getCpf())).willReturn(true);
 
-        given(repository.findByCpf("")).willReturn(new Monitorador());
+        given(monitoradorDAO.findByCpf("")).willReturn(new Monitorador());
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
         assertEquals("Esse CPF já está cadastrado!", exception.getMessage());

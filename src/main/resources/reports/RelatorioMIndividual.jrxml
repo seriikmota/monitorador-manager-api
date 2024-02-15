@@ -2,9 +2,10 @@
 <!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4bf183ac-c57e-45d3-bef1-a9ad1121735d">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Desafio"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Correto"/>
+	<parameter name="ID" class="java.lang.Long"/>
 	<queryString language="SQL">
-		<![CDATA[select * from monitorador]]>
+		<![CDATA[select * from monitorador where id =  $P{ID} ]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.label" value="id"/>
@@ -22,7 +23,7 @@
 		<property name="com.jaspersoft.studio.field.label" value="cpf"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="monitorador"/>
 	</field>
-	<field name="data" class="java.lang.Object">
+	<field name="data" class="java.sql.Date">
 		<property name="com.jaspersoft.studio.field.label" value="data"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="monitorador"/>
 	</field>
@@ -46,7 +47,7 @@
 		<property name="com.jaspersoft.studio.field.label" value="rg"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="monitorador"/>
 	</field>
-	<field name="tipo" class="java.lang.Object">
+	<field name="tipo" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="tipo"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="monitorador"/>
 	</field>
@@ -71,7 +72,7 @@
 		</band>
 	</title>
 	<detail>
-		<band height="590" splitType="Stretch">
+		<band height="618" splitType="Stretch">
 			<textField isBlankWhenNull="true">
 				<reportElement x="130" y="20" width="200" height="30" uuid="9bd1b0bb-468b-482a-9f2e-aa98c2b8b19d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6ffecbcf-c6e7-450e-820d-53f7c1a70a08"/>
@@ -88,7 +89,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""+$F{data}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="130" y="80" width="200" height="30" uuid="ee7825f4-bb17-41a7-8601-a903a70b8699">
@@ -97,7 +98,16 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cpf} != null ? $F{cpf} : $F{cnpj}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cpf} != null ? String.format("%s.%s.%s-%s",
+                $F{cpf}.substring(0, 3),
+                $F{cpf}.substring(3, 6),
+                $F{cpf}.substring(6, 9),
+                $F{cpf}.substring(9)) :String.format("%s.%s.%s/%s-%s",
+                $F{cnpj}.substring(0, 2),
+                $F{cnpj}.substring(2, 5),
+                $F{cnpj}.substring(5, 8),
+                $F{cnpj}.substring(8, 12),
+                $F{cnpj}.substring(12))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="130" y="110" width="200" height="30" uuid="65e80f74-5076-487d-bc9d-9bc2dcc8092c">
@@ -142,7 +152,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""+$F{tipo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="20" width="130" height="30" uuid="9067589a-abb6-41a4-a6bb-ab1cdeebc102">
@@ -189,9 +199,6 @@
 				</textElement>
 				<text><![CDATA[Tipo da Pessoa: ]]></text>
 			</staticText>
-			<line>
-				<reportElement x="0" y="280" width="555" height="1" uuid="17b3b86e-e272-4eee-a7df-b52a1c3d939e"/>
-			</line>
 			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="80" width="130" height="30" uuid="5c6f0505-0fd0-4c87-be4f-5eb353499c2d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bc491153-3a77-48b3-9757-359e8e1c095f"/>
@@ -199,9 +206,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="13"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cpf} != null ? "CPF: " : "CNPJ: "
-
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cpf} != null ? "CPF: " : "CNPJ: "]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="110" width="130" height="30" uuid="aacb5a8c-b622-4138-9d76-91f28fe37416">
@@ -221,6 +226,14 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rg} != null ? "RG: " : "Inscrição Est.: "]]></textFieldExpression>
 			</textField>
+			<subreport>
+				<reportElement x="0" y="260" width="555" height="250" uuid="73de07e7-0960-4988-8030-ed0dfe042c00"/>
+				<subreportParameter name="MONITORADOR_ID">
+					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["EnderecoSubReportFinal.jasper"]]></subreportExpression>
+			</subreport>
 		</band>
 	</detail>
 </jasperReport>

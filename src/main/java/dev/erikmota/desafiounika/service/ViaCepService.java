@@ -15,6 +15,9 @@ import java.net.http.HttpResponse;
 public class ViaCepService {
     private static final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
     public Endereco buscarCep (String cep) {
+        if (cep.replaceAll("[^0-9]", "").length() != 8)
+            throw new ValidacaoException("Esse cep é invalido!");
+
         String endereco = "https://viacep.com.br/ws/" + cep + "/json/";
         try {
             HttpClient client = HttpClient.newHttpClient();
@@ -29,7 +32,7 @@ public class ViaCepService {
             EnderecoViaCep enderecoViaCep = mapper.readValue(json, mapper.getTypeFactory().constructType(EnderecoViaCep.class));
             return enderecoViaCep.toEndereco();
         } catch (Exception e){
-            throw new ValidacaoException(" Ocorreu um erro ao encontrar o CEP!");
+            throw new ValidacaoException("Ocorreu um erro ao encontrar o CEP!");
         }
     }
 }

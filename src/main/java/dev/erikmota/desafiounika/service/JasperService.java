@@ -1,50 +1,62 @@
 package dev.erikmota.desafiounika.service;
 
-import dev.erikmota.desafiounika.models.Endereco;
-import dev.erikmota.desafiounika.models.Monitorador;
+import dev.erikmota.desafiounika.models.TipoPessoa;
 import dev.erikmota.desafiounika.service.exceptions.JasperException;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-@Component
+@Service
 public class JasperService {
-    public byte[] gerarPdfMonitorador(List<Monitorador> lista) {
-        if (lista.isEmpty())
-            throw new JasperException("Não é possivel gerar relatorio sem monitoradores");
-        String file;
-        if (lista.size() != 1)
-            file = "/src/main/resources/reports/RelatorioMGeral.jasper";
-        else
-            file = "/src/main/resources/reports/RelatorioMIndividual.jasper";
-        return gerarPdf(file, lista);
+    private final DataSource dataSource;
+
+    public JasperService(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public byte[] gerarPdfEndereco(List<Endereco> lista) {
-        if (lista.isEmpty())
-            throw new JasperException("Não é possivel gerar relatorio sem endereços");
-        String file;
-        if (lista.size() != 1)
-            file = "/src/main/resources/reports/RelatorioEGeral.jasper";
-        else
-            file = "/src/main/resources/reports/RelatorioEIndividual.jasper";
-        return gerarPdf(file, lista);
+    public byte[] gerarPdfInd(Long id) {
+        String file = "/src/main/resources/reports/RelatorioMIndividual.jasper";
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("ID", id);
+        return gerarPdf(file, params);
     }
 
-    private byte[] gerarPdf(String file, List<?> lista) {
+    public byte[] gerarPdfGeral(String text, TipoPessoa tipo, Boolean ativo) {
+        String file = "/src/main/resources/reports/RelatorioMGeral.jasper";
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("TEXT", text);
+        params.put("TIPO", tipo);
+        params.put("ATIVO", ativo);
+        return gerarPdf(file, params);
+    }
+
+    public byte[] gerarPdfEndereco(Long id, String text, String cidade, String estado, Long monitorador) {
+        String file = "/src/main/resources/reports/RelatorioEGeral.jasper";
+        HashMap<String, Object> params = new HashMap<>();
+        if (id != null)
+            params.put("ID", id);
+        else {
+            params.put("TEXT", text);
+            params.put("CIDADE", cidade);
+            params.put("ESTADO", estado);
+            params.put("MONITORADOR_ID", monitorador);
+        }
+        return gerarPdf(file, params);
+    }
+
+    private byte[] gerarPdf(String file, HashMap<String,Object> params) {
         try {
-            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(lista);
             Path currentRelativePath = Paths.get("");
             String jasperFilePath = currentRelativePath.toAbsolutePath() + file;
 
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperFilePath, new HashMap<>(), dataSource);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperFilePath, params, dataSource.getConnection());
             return JasperExportManager.exportReportToPdf(jasperPrint);
         } catch (Exception e) {
-            throw new JasperException(" Ocorreu um erro ao gerar o relatório em PDF!");
+            throw new JasperException("Ocorreu um erro ao gerar o relatório em PDF!");
         }
     }
 }

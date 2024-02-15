@@ -6,7 +6,6 @@ import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import dev.erikmota.desafiounika.service.exceptions.JasperException;
 import dev.erikmota.desafiounika.service.exceptions.PoiException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,8 +24,11 @@ import java.util.Objects;
 @CrossOrigin(origins = {"http://localhost:8080/", "http://localhost:4200/"})
 public class EnderecoController {
 
-    @Autowired
-    private EnderecoService service;
+    private final EnderecoService service;
+
+    public EnderecoController(EnderecoService service) {
+        this.service = service;
+    }
 
     @PostMapping
     @Transactional
@@ -42,8 +43,8 @@ public class EnderecoController {
         } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
-            return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
+            return ResponseEntity.badRequest().body("Ocorreu um erro ao realizar a requisição!");
         }
     }
 
@@ -60,7 +61,7 @@ public class EnderecoController {
         } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
@@ -74,7 +75,7 @@ public class EnderecoController {
         } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
@@ -92,7 +93,7 @@ public class EnderecoController {
         try {
             return ResponseEntity.ok(service.filtrar(text, estado, cidade, monitoradorId));
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a filtragem de endereços!");
         }
     }
@@ -117,7 +118,7 @@ public class EnderecoController {
         } catch (JasperException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
@@ -142,7 +143,7 @@ public class EnderecoController {
         } catch (ValidacaoException | PoiException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }
@@ -154,7 +155,7 @@ public class EnderecoController {
         } catch (ValidacaoException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex){
-            System.err.println(ex.getClass() + ": " + ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
+            System.out.println(ex.getClass() + ": " + ex.getMessage());
             return ResponseEntity.badRequest().body(" Ocorreu um erro ao realizar a requisição!");
         }
     }

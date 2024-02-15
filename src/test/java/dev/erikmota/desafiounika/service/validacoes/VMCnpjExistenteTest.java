@@ -1,8 +1,8 @@
 package dev.erikmota.desafiounika.service.validacoes;
 
+import dev.erikmota.desafiounika.dao.MonitoradorDAO;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
-import dev.erikmota.desafiounika.repository.MonitoradorRepository;
 import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ class VMCnpjExistenteTest {
     @InjectMocks
     private VMCnpjExistente validacao;
     @Mock
-    private MonitoradorRepository repository;
+    private MonitoradorDAO monitoradorDAO;
     @Mock
     private Monitorador m;
 
@@ -38,7 +38,7 @@ class VMCnpjExistenteTest {
         given(m.getTipo()).willReturn(TipoPessoa.JURIDICA);
         given(m.getCnpj()).willReturn("");
 
-        given(repository.existsByCnpj(m.getCnpj())).willReturn(false);
+        given(monitoradorDAO.existsByCnpj(m.getCnpj())).willReturn(false);
 
         assertDoesNotThrow(() -> validacao.validar(m));
     }
@@ -49,9 +49,9 @@ class VMCnpjExistenteTest {
 
         given(m.getTipo()).willReturn(TipoPessoa.JURIDICA);
         given(m.getCnpj()).willReturn("");
-        given(repository.existsByCnpj(m.getCnpj())).willReturn(true);
+        given(monitoradorDAO.existsByCnpj(m.getCnpj())).willReturn(true);
 
-        given(repository.findByCnpj("")).willReturn(new Monitorador());
+        given(monitoradorDAO.findByCnpj("")).willReturn(new Monitorador());
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
         assertEquals("Esse CNPJ já está cadastrado!", exception.getMessage());

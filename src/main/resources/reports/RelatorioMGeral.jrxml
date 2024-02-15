@@ -2,9 +2,17 @@
 <!-- Created with Jaspersoft Studio version 6.11.0.final using JasperReports Library version 6.11.0-0c4056ccaa4d25a5a8c45672d2f764ea3498bebb  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4bf183ac-c57e-45d3-bef1-a9ad1121735d">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Desafio"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Correto"/>
+	<parameter name="TEXT" class="java.lang.String"/>
+	<parameter name="TIPO" class="java.lang.String"/>
+	<parameter name="ATIVO" class="java.lang.Boolean"/>
 	<queryString language="SQL">
-		<![CDATA[select * from monitorador]]>
+		<![CDATA[SELECT * 
+FROM monitorador m
+WHERE ($P{ATIVO} is null or ativo =  $P{ATIVO})
+AND ($P{TIPO} is null or tipo =  $P{TIPO})
+AND ($P{TEXT} is null or (nome LIKE CONCAT('%', $P{TEXT}, '%') OR razao LIKE CONCAT('%', $P{TEXT}, '%') OR cpf LIKE CONCAT('%', $P{TEXT}, '%') OR cnpj LIKE CONCAT('%', $P{TEXT}, '%')))
+ORDER BY tipo, nome, razao]]>
 	</queryString>
 	<field name="id" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.label" value="id"/>
@@ -22,7 +30,7 @@
 		<property name="com.jaspersoft.studio.field.label" value="cpf"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="monitorador"/>
 	</field>
-	<field name="data" class="java.lang.Object">
+	<field name="data" class="java.sql.Date">
 		<property name="com.jaspersoft.studio.field.label" value="data"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="monitorador"/>
 	</field>
@@ -46,7 +54,7 @@
 		<property name="com.jaspersoft.studio.field.label" value="rg"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="monitorador"/>
 	</field>
-	<field name="tipo" class="java.lang.Object">
+	<field name="tipo" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="tipo"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="monitorador"/>
 	</field>
@@ -134,7 +142,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="32" splitType="Stretch">
+		<band height="29" splitType="Stretch">
 			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="6" width="20" height="20" uuid="9bd1b0bb-468b-482a-9f2e-aa98c2b8b19d">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6ffecbcf-c6e7-450e-820d-53f7c1a70a08"/>
@@ -144,15 +152,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="370" y="6" width="62" height="20" uuid="c3470fbb-b80f-4128-a582-200af0a86e15">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="920264e6-3e29-437b-bd22-d91ae32b1727"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[""+$F{data}]]></textFieldExpression>
-			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="60" y="6" width="90" height="20" uuid="ee7825f4-bb17-41a7-8601-a903a70b8699">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bc491153-3a77-48b3-9757-359e8e1c095f"/>
@@ -160,7 +159,16 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cpf} != null ? $F{cpf} : $F{cnpj}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cpf} != null ? String.format("%s.%s.%s-%s",
+                $F{cpf}.substring(0, 3),
+                $F{cpf}.substring(3, 6),
+                $F{cpf}.substring(6, 9),
+                $F{cpf}.substring(9)) :String.format("%s.%s.%s/%s-%s",
+                $F{cnpj}.substring(0, 2),
+                $F{cnpj}.substring(2, 5),
+                $F{cnpj}.substring(5, 8),
+                $F{cnpj}.substring(8, 12),
+                $F{cnpj}.substring(12))]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="150" y="6" width="130" height="20" uuid="65e80f74-5076-487d-bc9d-9bc2dcc8092c">
@@ -169,8 +177,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nome} != null ? $F{nome} : $F{razao}
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nome} != null ? $F{nome} : $F{razao}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="280" y="6" width="90" height="20" uuid="40355170-dec9-4235-b1dd-66922681e54c">
@@ -179,8 +186,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{rg} != null ? $F{rg} : $F{inscricao}
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{rg} != null ? $F{rg} : $F{inscricao}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="432" y="6" width="78" height="20" uuid="e0558120-7366-4a07-869d-f80010e475f7">
@@ -200,18 +206,27 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ativo} ? "Ativo" : "Inativo"]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="20" y="6" width="40" height="20" uuid="1e634d72-f72a-4ae3-bbe6-cceffb829d5c">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="bc491153-3a77-48b3-9757-359e8e1c095f"/>
+			<line>
+				<reportElement x="0" y="0" width="555" height="1" uuid="2e8d9157-7cbb-4d2d-b203-a16c9d73d597"/>
+			</line>
+			<textField>
+				<reportElement x="20" y="6" width="40" height="20" uuid="075d819b-1d32-4d41-9a95-15611a464909">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8f85ed57-7f81-4551-8c99-7222d69ad8cc"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""+$F{tipo}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="0" y="0" width="555" height="1" uuid="2e8d9157-7cbb-4d2d-b203-a16c9d73d597"/>
-			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="370" y="6" width="62" height="20" uuid="3e616f79-3098-4ed2-b255-6e56817ebfd3">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="051df0a7-c8b9-40e8-a139-a910630d4ce6"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>

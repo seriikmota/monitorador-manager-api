@@ -1,11 +1,8 @@
 package dev.erikmota.desafiounika.service;
 
 import dev.erikmota.desafiounika.dao.EnderecoDAO;
+import dev.erikmota.desafiounika.dao.MonitoradorDAO;
 import dev.erikmota.desafiounika.models.Endereco;
-import dev.erikmota.desafiounika.models.Monitorador;
-import dev.erikmota.desafiounika.repository.EnderecoRepository;
-import dev.erikmota.desafiounika.repository.MonitoradorRepository;
-import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import dev.erikmota.desafiounika.service.validacoes.IVEndereco;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +11,16 @@ import java.util.List;
 
 @Service
 public class EnderecoService {
-    private final EnderecoRepository repository;
     private final EnderecoDAO enderecoDAO;
-    private final MonitoradorRepository monitoradorRepository;
+    private final MonitoradorDAO monitoradorDAO;
     private final List<IVEndereco> validacoes;
     private final ViaCepService viaCepService;
     private final JasperService jasperService;
     private final PoiService poiService;
 
-    public EnderecoService(EnderecoRepository repository, EnderecoDAO enderecoDAO, MonitoradorRepository monitoradorRepository, List<IVEndereco> validacoes, ViaCepService viaCepService, JasperService jasperService, PoiService poiService) {
-        this.repository = repository;
+    public EnderecoService(EnderecoDAO enderecoDAO, MonitoradorDAO monitoradorDAO, List<IVEndereco> validacoes, ViaCepService viaCepService, JasperService jasperService, PoiService poiService) {
         this.enderecoDAO = enderecoDAO;
-        this.monitoradorRepository = monitoradorRepository;
+        this.monitoradorDAO = monitoradorDAO;
         this.validacoes = validacoes;
         this.viaCepService = viaCepService;
         this.jasperService = jasperService;
@@ -33,29 +28,25 @@ public class EnderecoService {
     }
 
     public void cadastrar(Endereco e, Long monitoradorId){
-        e.setMonitorador(monitoradorRepository.getReferenceById(monitoradorId));
+        e.setMonitorador(monitoradorDAO.findById(monitoradorId));
         validacoes.forEach(v -> v.validar(e));
-        repository.save(e);
+        enderecoDAO.save(e, monitoradorId);
     }
 
-    public void editar(Endereco e, Long idE, Long monitoradorId){
-        Monitorador m = monitoradorRepository.getReferenceById(monitoradorId);
-        Endereco novoEndereco = repository.getReferenceById(idE);
-        e.setMonitorador(m);
+    public void editar(Endereco e, Long enderecoId, Long monitoradorId){
+        e.setId(enderecoId);
+        e.setMonitorador(monitoradorDAO.findById(monitoradorId));
         validacoes.forEach(v -> v.validar(e));
-
-        novoEndereco.editar(e);
+        enderecoDAO.edit(e);
     }
 
     public void excluir(Long id){
-        if (repository.existsById(id))
-            repository.delete(repository.getReferenceById(id));
-        else
-            throw new ValidacaoException("Este endereço não está cadastrado");
+        if (enderecoDAO.existsById(id))
+            enderecoDAO.delete(id);
     }
 
     public List<Endereco> listar(){
-        List<Endereco> enderecos = repository.findAll();
+        List<Endereco> enderecos = enderecoDAO.findAll();
         Collections.sort(enderecos);
         return enderecos;
     }
@@ -67,30 +58,20 @@ public class EnderecoService {
     }
 
     public byte[] gerarRelatorioPdf(Long id, String text, String estado, String cidade, Long monitorador){
-        if (id == null){
-            List<Endereco> enderecos = enderecoDAO.filter(text, estado, cidade, monitorador);
-            Collections.sort(enderecos);
-            return jasperService.gerarPdfEndereco(enderecos);
-        }
-        else
-            return jasperService.gerarPdfEndereco(List.of(repository.getReferenceById(id)));
+        return jasperService.gerarPdfEndereco(id, text, cidade, estado, monitorador);
     }
 
     public byte[] gerarRelatorioExcel(Long id, String text, String estado, String cidade, Long monitorador){
-        if (id == null){
-            List<Endereco> enderecos = enderecoDAO.filter(text, estado, cidade, monitorador);
-            Collections.sort(enderecos);
-            return poiService.exportarEndereco(enderecos);
-        }
+        List<Endereco> enderecos;
+        if (id == null)
+            enderecos = enderecoDAO.filter(text, estado, cidade, monitorador);
         else
-            return poiService.exportarEndereco(List.of(repository.getReferenceById(id)));
+            enderecos = List.of(enderecoDAO.findById(id));
+        enderecos.forEach(e -> e.setMonitorador(monitoradorDAO.findById(monitorador)));
+        return poiService.exportarEndereco(enderecos);
     }
 
     public Endereco buscarCep(String cep){
-        cep = cep.replaceAll("[^0-9]", "");
-        if (cep.length() == 8)
-            return viaCepService.buscarCep(cep);
-        else
-            throw new ValidacaoException("Esse CEP é inválido");
+        return viaCepService.buscarCep(cep);
     }
 }
