@@ -6,6 +6,8 @@ import dev.erikmota.desafiounika.service.MonitoradorService;
 import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import dev.erikmota.desafiounika.service.exceptions.JasperException;
 import dev.erikmota.desafiounika.service.exceptions.PoiException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

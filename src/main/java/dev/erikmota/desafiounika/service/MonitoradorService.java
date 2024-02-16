@@ -4,6 +4,7 @@ import dev.erikmota.desafiounika.dao.MonitoradorDAO;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
 import dev.erikmota.desafiounika.service.validacoes.IVMonitorador;
+import dev.erikmota.desafiounika.service.validacoes.VMObrigatorio;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class CustomExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        String errorMessage = ex.getCause().getMessage();
+        String errorMessage = ex.toString();
         if (errorMessage.contains("DateTimeParseException")){
             return ResponseEntity.badRequest().body("Data inválida!");
         }
