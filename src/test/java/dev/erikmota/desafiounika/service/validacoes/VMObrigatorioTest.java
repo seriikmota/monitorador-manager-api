@@ -66,6 +66,6 @@ class VMObrigatorioTest {
         given(m.getAtivo()).willReturn(null);
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(m));
-        assertEquals("O campo Ativo é obrigatório!", exception.getMessage());
+        assertEquals("O Status é obrigatório!", exception.getMessage());
     }
 }

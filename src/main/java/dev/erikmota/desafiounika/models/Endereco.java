@@ -156,5 +156,16 @@ public class Endereco implements Comparable<Endereco> {
         else
             return monitorador.getRazao();
     }
+    @JsonIgnore
+    public Boolean isNull(){
+        return this.cep == null
+                && this.endereco == null
+                && this.numero == null
+                && this.bairro == null
+                && this.cidade == null
+                && this.estado == null
+                && this.telefone == null
+                && this.principal == null;
+    }
 
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mysql.cj.util.StringUtils;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -14,7 +13,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name="monitorador")
+@Table(name = "monitorador")
 public class Monitorador implements Comparable<Monitorador> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +35,8 @@ public class Monitorador implements Comparable<Monitorador> {
     @OneToMany(mappedBy = "monitorador")
     private List<Endereco> enderecos = new ArrayList<>();
 
-    public Monitorador() {}
+    public Monitorador() {
+    }
 
     public Monitorador(Long id, TipoPessoa tipo, String cpf, String nome, String rg, String cnpj, String razao, String inscricao, String email, LocalDate data, Boolean ativo, List<Endereco> enderecos) {
         this.id = id;
@@ -184,5 +184,18 @@ public class Monitorador implements Comparable<Monitorador> {
                 ", \nemail='" + email + '\'' +
                 ", \ndata=" + data +
                 ", \nativo=" + ativo + "\n";
+    }
+
+    @JsonIgnore
+    public Boolean isNull() {
+        return this.cpf == null
+                && this.nome == null
+                && this.rg == null
+                && this.cnpj == null
+                && this.razao == null
+                && this.inscricao == null
+                && this.email == null
+                && this.data == null
+                && this.ativo == null;
     }
 }

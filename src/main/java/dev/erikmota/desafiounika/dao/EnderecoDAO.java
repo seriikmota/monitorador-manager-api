@@ -2,7 +2,9 @@ package dev.erikmota.desafiounika.dao;
 
 import com.mysql.cj.util.StringUtils;
 import dev.erikmota.desafiounika.models.Endereco;
+import dev.erikmota.desafiounika.service.exceptions.DAOException;
 import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
+import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -25,7 +27,7 @@ public class EnderecoDAO {
             stmt.setLong(9, monitoradorId);
             stmt.execute();
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro ao cadastrar endereco!");
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -37,7 +39,7 @@ public class EnderecoDAO {
             stmt.setLong(10, e.getId());
             stmt.execute();
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro ao cadastrar endereco!");
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -47,7 +49,7 @@ public class EnderecoDAO {
             stmt.setLong(1, id);
             stmt.execute();
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro ao remover endereco!");
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -56,7 +58,7 @@ public class EnderecoDAO {
         try (Connection connection = dataSource.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             return mountObject(stmt);
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro ao realizar a listagem de endereços!");
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -92,8 +94,8 @@ public class EnderecoDAO {
                 stmt.setObject(parameterIndex++, param);
             }
             return mountObject(stmt);
-        } catch (SQLException e) {
-            throw new ValidacaoException(" Ocorreu um erro ao realizar a filtragem de endereços!");
+        } catch (SQLException ex) {
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -136,7 +138,7 @@ public class EnderecoDAO {
             else
                 throw new ValidacaoException("Esse endereço não existe!");
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro no existsById!");
+            throw new DAOException(ex.toString());
         }
     }
     public boolean existsByEnderecoAndNumero(String endereco, String numero){
@@ -148,7 +150,7 @@ public class EnderecoDAO {
             if (resultSet.next())
                 return resultSet.getLong(1) != 0;
         } catch (SQLException ex) {
-            System.out.println("Ocorreu um erro no existsByEnderecoAndNumero!");
+            throw new ValidationException(ex);
         }
         return false;
     }
@@ -158,7 +160,7 @@ public class EnderecoDAO {
             stmt.setLong(1, id);
             return mountObject(stmt).get(0);
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro no findById!");
+            throw new DAOException(ex.toString());
         }
     }
 }

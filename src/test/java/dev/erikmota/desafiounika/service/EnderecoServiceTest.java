@@ -14,14 +14,11 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,6 +67,8 @@ class EnderecoServiceTest {
 
     @Test
     void editarCase1() {
+        when(enderecoDAO.existsById(anyLong())).thenReturn(true);
+        when(monitoradorDAO.existsById(anyLong())).thenReturn(true);
         when(monitoradorDAO.findById(1L)).thenReturn(m);
         validacoes.forEach(item -> doNothing().when(item).validar(e));
 
@@ -79,7 +78,16 @@ class EnderecoServiceTest {
 
     @Test
     void editarCase2() {
-        when(monitoradorDAO.findById(1L)).thenReturn(m);
+        when(enderecoDAO.existsById(anyLong())).thenReturn(true);
+        when(monitoradorDAO.existsById(anyLong())).thenReturn(false);
+
+        assertThrows(ValidacaoException.class, () -> service.editar(e, anyLong(), 1L));
+        verify(enderecoDAO, never()).edit(e);
+    }
+
+    @Test
+    void editarCase3() {
+        when(enderecoDAO.existsById(anyLong())).thenReturn(false);
         validacoes.forEach(item -> lenient().doThrow(ValidacaoException.class).when(item).validar(e));
 
         assertThrows(ValidacaoException.class, () -> service.editar(e, anyLong(), 1L));
@@ -98,7 +106,7 @@ class EnderecoServiceTest {
     void excluirCase2() {
         when(enderecoDAO.existsById(anyLong())).thenReturn(false);
 
-        assertDoesNotThrow(() -> service.excluir(1L));
+        assertThrows(ValidacaoException.class, () -> service.excluir(1L));
         verify(enderecoDAO, never()).delete(1L);
     }
 

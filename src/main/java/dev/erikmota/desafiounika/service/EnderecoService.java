@@ -3,6 +3,7 @@ package dev.erikmota.desafiounika.service;
 import dev.erikmota.desafiounika.dao.EnderecoDAO;
 import dev.erikmota.desafiounika.dao.MonitoradorDAO;
 import dev.erikmota.desafiounika.models.Endereco;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import dev.erikmota.desafiounika.service.validacoes.IVEndereco;
 import org.springframework.stereotype.Service;
 
@@ -34,15 +35,23 @@ public class EnderecoService {
     }
 
     public void editar(Endereco e, Long enderecoId, Long monitoradorId){
-        e.setId(enderecoId);
-        e.setMonitorador(monitoradorDAO.findById(monitoradorId));
-        validacoes.forEach(v -> v.validar(e));
-        enderecoDAO.edit(e);
+        if (enderecoDAO.existsById(enderecoId) && monitoradorDAO.existsById(monitoradorId)){
+            e.setId(enderecoId);
+            e.setMonitorador(monitoradorDAO.findById(monitoradorId));
+            validacoes.forEach(v -> v.validar(e));
+            enderecoDAO.edit(e);
+        }
+        else if (!enderecoDAO.existsById(enderecoId))
+            throw new ValidacaoException("Esse endereço não existe!");
+        else
+            throw new ValidacaoException("Esse monitorador não existe!");
     }
 
-    public void excluir(Long id){
+    public void excluir(Long id) {
         if (enderecoDAO.existsById(id))
             enderecoDAO.delete(id);
+        else
+            throw new ValidacaoException("Esse endereço não existe!");
     }
 
     public List<Endereco> listar(){

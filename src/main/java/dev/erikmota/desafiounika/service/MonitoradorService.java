@@ -3,8 +3,8 @@ package dev.erikmota.desafiounika.service;
 import dev.erikmota.desafiounika.dao.MonitoradorDAO;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
+import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import dev.erikmota.desafiounika.service.validacoes.IVMonitorador;
-import dev.erikmota.desafiounika.service.validacoes.VMObrigatorio;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,14 +30,20 @@ public class MonitoradorService {
     }
 
     public void editar(Monitorador m, Long id){
-        m.setId(id);
-        validacoes.forEach(v -> v.validar(m));
-        monitoradorDAO.edit(m);
+        if (monitoradorDAO.existsById(id)) {
+            m.setId(id);
+            validacoes.forEach(v -> v.validar(m));
+            monitoradorDAO.edit(m);
+        }
+        else
+            throw new ValidacaoException("Esse monitorador não existe!");
     }
 
-    public void excluir(Long id){
+    public void excluir(Long id) {
         if (monitoradorDAO.existsById(id))
             monitoradorDAO.delete(monitoradorDAO.findById(id));
+        else
+            throw new ValidacaoException("Esse monitorador não existe!");
     }
 
     public List<Monitorador> listar(){

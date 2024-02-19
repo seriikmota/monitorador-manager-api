@@ -3,6 +3,7 @@ package dev.erikmota.desafiounika.dao;
 import com.mysql.cj.util.StringUtils;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
+import dev.erikmota.desafiounika.service.exceptions.DAOException;
 import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import org.springframework.stereotype.Repository;
 
@@ -33,7 +34,7 @@ public class MonitoradorDAO {
                     enderecoDAO.save(m.getEnderecos().get(0), generatedKeys.getLong(1));
             }
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro ao cadastrar monitorador!");
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -44,7 +45,7 @@ public class MonitoradorDAO {
             stmt.setLong(11, m.getId());
             stmt.execute();
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro ao editar monitorador!");
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -57,7 +58,7 @@ public class MonitoradorDAO {
             stmt.setLong(1, m.getId());
             stmt.execute();
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro ao remover monitorador!");
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -66,7 +67,7 @@ public class MonitoradorDAO {
         try (Connection connection = dataSource.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             return mountObject(stmt);
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro ao realizar a listagem de monitoradores!");
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -97,7 +98,7 @@ public class MonitoradorDAO {
             }
             return mountObject(stmt);
         } catch (SQLException ex) {
-            throw new ValidacaoException(" Ocorreu um erro ao realizar a filtragem de monitoradores!");
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -146,7 +147,7 @@ public class MonitoradorDAO {
             else
                 throw new ValidacaoException("Esse monitorador não existe!");
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro no existsById!");
+            throw new DAOException(ex.toString());
         }
     }
 
@@ -158,7 +159,7 @@ public class MonitoradorDAO {
             if (resultSet.next())
                 return resultSet.getLong(1) != 0;
         } catch (SQLException ex) {
-            System.out.println("Ocorreu um erro no existsByCpf!");
+            throw new DAOException(ex.toString());
         }
         return false;
     }
@@ -170,7 +171,7 @@ public class MonitoradorDAO {
             if (resultSet.next())
                 return resultSet.getLong(1) != 0;
         } catch (SQLException ex) {
-            System.out.println("Ocorreu um erro no existsByCnpj!");
+            throw new DAOException(ex.toString());
         }
         return false;
     }
@@ -180,9 +181,8 @@ public class MonitoradorDAO {
             stmt.setString(1, cpf);
             return mountObject(stmt).get(0);
         } catch (SQLException ex) {
-            System.out.println("Ocorreu um erro no findByCpf");
+            throw new DAOException(ex.toString());
         }
-        return new Monitorador();
     }
     public Monitorador findByCnpj(String cnpj){
         String sql = "SELECT * FROM monitorador WHERE cnpj=?";
@@ -190,9 +190,8 @@ public class MonitoradorDAO {
             stmt.setString(1, cnpj);
             return mountObject(stmt).get(0);
         } catch (SQLException ex) {
-            System.out.println("Ocorreu um erro no findByCnpj");
+            throw new DAOException(ex.toString());
         }
-        return new Monitorador();
     }
 
     public Monitorador findById(Long id) {
@@ -201,7 +200,7 @@ public class MonitoradorDAO {
             stmt.setLong(1, id);
             return mountObject(stmt).get(0);
         } catch (SQLException ex) {
-            throw new ValidacaoException("Ocorreu um erro no findById!");
+            throw new DAOException(ex.toString());
         }
     }
 }

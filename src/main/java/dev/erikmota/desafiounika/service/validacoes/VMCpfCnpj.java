@@ -20,13 +20,13 @@ public class VMCpfCnpj implements IVMonitorador {
             if (m.getTipo() == TipoPessoa.FISICA) {
                 CPFValidator cpfValidator = new CPFValidator();
                 cpfValidator.initialize(null);
-                if (!cpfValidator.isValid(m.getCpf(), null))
+                if (!cpfValidator.isValid(m.getCpf(), null) || m.getCpf().length() != 11)
                     throw new ValidacaoException("Esse CPF é inválido!");
             }
-            else {
+            else if (m.getTipo() == TipoPessoa.JURIDICA){
                 CNPJValidator cnpjValidator = new CNPJValidator();
                 cnpjValidator.initialize(null);
-                if (!cnpjValidator.isValid(m.getCnpj(), null))
+                if (!cnpjValidator.isValid(m.getCnpj(), null) || m.getCnpj().length() != 14)
                     throw new ValidacaoException("Esse CNPJ é inválido!");
             }
         }

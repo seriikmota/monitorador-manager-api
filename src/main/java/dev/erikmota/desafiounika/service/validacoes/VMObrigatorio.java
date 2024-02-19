@@ -22,6 +22,6 @@ public class VMObrigatorio implements IVMonitorador {
                 throw new ValidacaoException("Digite um email válido!");
         }
         if (m.getAtivo() == null)
-            throw new ValidacaoException("O campo Ativo é obrigatório!");
+            throw new ValidacaoException("O Status é obrigatório!");
     }
 }

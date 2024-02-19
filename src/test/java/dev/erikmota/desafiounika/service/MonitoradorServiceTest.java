@@ -61,6 +61,7 @@ class MonitoradorServiceTest {
 
     @Test
     void editarCase1() {
+        when(monitoradorDAO.existsById(anyLong())).thenReturn(true);
         validacoes.forEach(item -> doNothing().when(item).validar(m));
 
         assertDoesNotThrow(() -> service.editar(m, anyLong()));
@@ -69,7 +70,7 @@ class MonitoradorServiceTest {
 
     @Test
     void editarCase2() {
-        validacoes.forEach(item -> lenient().doThrow(ValidacaoException.class).when(item).validar(m));
+        when(monitoradorDAO.existsById(anyLong())).thenReturn(false);
 
         assertThrows(ValidacaoException.class, () -> service.editar(m, anyLong()));
         verify(monitoradorDAO, never()).edit(m);
@@ -88,7 +89,7 @@ class MonitoradorServiceTest {
     void excluirCase2() {
         when(monitoradorDAO.existsById(anyLong())).thenReturn(false);
 
-        service.excluir(anyLong());
+        assertThrows(ValidacaoException.class, () -> service.editar(m, anyLong()));
         verify(monitoradorDAO, never()).delete(m);
     }
 
@@ -161,13 +162,6 @@ class MonitoradorServiceTest {
         VMCpfExistente v4 = mock(VMCpfExistente.class);
         VMObrigatorio v5 = mock(VMObrigatorio.class);
         VMPessoaJuridica v6 = mock(VMPessoaJuridica.class);
-
-        /*VMCpfCnpj v1 = new VMCpfCnpj();
-        VMPessoaFisica v2 = new VMPessoaFisica();
-        VMCnpjExistente v3 = new VMCnpjExistente(monitoradorDAO);
-        VMCpfExistente v4 = new VMCpfExistente(monitoradorDAO);
-        VMObrigatorio v5 = new VMObrigatorio();
-        VMPessoaJuridica v6 = new VMPessoaJuridica();*/
 
         validacoes.addAll(Arrays.asList(v1, v2, v3, v4, v5, v6));
     }
