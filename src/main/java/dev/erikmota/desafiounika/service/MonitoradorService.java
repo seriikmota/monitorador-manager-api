@@ -78,9 +78,8 @@ public class MonitoradorService {
             Collections.sort(monitoradores);
             return poiService.exportarMonitorador(monitoradores);
         }
-        else {
+        else
             return poiService.exportarMonitorador(List.of(monitoradorDAO.findById(id)));
-        }
     }
 
 }

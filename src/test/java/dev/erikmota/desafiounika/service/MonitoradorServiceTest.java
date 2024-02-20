@@ -5,6 +5,7 @@ import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
 import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import dev.erikmota.desafiounika.service.validacoes.*;
+import net.sf.jasperreports.engine.type.OverflowType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,10 +121,22 @@ class MonitoradorServiceTest {
 
     @Test
     void importarCase1() {
+        MockMultipartFile file = new MockMultipartFile("file", "test.xlsx", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
+        List<Monitorador> monitoradores = Arrays.asList(m, m);
+        when(poiService.importar(file, validacoes)).thenReturn(monitoradores);
+
+        service.importar(file);
+
+        verify(monitoradorDAO, atLeastOnce()).save(m);
     }
 
     @Test
     void importarCase2() {
+        MockMultipartFile file = new MockMultipartFile("file", "test.xlsx", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
+
+        service.importar(file);
+
+        verify(monitoradorDAO, never()).save(m);
     }
 
     @Test
