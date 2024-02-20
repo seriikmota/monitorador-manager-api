@@ -4,6 +4,8 @@ import dev.erikmota.desafiounika.service.exceptions.DAOException;
 import dev.erikmota.desafiounika.service.exceptions.JasperException;
 import dev.erikmota.desafiounika.service.exceptions.PoiException;
 import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +20,9 @@ import java.util.Objects;
 public class CustomExceptionHandler {
     @ExceptionHandler(ValidacaoException.class)
     public ResponseEntity<String> handleValidacaoException(ValidacaoException ex) {
+        if (ex.getMessage().contains("não foi encontrado")){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
@@ -35,6 +40,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<String> handleException(Exception ex) {
         String errorMessage = ex.toString();
         if (errorMessage.contains("NoResourceFoundException")){
+            ex.printStackTrace();
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.badRequest().body("Ocorreu um erro ao realizar a requisição!");

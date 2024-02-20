@@ -42,7 +42,7 @@ class VEIdMonExistenteTest {
 
 
         ValidacaoException exception = assertThrows(ValidacaoException.class, () -> validacao.validar(e));
-        assertEquals("Esse monitorador não existe!", exception.getMessage());
+        assertEquals("Esse monitorador não foi encontrado!", exception.getMessage());
 
     }
 

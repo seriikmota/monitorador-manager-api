@@ -42,16 +42,16 @@ public class EnderecoService {
             enderecoDAO.edit(e);
         }
         else if (!enderecoDAO.existsById(enderecoId))
-            throw new ValidacaoException("Esse endereço não existe!");
+            throw new ValidacaoException("Esse endereço não foi encontrado!");
         else
-            throw new ValidacaoException("Esse monitorador não existe!");
+            throw new ValidacaoException("Esse monitorador não foi encontrado!");
     }
 
     public void excluir(Long id) {
         if (enderecoDAO.existsById(id))
             enderecoDAO.delete(id);
         else
-            throw new ValidacaoException("Esse endereço não existe!");
+            throw new ValidacaoException("Esse endereço não foi encontrado!");
     }
 
     public List<Endereco> listar(){

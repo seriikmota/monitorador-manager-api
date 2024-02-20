@@ -136,7 +136,7 @@ public class EnderecoDAO {
             if (resultSet.next())
                 return resultSet.getLong(1) != 0;
             else
-                throw new ValidacaoException("Esse endereço não existe!");
+                throw new ValidacaoException("Esse endereço não foi encontrado!");
         } catch (SQLException ex) {
             throw new DAOException(ex.toString());
         }

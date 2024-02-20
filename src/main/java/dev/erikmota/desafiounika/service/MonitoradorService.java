@@ -36,14 +36,14 @@ public class MonitoradorService {
             monitoradorDAO.edit(m);
         }
         else
-            throw new ValidacaoException("Esse monitorador não existe!");
+            throw new ValidacaoException("Esse monitorador não foi encontrado!");
     }
 
     public void excluir(Long id) {
         if (monitoradorDAO.existsById(id))
             monitoradorDAO.delete(monitoradorDAO.findById(id));
         else
-            throw new ValidacaoException("Esse monitorador não existe!");
+            throw new ValidacaoException("Esse monitorador não foi encontrado!");
     }
 
     public List<Monitorador> listar(){
