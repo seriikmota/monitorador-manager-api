@@ -1,4 +1,4 @@
-/*package dev.erikmota.desafiounika.controllers;
+package dev.erikmota.desafiounika.controllers;
 
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.service.MonitoradorService;
@@ -196,4 +196,4 @@ class MonitoradorControllerTest {
         assertTrue(Objects.requireNonNull(response.getHeader(HttpHeaders.CONTENT_DISPOSITION)).endsWith(".xlsx\""));
         verify(service, times(1)).gerarModelo();
     }
-}*/
+}

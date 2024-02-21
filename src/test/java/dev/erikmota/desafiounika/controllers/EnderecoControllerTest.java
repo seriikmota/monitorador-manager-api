@@ -1,4 +1,4 @@
-/*package dev.erikmota.desafiounika.controllers;
+package dev.erikmota.desafiounika.controllers;
 
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.service.EnderecoService;
@@ -224,4 +224,4 @@ class EnderecoControllerTest {
                 .andExpect(status().isNotFound());
         verify(service, never()).buscarCep(any());
     }
-}*/
+}
