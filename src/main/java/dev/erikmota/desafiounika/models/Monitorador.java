@@ -2,8 +2,8 @@ package dev.erikmota.desafiounika.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mysql.cj.util.StringUtils;
 import jakarta.persistence.*;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -74,7 +74,7 @@ public class Monitorador implements Comparable<Monitorador> {
     }
 
     public void setCpf(String cpf) {
-        if (!StringUtils.isEmptyOrWhitespaceOnly(cpf))
+        if (!StringUtils.isBlank(cpf))
             this.cpf = cpf.replaceAll("[^0-9]", "");
     }
 
@@ -99,7 +99,7 @@ public class Monitorador implements Comparable<Monitorador> {
     }
 
     public void setCnpj(String cnpj) {
-        if (!StringUtils.isEmptyOrWhitespaceOnly(cnpj))
+        if (!StringUtils.isBlank(cnpj))
             this.cnpj = cnpj.replaceAll("[^0-9]", "");
     }
 

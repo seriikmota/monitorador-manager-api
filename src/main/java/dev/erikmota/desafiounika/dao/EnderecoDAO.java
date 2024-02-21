@@ -1,10 +1,10 @@
 package dev.erikmota.desafiounika.dao;
 
-import com.mysql.cj.util.StringUtils;
 import dev.erikmota.desafiounika.models.Endereco;
 import dev.erikmota.desafiounika.service.exceptions.DAOException;
 import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
 import jakarta.validation.ValidationException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -66,7 +66,7 @@ public class EnderecoDAO {
         String sql = "SELECT * FROM endereco WHERE TRUE";
         List<Object> params = new ArrayList<>();
 
-        if (!StringUtils.isEmptyOrWhitespaceOnly(text)){
+        if (!StringUtils.isBlank(text)){
             sql += " AND (cep LIKE ? OR endereco LIKE ? OR bairro LIKE ? OR cidade LIKE ? OR estado LIKE ? OR telefone LIKE ?)";
             String likeText = "%" + text + "%";
             params.add(likeText);
@@ -76,11 +76,11 @@ public class EnderecoDAO {
             params.add(likeText);
             params.add(likeText);
         }
-        if (!StringUtils.isEmptyOrWhitespaceOnly(cidade)){
+        if (!StringUtils.isBlank(cidade)){
             sql += " AND cidade = ?";
             params.add(cidade);
         }
-        if (!StringUtils.isEmptyOrWhitespaceOnly(estado)){
+        if (!StringUtils.isBlank(estado)){
             sql += " AND estado = ?";
             params.add(estado);
         }

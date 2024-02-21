@@ -1,10 +1,10 @@
 package dev.erikmota.desafiounika.dao;
 
-import com.mysql.cj.util.StringUtils;
 import dev.erikmota.desafiounika.models.Monitorador;
 import dev.erikmota.desafiounika.models.TipoPessoa;
 import dev.erikmota.desafiounika.service.exceptions.DAOException;
 import dev.erikmota.desafiounika.service.exceptions.ValidacaoException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -75,7 +75,7 @@ public class MonitoradorDAO {
         String sql = "SELECT * FROM Monitorador WHERE TRUE";
         List<Object> params = new ArrayList<>();
 
-        if (!StringUtils.isEmptyOrWhitespaceOnly(text)) {
+        if (!StringUtils.isBlank(text)) {
             sql += " AND (nome LIKE ? OR razao LIKE ? OR cpf LIKE ? OR cnpj LIKE ?)";
             String likeText = "%" + text + "%";
             params.add(likeText);

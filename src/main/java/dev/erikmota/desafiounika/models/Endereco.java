@@ -2,8 +2,8 @@ package dev.erikmota.desafiounika.models;
 
 import com.fasterxml.jackson.annotation.*;
 
-import com.mysql.cj.util.StringUtils;
 import jakarta.persistence.*;
+import org.apache.commons.lang3.StringUtils;
 
 @Entity
 @Table(name="endereco")
@@ -51,7 +51,7 @@ public class Endereco implements Comparable<Endereco> {
     }
 
     public void setCep(String cep) {
-        if (!StringUtils.isEmptyOrWhitespaceOnly(cep))
+        if (!StringUtils.isBlank(cep))
             this.cep = cep.replaceAll("[^0-9]", "");
     }
 
@@ -100,7 +100,7 @@ public class Endereco implements Comparable<Endereco> {
     }
 
     public void setTelefone(String telefone) {
-        if (!StringUtils.isEmptyOrWhitespaceOnly(telefone))
+        if (!StringUtils.isBlank(telefone))
             this.telefone = telefone.replaceAll("[^0-9]", "");
     }
 
