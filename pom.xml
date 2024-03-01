@@ -9,10 +9,10 @@
         <relativePath/>
     </parent>
     <groupId>dev.erikmota</groupId>
-    <artifactId>desafioUnikaMain</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>desafioUnikaMain</name>
-    <description>desafioUnikaMain</description>
+    <artifactId>MonitoradorManagerAPI</artifactId>
+    <version>0.0.1</version>
+    <name>MonitoradorManagerAPI</name>
+    <description>MonitoradorManagerAPI</description>
     <properties>
         <java.version>17</java.version>
     </properties>
